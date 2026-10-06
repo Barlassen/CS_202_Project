@@ -11,7 +11,7 @@ MarketLab is a local, database-backed web demo for a multi-vendor marketplace. I
 Requires Python 3.10 or newer.
 
 ```bash
-cd /Users/uygaregekocakir/Desktop/cs202-project
+cd CS_202_Project
 python3 app.py
 ```
 
@@ -44,6 +44,8 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 | `docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md` | Detailed Turkish course comparison, walkthrough, and remaining work |
 | `docs/er_full.svg` | Zoomable full relational relationship diagram |
 | `docs/er_conceptual.svg` | Diagram of the four required ER concepts |
+| `docs/er_conceptual_full.svg` | Complete connected conceptual ER **draft**: 59 entity candidates and 11 relationship sets |
+| `docs/CONCEPTUAL_ER.md` | Conceptual classification, notation, and review checklist |
 | `tests/test_workflow.py` | End-to-end database workflow checks |
 
 ## What is implemented, and what remains
