@@ -383,7 +383,7 @@ def reports(db: sqlite3.Connection) -> str:
     returns = db.execute("""SELECT status,COUNT(*) AS count FROM return_requests
       GROUP BY status ORDER BY status""").fetchall()
     sales_rows = "".join(f'<tr><td>{h(r["seller"])}</td><td>{r["orders"]}</td><td>{money(r["revenue_cents"])}</td></tr>' for r in sales) or '<tr><td colspan="3">No sales yet.</td></tr>'
-    low_rows = "".join(f'<tr><td>{h(r["seller"])}</td><td>{h(r["product"])}</td><td>{r["available"]} / {r["reorder_point"]}</td></tr>' for r in low) or '<tr><td colspan="3">No low stock.</td></tr>'
+    low_rows = "".join(f'<tr><td>{h(r["seller"])}</td><td>{h(r["product"])}</td><td>{r["available_qty"]} / {r["reorder_point"]}</td></tr>' for r in low) or '<tr><td colspan="3">No low stock.</td></tr>'
     top_rows = "".join(f'<li>{h(r["name"])} · {r["units"]} units</li>' for r in top) or '<li>No orders yet.</li>'
     return_rows = "".join(f'<li>{h(r["status"])} · {r["count"]}</li>' for r in returns) or '<li>No returns yet.</li>'
     return (f'<div class="grid two"><section class="panel"><h2>Revenue by seller</h2><table><tr><th>Seller</th><th>Orders</th><th>Revenue</th></tr>{sales_rows}</table></section>'
