@@ -1,0 +1,31 @@
+graph MarketLabConceptual {
+  graph [label="MarketLab — required conceptual ER concepts", labelloc=t, fontsize=22,
+         fontname="Helvetica", bgcolor="white", layout=dot, rankdir=LR, nodesep=0.55, ranksep=0.8];
+  node [fontname="Helvetica", fontsize=12, color="#60728c", style=filled, fillcolor="#e8efff"];
+  edge [color="#6d7d93", fontname="Helvetica", fontsize=10];
+
+  Account [shape=box];
+  ISA [shape=triangle, label="ISA", fillcolor="#f3e8ff"];
+  Customer [shape=box]; Staff [shape=box]; Courier [shape=box];
+  Account -- ISA; ISA -- Customer; ISA -- Staff; ISA -- Courier;
+
+  Order [shape=box];
+  OrderLine [shape=box, peripheries=2, fillcolor="#ffe4bf", label="OrderLine\nweak entity"];
+  Contains [shape=diamond, fillcolor="#fff4dd", label="Contains\nidentifying"];
+  Customer -- Order [label="places 1:N"];
+  Order -- Contains; Contains -- OrderLine;
+
+  subgraph cluster_aggregation {
+    label="Aggregation: the Stocks relationship is reserved as one object";
+    color="#af89b7"; style="rounded,dashed"; bgcolor="#fdf8ff";
+    Seller [shape=box, fillcolor="#e8efff"];
+    Variant [shape=box, fillcolor="#e8efff"];
+    Warehouse [shape=box, fillcolor="#e8efff"];
+    Stocks [shape=diamond, fillcolor="#cceeff", label="Stocks\nternary"];
+    Seller -- Stocks; Variant -- Stocks; Warehouse -- Stocks;
+  }
+  Reserves [shape=diamond, fillcolor="#f8d9ed", label="Reserves\nquantity"];
+  OrderLine -- Reserves;
+  Reserves -- Stocks;
+  Staff -- Seller [label="works for M:N"];
+}
