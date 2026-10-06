@@ -48,7 +48,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 
 1. `README.md`: çalıştırma ve kısa kullanım.
 2. `docs/ANLATIM_TR.md`: kavramların Türkçe açıklaması ve savunma soruları.
-3. `docs/er_conceptual.svg`: dört zorunlu ER kavramının küçük kavramsal şeması.
+3. `docs/er_conceptual.svg`: dört zorunlu ER kavramının küçük kavramsal şeması; `docs/er_conceptual_full.svg` ve `docs/CONCEPTUAL_ER.md`: 59 varlık/alt tür adayı ile 11 ilişki kümesini ayıran tam kavramsal **taslak**.
 4. `docs/DESIGN.md`: model kararları ve kardinaliteler.
 5. `schema.sql`: gerçek tablo, PK, FK, `CHECK`, `UNIQUE` tanımları.
 6. `docs/ENTITIES.md`: 70 nesnenin anlamı ve anahtarı.
@@ -57,7 +57,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 9. `docs/SQL_QUERIES.md`: kullanılan sorguların neyi hesapladığı.
 10. `tests/test_workflow.py`: çalışan akışın ve rollback'in kanıtı.
 
-`docs/REPORT.md` iki bölümden oluşan **taslak rapordur**. `docs/er_full.svg` ise bütün tabloların FK grafıdır; **tam kavramsal ER diyagramı değildir**. Son teslimde 50+ varlığın tamamını ders notasyonuyla gösteren kavramsal ER çizimi ayrıca hazırlanmalıdır.
+`docs/REPORT.md` iki bölümden oluşan **taslak rapordur**. `docs/er_full.svg` bütün tabloların FK grafıdır; kavramsal ER değildir. Yeni `docs/er_conceptual_full.svg` tek bağlı kavramsal ER **taslağıdır**. 50+ entity sayımının hocanın tanımına göre ve çizimin ders notasyonuna göre ayrıca gözden geçirilmesi gerekir.
 
 ## 5. ER kavramlarını kendi cümlelerimizle nasıl anlatırız?
 
@@ -98,7 +98,7 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 
 | Ders konusu | Kaynak | Projedeki karşılığı | Durum |
 | --- | --- | --- | --- |
-| ER tasarım, weak, ISA, ternary, aggregation | `Ch2_ER.pdf` | Kavramsal örnek çizim ve ilişkisel karşılıklar | Çekirdek örnek var; 50+ varlıklı tam kavramsal ER çizimi eksik. |
+| ER tasarım, weak, ISA, ternary, aggregation | `Ch2_ER.pdf` | Küçük örnek çizim, 59 varlık adayı / 11 ilişki içeren tam bağlı kavramsal taslak ve ilişkisel karşılıklar | Taslak üretildi; 50 entity kabulü ve ders notasyonu gözden geçirilmeli. |
 | ER → ilişkisel model, PK/FK | `Ch3_Rel_Model.pdf` | `schema.sql`, 70 PK ve 102 FK bağı | Uygulandı; bazı iş kuralları sadece uygulama kodunda. |
 | İlişkisel cebir | `Ch4_Algebra.pdf` | SQL sorgularının arkasındaki select/project/join/group mantığı | Ayrı cebir gösterimi henüz yazılmadı. |
 | SQL, JOIN, alt sorgu, kısıtlar | `Ch5_SQL.pdf` | Katalog, rapor, stok ve iade sorguları | Temel sorgular var; hocanın “required SQL queries” listesi bilinmiyor. |
@@ -121,7 +121,7 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 
 1. PostgreSQL beklentisi net değil. Zorunluysa SQLite şeması ve Python erişim katmanı taşınmalı.
 2. E-sheet ve ders ana sayfasındaki **tam SQL sorgusu/teslim listesi** elimizde yok.
-3. `er_full.svg` tablo/FK grafıdır. Bütün varlık ve ilişkileri dersin ER notasyonuyla gösteren tam kavramsal çizim henüz yok.
+3. `er_full.svg` tablo/FK grafıdır. Yeni `er_conceptual_full.svg` tüm 59 aday varlığı ve 11 ilişki kümesini içeren kavramsal taslaktır; hocanın entity sınıflandırması ve çizim notasyonuna göre son inceleme hâlâ gereklidir.
 4. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok.
 5. Bazı bütünlük kuralları şemada zorlanmıyor: sipariş adresinin aynı müşteriye ait olması, stok batch bin'inin aynı depoda olması, `accounts.role` ile subtype eşleşmesi gibi.
 6. Normalizasyon/FD incelemesi ve hocanın isteyebileceği özgül SQL örnekleri henüz tamamlanmadı.
@@ -133,7 +133,7 @@ Bu maddeler projeyi değersiz kılmaz; mevcut durumun **çalışan, açıklanabi
 1. Proje için PostgreSQL ve belirli SQL sorguları gerekip gerekmediğini öğretim elemanından veya ana ders sayfasından öğrenin.
 2. Ana ders sayfasındaki teslimler, sorgu listesi ve son tarihleri bu belgeye ekleyin.
 3. `ENTITIES.md` listesini hocanın ER entity tanımına göre gözden geçirin; gerçekten 50+ ayrı entity olduğundan emin olun.
-4. Tam kavramsal ER diyagramını ve ilişkisel şema dönüşümünü hazırlayın. Kardinalite, katılım ve ISA örtüşme/kapsama kararlarını açıkça işaretleyin.
+4. Tam kavramsal ER taslağını (`er_conceptual_full.svg`) ve ilişkisel şema dönüşümünü birlikte gözden geçirin. Kardinalite, katılım ve ISA örtüşme/kapsama kararlarını hocanın notasyonuna göre kesinleştirin.
 5. Eğer PostgreSQL isteniyorsa şemayı ve uygulamayı taşıyın, aynı uçtan uca testleri PostgreSQL'de çalıştırın.
 6. Gerekli SQL sorgularını ve iki bölüm raporu öğretim elemanının teslim formatına göre tamamlayın.
 7. Biriniz diğerinizin kodunu değiştirip açıklasın. İkiniz de `checkout()`, bileşik anahtarlar, FK, transaction ve dört ER kavramını tahtada anlatabilmelisiniz.
