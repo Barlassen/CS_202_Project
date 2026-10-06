@@ -1,0 +1,398 @@
+graph ConceptualER {
+graph [rankdir=LR, bgcolor="white", outputorder=edgesfirst, overlap=false, splines=polyline, nodesep=0.18, ranksep=0.45, fontname="Helvetica", fontsize=19, label="MarketLab · complete conceptual ER draft · 59 entity candidates · 11 relationship sets", labelloc=t];
+node [fontname="Helvetica", fontsize=9, color="#60728c", style=filled, margin="0.07,0.04"];
+edge [fontname="Helvetica", fontsize=7, color="#899bb3", penwidth=0.8];
+"accounts" [shape=box, peripheries=1, fillcolor="#e8efff", label="accounts
+PK: account_id"];
+"addresses" [shape=box, peripheries=1, fillcolor="#e8efff", label="addresses
+PK: address_id"];
+"attributes" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="attributes
+PK: attribute_id"];
+"brands" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="brands
+PK: brand_id"];
+"carriers" [shape=box, peripheries=1, fillcolor="#fff0f3", label="carriers
+PK: carrier_id"];
+"carts" [shape=box, peripheries=1, fillcolor="#fff2e5", label="carts
+PK: cart_id"];
+"categories" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="categories
+PK: category_id"];
+"coupons" [shape=box, peripheries=1, fillcolor="#fff2e5", label="coupons
+PK: coupon_id"];
+"couriers" [shape=box, peripheries=1, fillcolor="#e8efff", label="couriers
+PK: account_id"];
+"customer_notifications" [shape=box, peripheries=1, fillcolor="#e8efff", label="customer_notifications
+PK: notification_id"];
+"customers" [shape=box, peripheries=1, fillcolor="#e8efff", label="customers
+PK: account_id"];
+"delivery_attempts" [shape=box, peripheries=1, fillcolor="#fff0f3", label="delivery_attempts
+PK: attempt_id"];
+"fulfillments" [shape=box, peripheries=1, fillcolor="#fff0f3", label="fulfillments
+PK: fulfillment_id"];
+"gift_cards" [shape=box, peripheries=1, fillcolor="#fff2e5", label="gift_cards
+PK: gift_card_id"];
+"goods_receipts" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="goods_receipts
+PK: receipt_id"];
+"inventory_adjustments" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="inventory_adjustments
+PK: adjustment_id"];
+"invoice_lines" [shape=box, peripheries=2, fillcolor="#f1eafa", label="invoice_lines
+PK: invoice_id, line_no"];
+"invoices" [shape=box, peripheries=1, fillcolor="#f1eafa", label="invoices
+PK: invoice_id"];
+"listings" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="listings
+PK: listing_id"];
+"order_lines" [shape=box, peripheries=2, fillcolor="#f1eafa", label="order_lines
+PK: order_id, line_no"];
+"order_status_events" [shape=box, peripheries=1, fillcolor="#f1eafa", label="order_status_events
+PK: event_id"];
+"orders" [shape=box, peripheries=1, fillcolor="#f1eafa", label="orders
+PK: order_id"];
+"packages" [shape=box, peripheries=1, fillcolor="#fff0f3", label="packages
+PK: package_id"];
+"payment_transactions" [shape=box, peripheries=1, fillcolor="#f1eafa", label="payment_transactions
+PK: transaction_id"];
+"payments" [shape=box, peripheries=1, fillcolor="#f1eafa", label="payments
+PK: payment_id"];
+"price_history" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="price_history
+PK: price_history_id"];
+"product_answers" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="product_answers
+PK: answer_id"];
+"product_documents" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="product_documents
+PK: document_id"];
+"product_images" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="product_images
+PK: image_id"];
+"product_questions" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="product_questions
+PK: question_id"];
+"products" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="products
+PK: product_id"];
+"promotions" [shape=box, peripheries=1, fillcolor="#fff2e5", label="promotions
+PK: promotion_id"];
+"proof_of_delivery" [shape=box, peripheries=1, fillcolor="#fff0f3", label="proof_of_delivery
+PK: proof_id"];
+"purchase_order_lines" [shape=box, peripheries=2, fillcolor="#e9f4f8", label="purchase_order_lines
+PK: purchase_order_id, line_no"];
+"purchase_orders" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="purchase_orders
+PK: purchase_order_id"];
+"refunds" [shape=box, peripheries=1, fillcolor="#f4f1e8", label="refunds
+PK: refund_id"];
+"return_inspections" [shape=box, peripheries=1, fillcolor="#f4f1e8", label="return_inspections
+PK: return_inspection_id"];
+"return_requests" [shape=box, peripheries=1, fillcolor="#f4f1e8", label="return_requests
+PK: return_id"];
+"review_images" [shape=box, peripheries=1, fillcolor="#fff2e5", label="review_images
+PK: review_image_id"];
+"reviews" [shape=box, peripheries=1, fillcolor="#fff2e5", label="reviews
+PK: review_id"];
+"seller_organizations" [shape=box, peripheries=1, fillcolor="#e8efff", label="seller_organizations
+PK: seller_id"];
+"seller_payout_accounts" [shape=box, peripheries=1, fillcolor="#e8efff", label="seller_payout_accounts
+PK: payout_account_id"];
+"seller_policies" [shape=box, peripheries=1, fillcolor="#e8efff", label="seller_policies
+PK: policy_id"];
+"seller_reviews" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="seller_reviews
+PK: seller_review_id"];
+"seller_verifications" [shape=box, peripheries=1, fillcolor="#e8efff", label="seller_verifications
+PK: verification_id"];
+"shipments" [shape=box, peripheries=1, fillcolor="#fff0f3", label="shipments
+PK: shipment_id"];
+"staff" [shape=box, peripheries=1, fillcolor="#e8efff", label="staff
+PK: account_id"];
+"stock_batches" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="stock_batches
+PK: batch_id"];
+"stock_movements" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="stock_movements
+PK: movement_id"];
+"storage_bins" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="storage_bins
+PK: bin_id"];
+"storage_zones" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="storage_zones
+PK: zone_id"];
+"suppliers" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="suppliers
+PK: supplier_id"];
+"support_tickets" [shape=box, peripheries=1, fillcolor="#f4f1e8", label="support_tickets
+PK: ticket_id"];
+"ticket_messages" [shape=box, peripheries=1, fillcolor="#f4f1e8", label="ticket_messages
+PK: message_id"];
+"tracking_events" [shape=box, peripheries=1, fillcolor="#fff0f3", label="tracking_events
+PK: tracking_event_id"];
+"variants" [shape=box, peripheries=1, fillcolor="#e9f7f0", label="variants
+PK: variant_id"];
+"warehouse_inspections" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="warehouse_inspections
+PK: inspection_id"];
+"warehouses" [shape=box, peripheries=1, fillcolor="#e9f4f8", label="warehouses
+PK: warehouse_id"];
+"wishlists" [shape=box, peripheries=1, fillcolor="#fff2e5", label="wishlists
+PK: wishlist_id"];
+"seller_staff" [shape=diamond, fillcolor="#fff4dd", label="works for
+assigned_at", tooltip="seller_staff"];
+"variant_values" [shape=diamond, fillcolor="#fff4dd", label="has attribute
+value", tooltip="variant_values"];
+"cart_lines" [shape=diamond, fillcolor="#fff4dd", label="contains
+quantity", tooltip="cart_lines"];
+"wishlist_items" [shape=diamond, fillcolor="#fff4dd", label="saves", tooltip="wishlist_items"];
+"stock_positions" [shape=diamond, fillcolor="#cceeff", label="STOCKS
+available_qty, reorder_point", tooltip="stock_positions"];
+"coupon_redemptions" [shape=diamond, fillcolor="#fff4dd", label="redeems", tooltip="coupon_redemptions"];
+"gift_card_uses" [shape=diamond, fillcolor="#fff4dd", label="applies card
+amount_cents", tooltip="gift_card_uses"];
+"stock_reservations" [shape=diamond, fillcolor="#f8d9ed", label="RESERVES
+quantity", tooltip="stock_reservations"];
+"fulfillment_lines" [shape=diamond, fillcolor="#fff4dd", label="includes line
+quantity", tooltip="fulfillment_lines"];
+"return_lines" [shape=diamond, fillcolor="#fff4dd", label="returns line
+quantity", tooltip="return_lines"];
+"goods_receipt_lines" [shape=diamond, fillcolor="#fff4dd", label="receives line
+received_qty", tooltip="goods_receipt_lines"];
+"isa_accounts" [shape=triangle, fillcolor="#f3e8ff", label="ISA"];
+"accounts" -- "isa_accounts";
+"isa_accounts" -- "couriers";
+"isa_accounts" -- "customers";
+"isa_accounts" -- "staff";
+subgraph cluster_aggregation { label="Aggregation: Seller × Variant × Warehouse STOCKS"; color="#af89b7"; style="rounded,dashed"; bgcolor="#fdf8ff"; "seller_organizations"; "variants"; "warehouses"; "stock_positions"; }
+"R001" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="saved by", tooltip="addresses.account_id → accounts"];
+"addresses" -- "R001" [taillabel="1..1"];
+"R001" -- "accounts" [headlabel="0..N"];
+"cart_lines" -- "carts";
+"cart_lines" -- "listings";
+"R002" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="owned by", tooltip="carts.customer_id → customers"];
+"carts" -- "R002" [taillabel="1..1"];
+"R002" -- "customers" [headlabel="0..1"];
+"R003" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="subcategory of", tooltip="categories.parent_id → categories"];
+"categories" -- "R003" [taillabel="0..1"];
+"R003" -- "categories" [headlabel="0..N"];
+"coupon_redemptions" -- "coupons";
+"coupon_redemptions" -- "customers";
+"coupon_redemptions" -- "orders";
+"R004" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="issued by", tooltip="coupons.promotion_id → promotions"];
+"coupons" -- "R004" [taillabel="1..1"];
+"R004" -- "promotions" [headlabel="0..N"];
+"R005" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="received by", tooltip="customer_notifications.customer_id → customers"];
+"customer_notifications" -- "R005" [taillabel="1..1"];
+"R005" -- "customers" [headlabel="0..N"];
+"R006" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="performed by", tooltip="delivery_attempts.courier_id → couriers"];
+"delivery_attempts" -- "R006" [taillabel="1..1"];
+"R006" -- "couriers" [headlabel="0..N"];
+"R007" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="attempts delivery of", tooltip="delivery_attempts.shipment_id → shipments"];
+"delivery_attempts" -- "R007" [taillabel="1..1"];
+"R007" -- "shipments" [headlabel="0..N"];
+"fulfillment_lines" -- "fulfillments";
+"fulfillment_lines" -- "order_lines";
+"R008" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="fulfills", tooltip="fulfillments.order_id → orders"];
+"fulfillments" -- "R008" [taillabel="1..1"];
+"R008" -- "orders" [headlabel="0..N"];
+"R009" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="handled by", tooltip="fulfillments.seller_id → seller_organizations"];
+"fulfillments" -- "R009" [taillabel="1..1"];
+"R009" -- "seller_organizations" [headlabel="0..N"];
+"R010" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="picked from", tooltip="fulfillments.warehouse_id → warehouses"];
+"fulfillments" -- "R010" [taillabel="1..1"];
+"R010" -- "warehouses" [headlabel="0..N"];
+"gift_card_uses" -- "gift_cards";
+"gift_card_uses" -- "orders";
+"R011" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="purchased by", tooltip="gift_cards.buyer_customer_id → customers"];
+"gift_cards" -- "R011" [taillabel="1..1"];
+"R011" -- "customers" [headlabel="0..N"];
+"goods_receipt_lines" -- "goods_receipts";
+"goods_receipt_lines" -- "purchase_order_lines";
+"R012" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="receives", tooltip="goods_receipts.purchase_order_id → purchase_orders"];
+"goods_receipts" -- "R012" [taillabel="1..1"];
+"R012" -- "purchase_orders" [headlabel="0..N"];
+"R013" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="authorized by", tooltip="inventory_adjustments.staff_id → staff"];
+"inventory_adjustments" -- "R013" [taillabel="1..1"];
+"R013" -- "staff" [headlabel="0..N"];
+"R014" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="adjusts", tooltip="inventory_adjustments.batch_id → stock_batches"];
+"inventory_adjustments" -- "R014" [taillabel="1..1"];
+"R014" -- "stock_batches" [headlabel="0..N"];
+"R015" [shape=diamond, peripheries=2, fillcolor="#f0f4fa", label="part of invoice", tooltip="invoice_lines.invoice_id → invoices"];
+"invoice_lines" -- "R015" [taillabel="1..1"];
+"R015" -- "invoices" [headlabel="0..N"];
+"R016" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="bills", tooltip="invoice_lines.order_id,order_line_no → order_lines"];
+"invoice_lines" -- "R016" [taillabel="1..1"];
+"R016" -- "order_lines" [headlabel="0..N"];
+"R017" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="issued for", tooltip="invoices.order_id → orders"];
+"invoices" -- "R017" [taillabel="1..1"];
+"R017" -- "orders" [headlabel="0..1"];
+"R018" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="offered by", tooltip="listings.seller_id → seller_organizations"];
+"listings" -- "R018" [taillabel="1..1"];
+"R018" -- "seller_organizations" [headlabel="0..N"];
+"R019" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="offers variant", tooltip="listings.variant_id → variants"];
+"listings" -- "R019" [taillabel="1..1"];
+"R019" -- "variants" [headlabel="0..N"];
+"R020" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="purchases listing", tooltip="order_lines.listing_id → listings"];
+"order_lines" -- "R020" [taillabel="1..1"];
+"R020" -- "listings" [headlabel="0..N"];
+"R021" [shape=diamond, peripheries=2, fillcolor="#f0f4fa", label="contains (identifying)", tooltip="order_lines.order_id → orders"];
+"order_lines" -- "R021" [taillabel="1..1"];
+"R021" -- "orders" [headlabel="0..N"];
+"R022" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="status of", tooltip="order_status_events.order_id → orders"];
+"order_status_events" -- "R022" [taillabel="1..1"];
+"R022" -- "orders" [headlabel="0..N"];
+"R023" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="shipped to", tooltip="orders.address_id → addresses"];
+"orders" -- "R023" [taillabel="1..1"];
+"R023" -- "addresses" [headlabel="0..N"];
+"R024" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="placed by", tooltip="orders.customer_id → customers"];
+"orders" -- "R024" [taillabel="1..1"];
+"R024" -- "customers" [headlabel="0..N"];
+"R025" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="packs", tooltip="packages.fulfillment_id → fulfillments"];
+"packages" -- "R025" [taillabel="1..1"];
+"R025" -- "fulfillments" [headlabel="0..N"];
+"R026" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="recorded under", tooltip="payment_transactions.payment_id → payments"];
+"payment_transactions" -- "R026" [taillabel="1..1"];
+"R026" -- "payments" [headlabel="0..N"];
+"R027" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="pays for", tooltip="payments.order_id → orders"];
+"payments" -- "R027" [taillabel="1..1"];
+"R027" -- "orders" [headlabel="0..1"];
+"R028" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="tracks price of", tooltip="price_history.listing_id → listings"];
+"price_history" -- "R028" [taillabel="1..1"];
+"R028" -- "listings" [headlabel="0..N"];
+"R029" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="answers", tooltip="product_answers.question_id → product_questions"];
+"product_answers" -- "R029" [taillabel="1..1"];
+"R029" -- "product_questions" [headlabel="0..N"];
+"R030" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="written by", tooltip="product_answers.staff_id → staff"];
+"product_answers" -- "R030" [taillabel="1..1"];
+"R030" -- "staff" [headlabel="0..N"];
+"R031" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="documents", tooltip="product_documents.product_id → products"];
+"product_documents" -- "R031" [taillabel="1..1"];
+"R031" -- "products" [headlabel="0..N"];
+"R032" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="depicts", tooltip="product_images.product_id → products"];
+"product_images" -- "R032" [taillabel="1..1"];
+"R032" -- "products" [headlabel="0..N"];
+"R033" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="asked by", tooltip="product_questions.customer_id → customers"];
+"product_questions" -- "R033" [taillabel="1..1"];
+"R033" -- "customers" [headlabel="0..N"];
+"R034" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="about product", tooltip="product_questions.product_id → products"];
+"product_questions" -- "R034" [taillabel="1..1"];
+"R034" -- "products" [headlabel="0..N"];
+"R035" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="branded as", tooltip="products.brand_id → brands"];
+"products" -- "R035" [taillabel="1..1"];
+"R035" -- "brands" [headlabel="0..N"];
+"R036" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="classified in", tooltip="products.category_id → categories"];
+"products" -- "R036" [taillabel="1..1"];
+"R036" -- "categories" [headlabel="0..N"];
+"R037" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="funded by", tooltip="promotions.seller_id → seller_organizations"];
+"promotions" -- "R037" [taillabel="1..1"];
+"R037" -- "seller_organizations" [headlabel="0..N"];
+"R038" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="proves", tooltip="proof_of_delivery.attempt_id → delivery_attempts"];
+"proof_of_delivery" -- "R038" [taillabel="1..1"];
+"R038" -- "delivery_attempts" [headlabel="0..1"];
+"R039" [shape=diamond, peripheries=2, fillcolor="#f0f4fa", label="contains (identifying)", tooltip="purchase_order_lines.purchase_order_id → purchase_orders"];
+"purchase_order_lines" -- "R039" [taillabel="1..1"];
+"R039" -- "purchase_orders" [headlabel="0..N"];
+"R040" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="orders variant", tooltip="purchase_order_lines.variant_id → variants"];
+"purchase_order_lines" -- "R040" [taillabel="1..1"];
+"R040" -- "variants" [headlabel="0..N"];
+"R041" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="sent to", tooltip="purchase_orders.supplier_id → suppliers"];
+"purchase_orders" -- "R041" [taillabel="1..1"];
+"R041" -- "suppliers" [headlabel="0..N"];
+"R042" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="delivered to", tooltip="purchase_orders.warehouse_id → warehouses"];
+"purchase_orders" -- "R042" [taillabel="1..1"];
+"R042" -- "warehouses" [headlabel="0..N"];
+"R043" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="refunded against", tooltip="refunds.payment_id → payments"];
+"refunds" -- "R043" [taillabel="1..1"];
+"R043" -- "payments" [headlabel="0..N"];
+"R044" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="resolves return", tooltip="refunds.return_id → return_requests"];
+"refunds" -- "R044" [taillabel="1..1"];
+"R044" -- "return_requests" [headlabel="0..N"];
+"R045" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="inspects return", tooltip="return_inspections.return_id → return_requests"];
+"return_inspections" -- "R045" [taillabel="1..1"];
+"R045" -- "return_requests" [headlabel="0..N"];
+"R046" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="performed by", tooltip="return_inspections.staff_id → staff"];
+"return_inspections" -- "R046" [taillabel="1..1"];
+"R046" -- "staff" [headlabel="0..N"];
+"return_lines" -- "order_lines";
+"return_lines" -- "return_requests";
+"R047" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="requested by", tooltip="return_requests.customer_id → customers"];
+"return_requests" -- "R047" [taillabel="1..1"];
+"R047" -- "customers" [headlabel="0..N"];
+"R048" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="for order", tooltip="return_requests.order_id → orders"];
+"return_requests" -- "R048" [taillabel="1..1"];
+"R048" -- "orders" [headlabel="0..N"];
+"R049" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="illustrates review", tooltip="review_images.review_id → reviews"];
+"review_images" -- "R049" [taillabel="1..1"];
+"R049" -- "reviews" [headlabel="0..N"];
+"R050" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="written by", tooltip="reviews.customer_id → customers"];
+"reviews" -- "R050" [taillabel="1..1"];
+"R050" -- "customers" [headlabel="0..N"];
+"R051" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="rates product", tooltip="reviews.product_id → products"];
+"reviews" -- "R051" [taillabel="1..1"];
+"R051" -- "products" [headlabel="0..N"];
+"R052" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="owned by", tooltip="seller_organizations.owner_account_id → accounts"];
+"seller_organizations" -- "R052" [taillabel="1..1"];
+"R052" -- "accounts" [headlabel="0..N"];
+"R053" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="belongs to seller", tooltip="seller_payout_accounts.seller_id → seller_organizations"];
+"seller_payout_accounts" -- "R053" [taillabel="1..1"];
+"R053" -- "seller_organizations" [headlabel="0..N"];
+"R054" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="defined by", tooltip="seller_policies.seller_id → seller_organizations"];
+"seller_policies" -- "R054" [taillabel="1..1"];
+"R054" -- "seller_organizations" [headlabel="0..N"];
+"R055" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="written by", tooltip="seller_reviews.customer_id → customers"];
+"seller_reviews" -- "R055" [taillabel="1..1"];
+"R055" -- "customers" [headlabel="0..N"];
+"R056" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="rates seller", tooltip="seller_reviews.seller_id → seller_organizations"];
+"seller_reviews" -- "R056" [taillabel="1..1"];
+"R056" -- "seller_organizations" [headlabel="0..N"];
+"seller_staff" -- "seller_organizations";
+"seller_staff" -- "staff";
+"R057" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="verifies seller", tooltip="seller_verifications.seller_id → seller_organizations"];
+"seller_verifications" -- "R057" [taillabel="1..1"];
+"R057" -- "seller_organizations" [headlabel="0..N"];
+"R058" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="checked by", tooltip="seller_verifications.checked_by → staff"];
+"seller_verifications" -- "R058" [taillabel="0..1"];
+"R058" -- "staff" [headlabel="0..N"];
+"R059" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="carried by", tooltip="shipments.carrier_id → carriers"];
+"shipments" -- "R059" [taillabel="1..1"];
+"R059" -- "carriers" [headlabel="0..N"];
+"R060" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="ships package", tooltip="shipments.package_id → packages"];
+"shipments" -- "R060" [taillabel="1..1"];
+"R060" -- "packages" [headlabel="0..1"];
+"R061" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="batch of stock", tooltip="stock_batches.seller_id,variant_id,warehouse_id → stock_positions"];
+"stock_batches" -- "R061" [taillabel="1..1"];
+"R061" -- "stock_positions" [headlabel="0..N"];
+"R062" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="stored in", tooltip="stock_batches.bin_id → storage_bins"];
+"stock_batches" -- "R062" [taillabel="1..1"];
+"R062" -- "storage_bins" [headlabel="0..N"];
+"R063" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="changes batch", tooltip="stock_movements.batch_id → stock_batches"];
+"stock_movements" -- "R063" [taillabel="1..1"];
+"R063" -- "stock_batches" [headlabel="0..N"];
+"stock_positions" -- "seller_organizations";
+"stock_positions" -- "variants";
+"stock_positions" -- "warehouses";
+"stock_reservations" -- "order_lines";
+"stock_reservations" -- "stock_positions";
+"R064" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="located in zone", tooltip="storage_bins.zone_id → storage_zones"];
+"storage_bins" -- "R064" [taillabel="1..1"];
+"R064" -- "storage_zones" [headlabel="0..N"];
+"R065" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="located in warehouse", tooltip="storage_zones.warehouse_id → warehouses"];
+"storage_zones" -- "R065" [taillabel="1..1"];
+"R065" -- "warehouses" [headlabel="0..N"];
+"R066" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="supplies seller", tooltip="suppliers.seller_id → seller_organizations"];
+"suppliers" -- "R066" [taillabel="1..1"];
+"R066" -- "seller_organizations" [headlabel="0..N"];
+"R067" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="opened by", tooltip="support_tickets.customer_id → customers"];
+"support_tickets" -- "R067" [taillabel="1..1"];
+"R067" -- "customers" [headlabel="0..N"];
+"R068" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="about order", tooltip="support_tickets.order_id → orders"];
+"support_tickets" -- "R068" [taillabel="0..1"];
+"R068" -- "orders" [headlabel="0..N"];
+"R069" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="authored by", tooltip="ticket_messages.author_account_id → accounts"];
+"ticket_messages" -- "R069" [taillabel="1..1"];
+"R069" -- "accounts" [headlabel="0..N"];
+"R070" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="message in", tooltip="ticket_messages.ticket_id → support_tickets"];
+"ticket_messages" -- "R070" [taillabel="1..1"];
+"R070" -- "support_tickets" [headlabel="0..N"];
+"R071" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="tracks shipment", tooltip="tracking_events.shipment_id → shipments"];
+"tracking_events" -- "R071" [taillabel="1..1"];
+"R071" -- "shipments" [headlabel="0..N"];
+"variant_values" -- "attributes";
+"variant_values" -- "variants";
+"R072" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="variant of", tooltip="variants.product_id → products"];
+"variants" -- "R072" [taillabel="1..1"];
+"R072" -- "products" [headlabel="0..N"];
+"R073" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="performed by", tooltip="warehouse_inspections.staff_id → staff"];
+"warehouse_inspections" -- "R073" [taillabel="1..1"];
+"R073" -- "staff" [headlabel="0..N"];
+"R074" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="inspects warehouse", tooltip="warehouse_inspections.warehouse_id → warehouses"];
+"warehouse_inspections" -- "R074" [taillabel="1..1"];
+"R074" -- "warehouses" [headlabel="0..N"];
+"wishlist_items" -- "listings";
+"wishlist_items" -- "wishlists";
+"R075" [shape=diamond, peripheries=1, fillcolor="#f0f4fa", label="owned by", tooltip="wishlists.customer_id → customers"];
+"wishlists" -- "R075" [taillabel="1..1"];
+"R075" -- "customers" [headlabel="0..N"];
+}
