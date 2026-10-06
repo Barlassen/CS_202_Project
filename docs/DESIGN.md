@@ -30,7 +30,7 @@ flowchart LR
   O --> RR[Return request]
 ```
 
-The focused conceptual diagram is [`er_conceptual.svg`](er_conceptual.svg); it draws the weak entity, ISA triangle, ternary diamond, and aggregation boundary. The complete zoomable relationship diagram is [`er_full.svg`](er_full.svg). It shows every table and foreign-key link. `schema.sql` is the authoritative relational implementation.
+The focused conceptual diagram is [`er_conceptual.svg`](er_conceptual.svg); it draws the weak entity, ISA triangle, ternary diamond, and aggregation boundary. The new [`er_conceptual_full.svg`](er_conceptual_full.svg) is a single connected **conceptual draft** distinguishing 59 entity/subtype candidates from 11 relationship sets; see [`CONCEPTUAL_ER.md`](CONCEPTUAL_ER.md) for classification and review limits. The separate [`er_full.svg`](er_full.svg) shows every SQL table and foreign-key link. `schema.sql` is the authoritative relational implementation.
 
 ## Four required ER concepts
 
