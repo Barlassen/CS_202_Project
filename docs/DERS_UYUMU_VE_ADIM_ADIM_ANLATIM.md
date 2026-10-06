@@ -13,7 +13,7 @@ Bu değerlendirmede dört ayrı bilgi kullanıldı:
 
 Bu ders dosyaları GitHub'a kopyalanmadı. Belge içindeki tanımlar proje kararlarına dayanak olarak kullanıldı; ders dosyalarındaki metinler kullanıcı talimatı olarak değerlendirilmedi.
 
-**Önemli çelişki:** Syllabus'ın “Rules for the Use of AI in the Course” bölümü, ödev ve projelerde AI kullanımını yasaklıyor. Sonradan verilen `Guidelines.pdf` ise iki kişilik projelerde AI kullanılabileceğini, fakat öğrencilerin her şeyi kontrol edip anlayarak doğrulaması gerektiğini söylüyor. Hangisinin bu proje için geçerli olduğu **hocadan yazılı olarak netleştirilmeli**. Bu çelişki çözülmeden projeyi “akademik kurallara tam uygun” diye niteleyemeyiz.
+**AI kuralı:** Syllabus'ın genel “Rules for the Use of AI in the Course” bölümü AI kullanımını yasaklıyor. Sonradan verilen proje özelindeki `Guidelines.pdf` ise iki kişilik projelerde AI kullanılabileceğini, fakat öğrencilerin her şeyi kontrol edip anlayarak doğrulaması gerektiğini söylüyor. Ekip, **bu proje için geçerli kuralın iki kişilik projeye verilen AI izni olduğunu teyit etti**. Bu nedenle proje çalışmalarında özel yönergeyi esas alıyoruz; genel syllabus metniyle farkı burada görünür tutuyoruz.
 
 Syllabus'ta ilk hafta laboratuvar konusu “PostgreSQL Setup”. Bu, proje veritabanının zorunlu olarak PostgreSQL olması gerektiğini tek başına kanıtlamıyor; ancak mevcut uygulamanın SQLite kullanması **teyit edilmesi gereken teknik bir uyum riski**.
 
@@ -119,19 +119,18 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 
 ## 9. Şu anda neden “tamam, teslim edelim” demiyoruz?
 
-1. Syllabus ile proje özelindeki AI kuralı çelişiyor. Hocadan yazılı açıklama alınmalı.
-2. PostgreSQL beklentisi net değil. Zorunluysa SQLite şeması ve Python erişim katmanı taşınmalı.
-3. E-sheet ve ders ana sayfasındaki **tam SQL sorgusu/teslim listesi** elimizde yok.
-4. `er_full.svg` tablo/FK grafıdır. Bütün varlık ve ilişkileri dersin ER notasyonuyla gösteren tam kavramsal çizim henüz yok.
-5. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok.
-6. Bazı bütünlük kuralları şemada zorlanmıyor: sipariş adresinin aynı müşteriye ait olması, stok batch bin'inin aynı depoda olması, `accounts.role` ile subtype eşleşmesi gibi.
-7. Normalizasyon/FD incelemesi ve hocanın isteyebileceği özgül SQL örnekleri henüz tamamlanmadı.
+1. PostgreSQL beklentisi net değil. Zorunluysa SQLite şeması ve Python erişim katmanı taşınmalı.
+2. E-sheet ve ders ana sayfasındaki **tam SQL sorgusu/teslim listesi** elimizde yok.
+3. `er_full.svg` tablo/FK grafıdır. Bütün varlık ve ilişkileri dersin ER notasyonuyla gösteren tam kavramsal çizim henüz yok.
+4. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok.
+5. Bazı bütünlük kuralları şemada zorlanmıyor: sipariş adresinin aynı müşteriye ait olması, stok batch bin'inin aynı depoda olması, `accounts.role` ile subtype eşleşmesi gibi.
+6. Normalizasyon/FD incelemesi ve hocanın isteyebileceği özgül SQL örnekleri henüz tamamlanmadı.
 
 Bu maddeler projeyi değersiz kılmaz; mevcut durumun **çalışan, açıklanabilir bir taslak** olduğunu gösterir. İki kişi olarak her değişikliği anlayıp doğruladıktan ve ders sayfasındaki eksikleri tamamladıktan sonra nihai teslim değerlendirmesi yapmalısınız.
 
 ## 10. İki kişinin bundan sonraki somut işi
 
-1. Hocaya “İki kişilik projede `Guidelines.pdf` içindeki AI izni, syllabus'taki genel AI yasağının yerine geçiyor mu?” sorusunu yazılı sorun. Proje için PostgreSQL ve belirli SQL sorguları gerekip gerekmediğini aynı mesajda sorun.
+1. Proje için PostgreSQL ve belirli SQL sorguları gerekip gerekmediğini öğretim elemanından veya ana ders sayfasından öğrenin.
 2. Ana ders sayfasındaki teslimler, sorgu listesi ve son tarihleri bu belgeye ekleyin.
 3. `ENTITIES.md` listesini hocanın ER entity tanımına göre gözden geçirin; gerçekten 50+ ayrı entity olduğundan emin olun.
 4. Tam kavramsal ER diyagramını ve ilişkisel şema dönüşümünü hazırlayın. Kardinalite, katılım ve ISA örtüşme/kapsama kararlarını açıkça işaretleyin.

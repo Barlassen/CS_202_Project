@@ -4,7 +4,7 @@
 
 MarketLab is a local, database-backed web demo for a multi-vendor marketplace. It has a **70-table connected SQLite relational model**, a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The code uses Python's standard library only; there is no package installation, external API, or GitHub dependency.
 
-**Course-fit status:** This is a working draft. Read [`docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md`](docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md) before treating it as a submission. The course syllabus's general AI ban conflicts with the later two-person project guideline's AI allowance. PostgreSQL and the exact required SQL queries also need confirmation.
+**Course-fit status:** This is a working draft. Read [`docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md`](docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md) before treating it as a submission. The team confirmed that the project-specific AI allowance applies to two-person projects; all generated work must still be checked and understood. PostgreSQL and the exact required SQL queries still need confirmation.
 
 ## Run
 
