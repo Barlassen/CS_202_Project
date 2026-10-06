@@ -51,7 +51,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 3. `docs/er_conceptual.svg`: dört zorunlu ER kavramının küçük kavramsal şeması; `docs/er_conceptual_full.svg` ve `docs/CONCEPTUAL_ER.md`: 59 varlık/alt tür adayı ile 11 ilişki kümesini ayıran tam kavramsal **taslak**.
 4. `docs/DESIGN.md`: model kararları ve kardinaliteler.
 5. `schema.sql`: gerçek tablo, PK, FK, `CHECK`, `UNIQUE` tanımları.
-6. `docs/ENTITIES.md`: 70 nesnenin anlamı ve anahtarı.
+6. `docs/ENTITIES.md`: 59 kavramsal varlık/alt tür adayının anlamı ve anahtarı; 11 ilişki kümesi `docs/CONCEPTUAL_ER.md` içinde.
 7. `docs/RELATIONSHIPS.md` ve `docs/FOREIGN_KEYS.md`: iş ilişkileri ve bütün FK eşleşmeleri.
 8. `app.py`: web akışları ve SQL kodu.
 9. `docs/SQL_QUERIES.md`: kullanılan sorguların neyi hesapladığı.
