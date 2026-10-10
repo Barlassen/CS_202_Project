@@ -1,0 +1,9 @@
+{
+  "name": "marketlab-er-render",
+  "private": true,
+  "type": "module",
+  "description": "Renders the generated Graphviz DOT files to SVG without a system Graphviz install.",
+  "dependencies": {
+    "@viz-js/viz": "3.30.0"
+  }
+}

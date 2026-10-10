@@ -68,11 +68,15 @@ Teslim edilen siparişin bir kalemi için müşteri iade açabilir. Sistem daha 
 
 **Low stock**, stok konumunun `available_qty` değerini aynı üçlünün `reorder_point` değeriyle karşılaştırır. **Top products** satılan adetleri toplar. **Return requests** durum başına sayım yapar. Gerçek SQL metinleri `SQL_QUERIES.md` içindedir.
 
-## 7. Neden 70 tablo var?
+## 7. Kaç entity var, nasıl sayıyoruz?
 
-Yönerge iki kişilik proje için en az 50 **entity** istiyor; duyuru da yaklaşık 50–100 tablo hedefi veriyor. Şemada 70 tablo ve 102 yabancı anahtar bağlantısı var. Bazı tablolar (`seller_staff`, `stock_reservations` gibi) aslında ilişki tablosudur; bu yüzden 70 tablonun hepsini kavramsal entity diye saymıyoruz. En muhafazakâr listemizde 11 ilişki tablosunu çıkardıktan sonra 59 adlandırılmış entity/alt tür kalıyor. Hoca bazı nesneleri attribute olarak yorumlayabilir; teslimden önce kavramsal modelinizi dersin ER notasyonuna göre gözden geçirin.
+Yönerge iki kişilik proje için en az 50 **entity** istiyor. Kavramsal modelde 71 entity kümesi ve 103 ilişki kümesi var. Şemada 83 tablo bulunuyor, ama bunların 12'si ilişki tablosu (`seller_staff`, `stock_reservations` gibi) ve entity olarak sayılmıyor.
 
-Alanlar: kimlik/satıcı, katalog, alışveriş/kampanya, stok/tedarik, sipariş/ödeme, gönderi, iade/destek. Şemadaki her nesnenin tanımı ve anahtarı `ENTITIES.md` dosyasında. Tabloların hepsi yabancı anahtar grafiğinde aynı bağlı bileşene ulaşıyor.
+Sonradan eklenen 12 entity şunlar: Countries, Cities, Delivery_Zones, Pickup_Points, Tax_Rates, Departments, Loyalty_Tiers, Vehicles, Commission_Plans, Seller_Payouts, Payment_Methods, Carrier_Services. Her birinin kendi attribute'ları ve en az bir ilişkisi var. Carrier_Services ikinci bir weak entity örneği: servis kodu (STD, EXP) yalnızca kendi kargo şirketi içinde benzersiz.
+
+Bazı entity'ler ilk bakışta attribute gibi görünebilir: ürün resimleri, fiyat geçmişi, sipariş durum geçmişi gibi. `docs/REPORT.md` bunların her biri için gerekçe veriyor. Gerekçe slayttaki kurala dayanıyor: bir varlıkta aynı şeyden birden çok olabiliyorsa o şey attribute olamaz, çünkü attribute tek değerlidir.
+
+Alanlar: kişiler/satıcılar, konum/vergi, katalog, alışveriş/kampanya, stok/tedarik, sipariş/ödeme, gönderi, iade/destek. `python3 tools/build_er.py --check` sayıyı ve tek parça olmayı her seferinde yeniden doğrular.
 
 ## 8. Şu anda ne tamam, ne tamam değil?
 

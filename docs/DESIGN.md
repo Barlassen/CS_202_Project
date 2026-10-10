@@ -4,7 +4,7 @@
 
 The system coordinates a marketplace with independent sellers. A customer buys listings; a listing is a seller's offer of a product variant. Warehouses may hold stock for multiple sellers. One order may contain lines from different sellers and be split across warehouses, so fulfillment and shipment are separate from the order. A delivered order can lead to a return and simulated refund.
 
-The full model has 70 SQL tables. The table list includes strong entities, weak entities, subtype tables, and relationship tables. The number is not used as proof of the ER entity count: even after excluding relationship-only tables (`seller_staff`, `variant_values`, `cart_lines`, `wishlist_items`, `stock_positions`, `coupon_redemptions`, `gift_card_uses`, `stock_reservations`, `fulfillment_lines`, `return_lines`, and `goods_receipt_lines`), **59 named entity/subtype sets remain**. Some of those might be debated as attributes in a different ER modeling style, so review the conceptual classification with the instructor before submission.
+The conceptual ER model, its diagrams and the two-part report are in [`REPORT.md`](REPORT.md) and [`er/`](er/). This file covers the implementation decisions behind `schema.sql` and `app.py`.
 
 ## Main path
 
@@ -30,14 +30,7 @@ flowchart LR
   O --> RR[Return request]
 ```
 
-The focused conceptual diagram is [`er_conceptual.svg`](er_conceptual.svg); it draws the weak entity, ISA triangle, ternary diamond, and aggregation boundary. The new [`er_conceptual_full.svg`](er_conceptual_full.svg) is a single connected **conceptual draft** distinguishing 59 entity/subtype candidates from 11 relationship sets; see [`CONCEPTUAL_ER.md`](CONCEPTUAL_ER.md) for classification and review limits. The separate [`er_full.svg`](er_full.svg) shows every SQL table and foreign-key link. `schema.sql` is the authoritative relational implementation.
-
-## Four required ER concepts
-
-1. **Weak entity:** `order_lines` depends on `orders`. `line_no` is only a partial key; `(order_id, line_no)` is its full key. An order line cannot exist without its order.
-2. **ISA / specialization:** `accounts` specializes into `customers`, `staff`, and `couriers`. Each subtype reuses `account_id` as both primary and foreign key. The `role` field is a discriminator. In this prototype these roles are disjoint, enforced by application convention; a future version could add triggers to enforce the role/subtype match at database level.
-3. **Ternary relationship:** `stock_positions` represents **Seller × Variant × Warehouse**. Its three-column primary key means a seller can stock a variant at a warehouse once, with `available_qty` and `reorder_point` as attributes of that particular combination. Three independent binary relationships would lose which seller's variant is at which warehouse.
-4. **Aggregation:** Treat the ternary stock relationship as a single higher-level object. `stock_reservations` relates an `order_line` to that exact seller–variant–warehouse stock position and records the reserved quantity. This is the relational representation of a relationship participating in another relationship. In the conceptual diagram, draw a box around the ternary `stocks` relationship, then connect `reserves` from `OrderLine` to that box.
+This sketch only shows the main business path. It is not drawn in ER notation; the ER diagrams are in [`er/`](er/), and the four required concepts are explained in [`REPORT.md`](REPORT.md).
 
 ## Cardinality decisions
 
@@ -54,4 +47,5 @@ The focused conceptual diagram is [`er_conceptual.svg`](er_conceptual.svg); it d
 - Checkout uses `BEGIN IMMEDIATE`, verifies all cart quantities, allocates positions, decreases stock positions and batches, writes stock movements, inserts order/payment/invoice rows, clears the cart, then commits. Any failure rolls everything back.
 - Fulfillment and delivery each update status and insert history in a single transaction. A second attempt on an already advanced order is rejected.
 - The demo holds money as integer cents to avoid floating-point rounding in SQL.
+- `accounts.role` must match the subtype table: triggers on `customers`, `staff` and `couriers` reject a mismatching row, which enforces the no-overlap rule of the ISA hierarchy.
 - The schema models gift cards, coupons, purchase orders, inspections, and support, but the current web interface does not execute those workflows.

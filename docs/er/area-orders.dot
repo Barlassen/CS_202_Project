@@ -1,0 +1,184 @@
+digraph ER {
+graph [compound=true, rankdir=TB, newrank=true, nodesep=0.22, ranksep=0.42, fontname="Helvetica", fontsize=22, labelloc=t, label="MarketLab — Orders and payment", pad=0.3];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+E_addresses [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Addresses
+(Locations and tax)"];
+E_coupons [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Coupons
+(Shopping and marketing)"];
+E_customers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Customers
+(People and sellers)"];
+E_fulfillments [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Fulfillments
+(Fulfilment and delivery)"];
+E_gift_cards [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Gift_Cards
+(Shopping and marketing)"];
+E_invoice_lines [shape=box, penwidth=3, label="Invoice_Lines"];
+P__invoice_lines__line_no [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>line_no</U>>];
+P__invoice_lines__line_no -> E_invoice_lines [dir=none];
+A__invoice_lines__amount_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="amount_cents"];
+A__invoice_lines__amount_cents -> E_invoice_lines [dir=none];
+E_invoices [shape=box, penwidth=1, label="Invoices"];
+A__invoices__invoice_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>invoice_id</U>>];
+A__invoices__invoice_id -> E_invoices [dir=none];
+A__invoices__issued_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="issued_at"];
+A__invoices__issued_at -> E_invoices [dir=none];
+A__invoices__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="total_cents"];
+A__invoices__total_cents -> E_invoices [dir=none];
+E_listings [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Listings
+(Catalogue)"];
+E_order_lines [shape=box, penwidth=3, label="Order_Lines"];
+P__order_lines__line_no [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>line_no</U>>];
+P__order_lines__line_no -> E_order_lines [dir=none];
+A__order_lines__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
+A__order_lines__quantity -> E_order_lines [dir=none];
+A__order_lines__unit_price_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="unit_price_cents"];
+A__order_lines__unit_price_cents -> E_order_lines [dir=none];
+E_order_status_events [shape=box, penwidth=1, label="Order_Status_Events"];
+A__order_status_events__event_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>event_id</U>>];
+A__order_status_events__event_id -> E_order_status_events [dir=none];
+A__order_status_events__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__order_status_events__status -> E_order_status_events [dir=none];
+A__order_status_events__event_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="event_at"];
+A__order_status_events__event_at -> E_order_status_events [dir=none];
+E_orders [shape=box, penwidth=1, label="Orders"];
+A__orders__order_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>order_id</U>>];
+A__orders__order_id -> E_orders [dir=none];
+A__orders__placed_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="placed_at"];
+A__orders__placed_at -> E_orders [dir=none];
+A__orders__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__orders__status -> E_orders [dir=none];
+A__orders__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="total_cents"];
+A__orders__total_cents -> E_orders [dir=none];
+E_payment_methods [shape=box, penwidth=1, label="Payment_Methods"];
+A__payment_methods__payment_method_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>payment_method_id</U>>];
+A__payment_methods__payment_method_id -> E_payment_methods [dir=none];
+A__payment_methods__method_type [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="method_type"];
+A__payment_methods__method_type -> E_payment_methods [dir=none];
+A__payment_methods__masked_number [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="masked_number"];
+A__payment_methods__masked_number -> E_payment_methods [dir=none];
+A__payment_methods__expires_on [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="expires_on"];
+A__payment_methods__expires_on -> E_payment_methods [dir=none];
+E_payment_transactions [shape=box, penwidth=1, label="Payment_Transactions"];
+A__payment_transactions__transaction_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>transaction_id</U>>];
+A__payment_transactions__transaction_id -> E_payment_transactions [dir=none];
+A__payment_transactions__kind [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="kind"];
+A__payment_transactions__kind -> E_payment_transactions [dir=none];
+A__payment_transactions__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__payment_transactions__status -> E_payment_transactions [dir=none];
+A__payment_transactions__amount_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="amount_cents"];
+A__payment_transactions__amount_cents -> E_payment_transactions [dir=none];
+A__payment_transactions__created_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="created_at"];
+A__payment_transactions__created_at -> E_payment_transactions [dir=none];
+E_payments [shape=box, penwidth=1, label="Payments"];
+A__payments__payment_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>payment_id</U>>];
+A__payments__payment_id -> E_payments [dir=none];
+A__payments__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__payments__status -> E_payments [dir=none];
+A__payments__amount_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="amount_cents"];
+A__payments__amount_cents -> E_payments [dir=none];
+E_pickup_points [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Pickup_Points
+(Locations and tax)"];
+E_refunds [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Refunds
+(After-sales and support)"];
+E_return_requests [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Return_Requests
+(After-sales and support)"];
+E_support_tickets [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Support_Tickets
+(After-sales and support)"];
+E_tax_rates [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Tax_Rates
+(Locations and tax)"];
+subgraph cluster_agg { style=dashed; color="#222222"; penwidth=1.4; margin=14; label="Aggregation: Stocks"; fontsize=12; labeljust=l;
+E_seller_organizations [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Seller_Organizations
+(People and sellers)"];
+E_variants [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Variants
+(Catalogue)"];
+E_warehouses [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Warehouses
+(Inventory and procurement)"];
+R98 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Stocks"];
+RA98__available_qty [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="available_qty"];
+RA98__available_qty -> R98 [dir=none];
+RA98__reorder_point [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="reorder_point"];
+RA98__reorder_point -> R98 [dir=none];
+E_seller_organizations -> R98 [dir=none];
+R98 -> E_variants [dir=none];
+R98 -> E_warehouses [dir=none];
+}
+R57 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Collect_At"];
+E_orders -> R57 [dir=forward, arrowhead=normal];
+R57 -> E_pickup_points [dir=none];
+R58 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Ships_To"];
+E_orders -> R58 [dir=forward, arrowhead=normal, penwidth=3];
+R58 -> E_addresses [dir=none];
+R59 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Places"];
+E_orders -> R59 [dir=forward, arrowhead=normal, penwidth=3];
+R59 -> E_customers [dir=none];
+R60 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Buys"];
+E_order_lines -> R60 [dir=forward, arrowhead=normal, penwidth=3];
+R60 -> E_listings [dir=none];
+R61 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Contains"];
+E_order_lines -> R61 [dir=forward, arrowhead=normal, penwidth=3];
+R61 -> E_orders [dir=none, penwidth=3];
+R62 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Status_Of"];
+E_order_status_events -> R62 [dir=forward, arrowhead=normal, penwidth=3];
+R62 -> E_orders [dir=none];
+R63 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Saves_Method"];
+E_payment_methods -> R63 [dir=forward, arrowhead=normal, penwidth=3];
+R63 -> E_customers [dir=none];
+R64 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Uses_Method"];
+E_payments -> R64 [dir=forward, arrowhead=normal, penwidth=3];
+R64 -> E_payment_methods [dir=none];
+R65 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Paid_By"];
+E_payments -> R65 [dir=forward, arrowhead=normal, penwidth=3];
+R65 -> E_orders [dir=back, arrowtail=normal];
+R66 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Transaction_Of"];
+E_payment_transactions -> R66 [dir=forward, arrowhead=normal, penwidth=3];
+R66 -> E_payments [dir=none];
+R67 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Invoiced_As"];
+E_invoices -> R67 [dir=forward, arrowhead=normal, penwidth=3];
+R67 -> E_orders [dir=back, arrowtail=normal];
+R68 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Bills"];
+E_invoice_lines -> R68 [dir=forward, arrowhead=normal, penwidth=3];
+R68 -> E_order_lines [dir=none];
+R69 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Taxed_At"];
+E_invoice_lines -> R69 [dir=forward, arrowhead=normal];
+R69 -> E_tax_rates [dir=none];
+R70 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Invoice_Has_Line"];
+E_invoice_lines -> R70 [dir=forward, arrowhead=normal, penwidth=3];
+R70 -> E_invoices [dir=none, penwidth=3];
+R73 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Fulfills"];
+E_fulfillments -> R73 [dir=forward, arrowhead=normal, penwidth=3];
+R73 -> E_orders [dir=none];
+R82 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Return_Of"];
+E_return_requests -> R82 [dir=forward, arrowhead=normal, penwidth=3];
+R82 -> E_orders [dir=none];
+R83 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Refunded_From"];
+E_refunds -> R83 [dir=forward, arrowhead=normal, penwidth=3];
+R83 -> E_payments [dir=none];
+R87 [shape=diamond, penwidth=1, margin="0.02,0.02", label="About_Order"];
+E_support_tickets -> R87 [dir=forward, arrowhead=normal];
+R87 -> E_orders [dir=none];
+R96 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Redeems"];
+RA96__redeemed_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="redeemed_at"];
+RA96__redeemed_at -> R96 [dir=none];
+E_coupons -> R96 [dir=none];
+R96 -> E_orders [dir=none];
+R97 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Pays_With"];
+RA97__amount_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="amount_cents"];
+RA97__amount_cents -> R97 [dir=none];
+E_gift_cards -> R97 [dir=none];
+R97 -> E_orders [dir=none];
+R100 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Reserves"];
+RA100__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
+RA100__quantity -> R100 [dir=none];
+E_order_lines -> R100 [dir=none];
+R100 -> R98 [dir=none, lhead=cluster_agg, penwidth=1];
+R101 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Includes"];
+RA101__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
+RA101__quantity -> R101 [dir=none];
+E_fulfillments -> R101 [dir=none];
+R101 -> E_order_lines [dir=none];
+R102 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Returns"];
+RA102__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
+RA102__quantity -> R102 [dir=none];
+E_return_requests -> R102 [dir=none];
+R102 -> E_order_lines [dir=none];
+}

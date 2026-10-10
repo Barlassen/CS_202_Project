@@ -2,9 +2,11 @@
 
 **Proposed e-sheet title:** Multi-Vendor Marketplace and Order Fulfillment Management System
 
-MarketLab is a local, database-backed web demo for a multi-vendor marketplace. It has a **70-table connected SQLite relational model**, a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The code uses Python's standard library only; there is no package installation, external API, or GitHub dependency.
+MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **71 entity sets and 103 relationship sets** in one connected diagram, implemented as an **83-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The code uses Python's standard library only; there is no package installation, external API, or GitHub dependency.
 
 **Course-fit status:** This is a working draft. Read [`docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md`](docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md) before treating it as a submission. The team confirmed that the project-specific AI allowance applies to two-person projects; all generated work must still be checked and understood. PostgreSQL and the exact required SQL queries still need confirmation.
+
+**ER design (Part 1 deliverable):** [`docs/REPORT.md`](docs/REPORT.md) starts with the guideline checklist and the four required concepts, followed by Part 1 (every entity) and Part 2 (every relationship). The diagrams in [`docs/er/`](docs/er/) use the notation of the course slides.
 
 ## Run
 
@@ -30,23 +32,31 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 
 | File | Purpose |
 | --- | --- |
-| `schema.sql` | All 70 tables, keys, constraints, and foreign keys |
+| `schema.sql` | All 83 tables, keys, constraints, foreign keys and ISA triggers |
 | `seed.py` | Repeatable initial sample data |
 | `app.py` | HTTP routes, SQL queries, and transaction logic |
 | `static/style.css` | Responsive interface styling |
-| `docs/DESIGN.md` | Conceptual ER design and the four required concepts |
-| `docs/ENTITIES.md` | Part 1 of report: every entity and its key |
-| `docs/RELATIONSHIPS.md` | Part 2 of report: relationship meanings and cardinalities |
-| `docs/REPORT.md` | Combined two-part draft report for submission review |
-| `docs/FOREIGN_KEYS.md` | Exact list of all 102 foreign-key relationships |
+| `tools/er_model.py` | The conceptual ER model: which table is an entity or a relationship, names, explanations, weak entities, ISA, aggregation |
+| `tools/build_er.py` | Checks the model against `schema.sql` and the guidelines, then generates the diagrams and the report |
+| `docs/REPORT.md` | Generated report: guideline checklist, the four concepts, Part 1 entities, Part 2 relationships |
+| `docs/er/full.svg` | Generated complete ER diagram (large; zoom in) |
+| `docs/er/area-*.svg` | Generated ER diagram per business area |
+| `docs/er/legend.svg` | The notation used in the diagrams |
+| `docs/DESIGN.md` | Implementation decisions: cardinalities, transactions, integrity rules |
 | `docs/SQL_QUERIES.md` | Query explanations and SQL examples |
 | `docs/ANLATIM_TR.md` | Step-by-step Turkish explanation and oral-exam questions |
 | `docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md` | Detailed Turkish course comparison, walkthrough, and remaining work |
-| `docs/er_full.svg` | Zoomable full relational relationship diagram |
-| `docs/er_conceptual.svg` | Diagram of the four required ER concepts |
-| `docs/er_conceptual_full.svg` | Complete connected conceptual ER **draft**: 59 entity candidates and 11 relationship sets |
-| `docs/CONCEPTUAL_ER.md` | Conceptual classification, notation, and review checklist |
 | `tests/test_workflow.py` | End-to-end database workflow checks |
+
+## Regenerate the ER diagrams and report
+
+Edit `tools/er_model.py` or `schema.sql`, never the generated files. Then:
+
+```bash
+python3 tools/build_er.py --check     # model vs schema + guideline checks only
+cd tools/render && npm install && cd ../..   # once, for SVG rendering (Graphviz as WebAssembly)
+python3 tools/build_er.py             # checks, DOT, SVG and docs/REPORT.md
+```
 
 ## What is implemented, and what remains
 

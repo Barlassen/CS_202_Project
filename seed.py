@@ -18,24 +18,37 @@ def initialize(path: Path | None = None) -> Path:
         exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='accounts'").fetchone()
         if exists:
             count = db.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone()[0]
-            if count != 70:
-                raise RuntimeError(f"Existing database has {count} tables; expected 70. Back it up and recreate it.")
+            if count != 83:
+                raise RuntimeError(f"Existing database has {count} tables; expected 83. Back it up and recreate it.")
             return path
         db.executescript((ROOT / "schema.sql").read_text())
         db.executescript("""
+        INSERT INTO countries VALUES ('TR','Türkiye');
+        INSERT INTO cities VALUES (1,'TR','Istanbul'),(2,'TR','Ankara');
+        INSERT INTO delivery_zones VALUES (1,1,'Kadıköy'),(2,2,'Çankaya');
+        INSERT INTO pickup_points VALUES (1,1,'Kadıköy Locker','08:00-22:00');
+        INSERT INTO tax_rates VALUES (1,'TR','Standard VAT',20),(2,'TR','Reduced VAT',10);
+        INSERT INTO loyalty_tiers VALUES (1,'Bronze',0,0),(2,'Silver',500,5);
+        INSERT INTO departments(department_id,name,budget_cents) VALUES
+          (1,'Seller Operations',5000000),(2,'Warehouse Operations',8000000);
+        INSERT INTO vehicles VALUES (1,'BIKE-01','bicycle',20);
+        INSERT INTO commission_plans VALUES (1,'Standard',12.5),(2,'Premium',9.0);
         INSERT INTO accounts VALUES
           (1,'customer@example.test','Deniz Yılmaz','customer'),
           (2,'tech@example.test','Ece Demir','staff'),
           (3,'home@example.test','Mert Kaya','staff'),
           (4,'courier@example.test','Aslı Çelik','courier');
-        INSERT INTO customers(account_id) VALUES (1);
-        INSERT INTO staff VALUES (2,'Store manager'),(3,'Store manager');
-        INSERT INTO couriers VALUES (4,'Bicycle');
+        INSERT INTO customers(account_id,tier_id) VALUES (1,1);
+        INSERT INTO staff VALUES (2,'Store manager',1),(3,'Store manager',2);
+        UPDATE departments SET manager_id=department_id+1;
+        INSERT INTO couriers VALUES (4,'TR-34-0001',1);
+        INSERT INTO courier_zones(courier_id,delivery_zone_id) VALUES (4,1);
+        INSERT INTO payment_methods VALUES (1,1,'card','**** **** **** 4242','2029-12');
         INSERT INTO seller_organizations VALUES
-          (1,'Nova Teknoloji',2),(2,'Ev & Yaşam',3);
+          (1,'Nova Teknoloji',2,1),(2,'Ev & Yaşam',3,2);
         INSERT INTO seller_staff(seller_id,staff_account_id) VALUES (1,2),(2,3);
         INSERT INTO addresses VALUES
-          (1,1,'Home','Istanbul','Örnek Sokak 12','34000');
+          (1,1,1,'Home','Örnek Sokak 12','34000');
         INSERT INTO seller_verifications(seller_id,status,checked_by) VALUES
           (1,'approved',2),(2,'approved',3);
         INSERT INTO categories(category_id,name) VALUES
@@ -62,8 +75,8 @@ def initialize(path: Path | None = None) -> Path:
           (5,2,5,44900,1),(6,2,6,29900,1);
         INSERT INTO carts(customer_id) VALUES (1);
         INSERT INTO wishlists(customer_id,name) VALUES (1,'Favorites');
-        INSERT INTO warehouses VALUES (1,'Istanbul Fulfillment Center','Istanbul'),
-                                      (2,'Ankara Fulfillment Center','Ankara');
+        INSERT INTO warehouses VALUES (1,'Istanbul Fulfillment Center',1),
+                                      (2,'Ankara Fulfillment Center',2);
         INSERT INTO storage_zones VALUES (1,1,'A'),(2,2,'A');
         INSERT INTO storage_bins VALUES (1,1,'A-01'),(2,2,'A-01');
         INSERT INTO stock_positions VALUES
@@ -75,6 +88,7 @@ def initialize(path: Path | None = None) -> Path:
           (3,2,3,2,2,20),(4,2,4,2,2,6),
           (5,2,5,2,2,9),(6,2,6,2,2,16);
         INSERT INTO carriers VALUES (1,'Demo Carrier');
+        INSERT INTO carrier_services VALUES (1,'STD','Standard',3),(1,'EXP','Express',1);
         INSERT INTO suppliers(seller_id,name,contact_email) VALUES
           (1,'Nova Wholesale','supply@nova.example.test'),
           (2,'Home Goods Supply','supply@home.example.test');

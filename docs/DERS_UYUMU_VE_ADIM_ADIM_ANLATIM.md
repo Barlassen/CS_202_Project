@@ -42,22 +42,24 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 
 **Teknik yapı:** `app.py` Python standart kütüphanesindeki HTTP sunucusuyla yerel web uygulamasını çalıştırır. `sqlite3` üzerinden `marketplace.db` dosyasına bağlanır. `schema.sql` tablo ve kısıtları tanımlar. `seed.py` ilk açılışta iki satıcı, bir demo müşteri, altı ürün, iki depo ve stokları ekler. Gerçek kullanıcı girişi, ödeme kuruluşu veya kargo servisi bağlantısı yoktur.
 
-**Kapsam:** SQL şemasında 70 tablo ve 102 yabancı anahtar bağı vardır. `tools/generate_design_artifacts.py` grafı denetleyip tek bağlı bileşen olduğunu doğrular. Ancak “70 tablo = 70 entity” demiyoruz. `seller_staff`, `variant_values`, `cart_lines`, `wishlist_items`, `stock_positions`, `coupon_redemptions`, `gift_card_uses`, `stock_reservations`, `fulfillment_lines`, `return_lines` ve `goods_receipt_lines` açıkça ilişki/bağlayıcı tablolardır. Bunları çıkarınca bizim sınıflandırmamıza göre 59 entity/alt tür kalır. Hoca bazılarını attribute veya farklı türde ilişki sayabilir; **50 entity eşiğinin kavramsal model üzerinde hoca tarafından doğrulanması gerekir**.
+**Kapsam:** Kavramsal modelde **71 entity kümesi** ve **103 ilişki kümesi** var. Bunlara bir ISA hiyerarşisi de ekleniyor. SQL şemasında 83 tablo bulunuyor: 71'i entity, 12'si ilişki tablosu (`seller_staff`, `courier_zones`, `variant_values`, `cart_lines`, `wishlist_items`, `coupon_redemptions`, `gift_card_uses`, `stock_positions`, `goods_receipt_lines`, `stock_reservations`, `fulfillment_lines`, `return_lines`). Diğer ilişkiler bir entity tablosundaki yabancı anahtarla uygulanıyor.
+
+Model `tools/er_model.py` dosyasında yazılı. `python3 tools/build_er.py` bu modeli `schema.sql` ile karşılaştırıyor ve yönergenin 1–4. maddelerini otomatik denetliyor: entity sayısı, tek bağlı bileşen, dört zorunlu kavram, her entity'nin anahtarı. Ardından diyagramları ve raporu üretiyor. Hocanın şüpheyle bakabileceği yaklaşık 13 entity için (resimler, durum geçmişi gibi) raporda "neden entity" gerekçesi yazıyor. Bu gerekçe slayttaki *Entity vs. Attribute* kuralına dayanıyor: bir varlığın birden çok değeri olabiliyorsa o şey attribute olamaz. Bu 13'ün hepsi kabul edilmese bile sayı 50'nin üstünde kalıyor.
 
 ## 4. Dosyaları hangi sırayla okuyacağız?
 
 1. `README.md`: çalıştırma ve kısa kullanım.
 2. `docs/ANLATIM_TR.md`: kavramların Türkçe açıklaması ve savunma soruları.
-3. `docs/er_conceptual.svg`: dört zorunlu ER kavramının küçük kavramsal şeması; `docs/er_conceptual_full.svg` ve `docs/CONCEPTUAL_ER.md`: 59 varlık/alt tür adayı ile 11 ilişki kümesini ayıran tam kavramsal **taslak**.
-4. `docs/DESIGN.md`: model kararları ve kardinaliteler.
-5. `schema.sql`: gerçek tablo, PK, FK, `CHECK`, `UNIQUE` tanımları.
-6. `docs/ENTITIES.md`: 59 kavramsal varlık/alt tür adayının anlamı ve anahtarı; 11 ilişki kümesi `docs/CONCEPTUAL_ER.md` içinde.
-7. `docs/RELATIONSHIPS.md` ve `docs/FOREIGN_KEYS.md`: iş ilişkileri ve bütün FK eşleşmeleri.
-8. `app.py`: web akışları ve SQL kodu.
-9. `docs/SQL_QUERIES.md`: kullanılan sorguların neyi hesapladığı.
-10. `tests/test_workflow.py`: çalışan akışın ve rollback'in kanıtı.
+3. `docs/er/legend.svg`: diyagramlarda kullanılan gösterim (ders slaytlarındaki R&G gösterimi).
+4. `docs/er/area-*.svg`: sekiz alanın diyagramları. Başka alandan gelen entity'ler gri, kesik çizgili kutu olarak çiziliyor.
+5. `docs/er/full.svg`: tüm modelin tek parça diyagramı. Büyük olduğu için yakınlaştırarak okunur.
+6. `docs/REPORT.md`: teslim raporu. Önce yönerge kontrol tablosu ve dört kavram, sonra Part 1 (her entity ayrı başlıkta) ve Part 2 (her ilişki ayrı başlıkta).
+7. `tools/er_model.py`: modelleme kararları (hangi tablo entity, hangi ilişki, adlar, açıklamalar).
+8. `schema.sql`: gerçek tablo, PK, FK, `CHECK`, `UNIQUE` tanımları ve ISA trigger'ları.
+9. `docs/DESIGN.md`: uygulama tarafındaki transaction ve bütünlük kuralları.
+10. `app.py`, `docs/SQL_QUERIES.md`, `tests/test_workflow.py`: web akışları, sorgular ve testler.
 
-`docs/REPORT.md` iki bölümden oluşan **taslak rapordur**. `docs/er_full.svg` bütün tabloların FK grafıdır; kavramsal ER değildir. Yeni `docs/er_conceptual_full.svg` tek bağlı kavramsal ER **taslağıdır**. 50+ entity sayımının hocanın tanımına göre ve çizimin ders notasyonuna göre ayrıca gözden geçirilmesi gerekir.
+`docs/REPORT.md` ve `docs/er/` elle düzenlenmez. Değişiklik `tools/er_model.py` veya `schema.sql` dosyasında yapılır, sonra `python3 tools/build_er.py` çalıştırılır.
 
 ## 5. ER kavramlarını kendi cümlelerimizle nasıl anlatırız?
 
@@ -67,7 +69,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 
 ### ISA
 
-`accounts` ortak kişi bilgilerini tutar. `customers`, `staff`, `couriers` alt türleri aynı `account_id` değerini hem PK hem FK olarak taşır. Bu ilişkisel çeviri, üst türden miras alınan kimliği korur. Mevcut uygulamada `accounts.role` alt tür uyumu veritabanı trigger'ıyla zorlanmıyor; bu bir tamamlanma noktasıdır. Ayrıca alt türlerin ayrık/örtüşen ve tam/kısmi olup olmadığı raporda daha kesin tanımlanmalıdır.
+`accounts` ortak kişi bilgilerini tutar. `customers`, `staff`, `couriers` alt türleri aynı `account_id` değerini hem PK hem FK olarak taşır. Bu ilişkisel çeviri, üst türden miras alınan kimliği korur. Slayttaki iki soruya cevabımız şöyle. **Overlap (örtüşme): izin yok.** Bir hesabın tek bir rolü var; `schema.sql` içindeki trigger'lar, hesabın rolüyle uyuşmayan alt tür satırını reddediyor. **Covering (kapsama): evet.** `role` zorunlu olduğu için her hesap üç alt türden biri. Diyagramda bu bilgi ISA üçgeninin yanında yazıyor.
 
 ### Ternary relationship
 
@@ -75,7 +77,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 
 ### Aggregation
 
-`stock_positions` ile temsil edilen üçlü `Stocks` ilişkisini bir bütün olarak ele alıyoruz. `stock_reservations`, bir sipariş kaleminin **tam bu stok ilişkisini** kaç adet rezerve ettiğini gösterir. Yani başka bir ilişki (`Reserves`) bir ilişki kümesine (`Stocks`) katılır. `docs/er_conceptual.svg` bu kutuyu gösterir. Tam ER tesliminde hocanın kullandığı aggregation çizim notasyonuna göre yeniden çizilmelidir.
+`stock_positions` ile temsil edilen üçlü `Stocks` ilişkisini bir bütün olarak ele alıyoruz. `stock_reservations`, bir sipariş kaleminin **tam bu stok ilişkisini** kaç adet rezerve ettiğini gösterir. Yani başka bir ilişki (`Reserves`) bir ilişki kümesine (`Stocks`) katılır. Diyagramda Stocks ilişkisi ve üç entity'si kesik çizgili bir kutu içinde duruyor. Reserves'in çizgisi elmasa değil, kutunun kenarına bağlanıyor; slayttaki Monitors örneği de böyle çizilir. Kutuya ikinci bir ilişki daha bağlanıyor: **Batch_Of**. Her stok partisi (batch) tam olarak bir stok pozisyonuna ait; bu yüzden Stock_Batches'tan Batch_Of'a kalın ok çiziliyor.
 
 ## 6. Bir sipariş adım adım veritabanında nasıl ilerler?
 
@@ -98,8 +100,8 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 
 | Ders konusu | Kaynak | Projedeki karşılığı | Durum |
 | --- | --- | --- | --- |
-| ER tasarım, weak, ISA, ternary, aggregation | `Ch2_ER.pdf` | Küçük örnek çizim, 59 varlık adayı / 11 ilişki içeren tam bağlı kavramsal taslak ve ilişkisel karşılıklar | Taslak üretildi; 50 entity kabulü ve ders notasyonu gözden geçirilmeli. |
-| ER → ilişkisel model, PK/FK | `Ch3_Rel_Model.pdf` | `schema.sql`, 70 PK ve 102 FK bağı | Uygulandı; bazı iş kuralları sadece uygulama kodunda. |
+| ER tasarım, weak, ISA, ternary, aggregation | `Ch2_ER.pdf` | 71 entity, 103 ilişki; slayt gösterimiyle çizilmiş tam ve alan diyagramları; dört kavramın her biri var | Otomatik kontrolden geçti; ekip tarafından gözden geçirilmeli. |
+| ER → ilişkisel model, PK/FK | `Ch3_Rel_Model.pdf` | `schema.sql`, 83 tablo; weak entity'ler bileşik anahtarla, M:N ilişkiler kendi tablosuyla | Uygulandı; tarafların zorunlu katılımı (total participation) SQL'de değil, uygulamada sağlanıyor. |
 | İlişkisel cebir | `Ch4_Algebra.pdf` | SQL sorgularının arkasındaki select/project/join/group mantığı | Ayrı cebir gösterimi henüz yazılmadı. |
 | SQL, JOIN, alt sorgu, kısıtlar | `Ch5_SQL.pdf` | Katalog, rapor, stok ve iade sorguları | Temel sorgular var; hocanın “required SQL queries” listesi bilinmiyor. |
 | DB uygulaması | `Ch6_DBApp.pdf` | Python `sqlite3` ile SQL çalıştıran web arayüzü | Çekirdek akış çalışıyor; slaytların Java/JDBC örnekleriyle aynı dil/araç değil. |
@@ -115,15 +117,15 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 - İki satıcıdan sipariş: toplam, stok azalması, iki fulfillment, teslimat, iade ve demo refund doğrulanır.
 - Yetersiz stok: checkout hata verir; sipariş/rezervasyon yazılmaz, stok ve sepet bozulmaz.
 
-`python3 tools/generate_design_artifacts.py` 70 tabloyu, 102 FK ilişkisini ve tek bağlı bileşeni doğrular. `PRAGMA foreign_key_check` örnek veride bozuk yabancı anahtar olmadığını gösterir. Bunlar modelin **bazı teknik özelliklerini** kanıtlar; bütün 70 tabloda iş akışı uygulandığını veya hocanın her gereksiniminin karşılandığını kanıtlamaz.
+`python3 tools/build_er.py --check` modelin şemayla uyuştuğunu ve yönergenin 1–4. maddelerini doğrular. `PRAGMA foreign_key_check` örnek veride bozuk yabancı anahtar olmadığını gösterir. Bunlar modelin **teknik özelliklerini** kanıtlar. Bütün tablolarda iş akışı uygulandığını kanıtlamaz.
 
 ## 9. Şu anda neden “tamam, teslim edelim” demiyoruz?
 
 1. PostgreSQL beklentisi net değil. Zorunluysa SQLite şeması ve Python erişim katmanı taşınmalı.
 2. E-sheet ve ders ana sayfasındaki **tam SQL sorgusu/teslim listesi** elimizde yok.
-3. `er_full.svg` tablo/FK grafıdır. Yeni `er_conceptual_full.svg` tüm 59 aday varlığı ve 11 ilişki kümesini içeren kavramsal taslaktır; hocanın entity sınıflandırması ve çizim notasyonuna göre son inceleme hâlâ gereklidir.
+3. ER diyagramı ve rapor artık ders gösterimiyle üretiliyor. Yine de ikinizin de her entity'yi ve her ilişkiyi açıklayabilmesi gerekir; yönergedeki AI kuralının şartı bu.
 4. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok.
-5. Bazı bütünlük kuralları şemada zorlanmıyor: sipariş adresinin aynı müşteriye ait olması, stok batch bin'inin aynı depoda olması, `accounts.role` ile subtype eşleşmesi gibi.
+5. Bazı bütünlük kuralları şemada zorlanmıyor: sipariş adresinin aynı müşteriye ait olması, stok batch bin'inin aynı depoda olması gibi. `accounts.role` ile alt tür eşleşmesi artık trigger'la zorlanıyor.
 6. Normalizasyon/FD incelemesi ve hocanın isteyebileceği özgül SQL örnekleri henüz tamamlanmadı.
 
 Bu maddeler projeyi değersiz kılmaz; mevcut durumun **çalışan, açıklanabilir bir taslak** olduğunu gösterir. İki kişi olarak her değişikliği anlayıp doğruladıktan ve ders sayfasındaki eksikleri tamamladıktan sonra nihai teslim değerlendirmesi yapmalısınız.
@@ -132,8 +134,8 @@ Bu maddeler projeyi değersiz kılmaz; mevcut durumun **çalışan, açıklanabi
 
 1. Proje için PostgreSQL ve belirli SQL sorguları gerekip gerekmediğini öğretim elemanından veya ana ders sayfasından öğrenin.
 2. Ana ders sayfasındaki teslimler, sorgu listesi ve son tarihleri bu belgeye ekleyin.
-3. `ENTITIES.md` listesini hocanın ER entity tanımına göre gözden geçirin; gerçekten 50+ ayrı entity olduğundan emin olun.
-4. Tam kavramsal ER taslağını (`er_conceptual_full.svg`) ve ilişkisel şema dönüşümünü birlikte gözden geçirin. Kardinalite, katılım ve ISA örtüşme/kapsama kararlarını hocanın notasyonuna göre kesinleştirin.
+3. `docs/REPORT.md` Part 1'i birlikte okuyun ve her entity'nin neden ayrı bir entity olduğunu kendi cümlelerinizle söyleyebildiğinizden emin olun.
+4. Alan diyagramlarını (`docs/er/area-*.svg`) Part 2 ile yan yana okuyun. Her ok ve kalın çizgi için "bu kural neden böyle?" sorusunu cevaplayın.
 5. Eğer PostgreSQL isteniyorsa şemayı ve uygulamayı taşıyın, aynı uçtan uca testleri PostgreSQL'de çalıştırın.
 6. Gerekli SQL sorgularını ve iki bölüm raporu öğretim elemanının teslim formatına göre tamamlayın.
 7. Biriniz diğerinizin kodunu değiştirip açıklasın. İkiniz de `checkout()`, bileşik anahtarlar, FK, transaction ve dört ER kavramını tahtada anlatabilmelisiniz.

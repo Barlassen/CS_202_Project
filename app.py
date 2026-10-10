@@ -183,14 +183,21 @@ def checkout(db: sqlite3.Connection) -> int:
                 if batch_remaining:
                     raise ValueError("Batch ledger and stock position disagree; checkout was rolled back.")
         db.execute("INSERT INTO order_status_events(order_id,status) VALUES(?,'placed')", (order_id,))
-        payment_id = db.execute("""INSERT INTO payments(order_id,method,status,amount_cents)
-          VALUES(?,'demo','paid',?)""", (order_id, total)).lastrowid
+        method = db.execute("SELECT payment_method_id FROM payment_methods WHERE customer_id=? ORDER BY payment_method_id LIMIT 1",
+                            (CUSTOMER_ID,)).fetchone()
+        if not method:
+            raise ValueError("No saved payment method.")
+        payment_id = db.execute("""INSERT INTO payments(order_id,payment_method_id,status,amount_cents)
+          VALUES(?,?,'paid',?)""", (order_id, method[0], total)).lastrowid
         db.execute("""INSERT INTO payment_transactions(payment_id,kind,status,amount_cents)
           VALUES(?,'capture','approved',?)""", (payment_id, total))
         invoice_id = db.execute("INSERT INTO invoices(order_id,total_cents) VALUES(?,?)", (order_id, total)).lastrowid
         for line_no, r in enumerate(rows, 1):
-            db.execute("INSERT INTO invoice_lines VALUES(?,?,?,?,?)",
-                       (invoice_id, line_no, order_id, line_no, r["price_cents"] * r["quantity"]))
+            db.execute("""INSERT INTO invoice_lines(invoice_id,line_no,order_id,order_line_no,amount_cents,tax_rate_id)
+              VALUES(?,?,?,?,?,(SELECT t.tax_rate_id FROM tax_rates t
+                JOIN cities c ON c.country_code=t.country_code JOIN addresses a ON a.city_id=c.city_id
+                WHERE a.address_id=? AND t.name='Standard VAT'))""",
+                       (invoice_id, line_no, order_id, line_no, r["price_cents"] * r["quantity"], address[0]))
         db.execute("DELETE FROM cart_lines WHERE cart_id=(SELECT cart_id FROM carts WHERE customer_id=?)", (CUSTOMER_ID,))
         db.commit()
         return order_id
@@ -292,8 +299,8 @@ def fulfill(db: sqlite3.Connection, order_id: int) -> None:
             package_id = db.execute("INSERT INTO packages(fulfillment_id,weight_grams) VALUES(?,?)",
                                     (fulfillment_id, weight)).lastrowid
             code = "DEMO-" + uuid.uuid4().hex[:10].upper()
-            shipment_id = db.execute("""INSERT INTO shipments(package_id,carrier_id,tracking_code,status)
-              VALUES(?,1,?,'shipped')""", (package_id, code)).lastrowid
+            shipment_id = db.execute("""INSERT INTO shipments(package_id,carrier_id,service_code,tracking_code,status)
+              VALUES(?,1,'STD',?,'shipped')""", (package_id, code)).lastrowid
             db.execute("INSERT INTO tracking_events(shipment_id,status,location) VALUES(?,'shipped','Warehouse')", (shipment_id,))
         db.execute("UPDATE orders SET status='shipped' WHERE order_id=?", (order_id,))
         db.execute("INSERT INTO order_status_events(order_id,status) VALUES(?,'shipped')", (order_id,))
@@ -335,8 +342,8 @@ def request_return(db: sqlite3.Connection, order_id: int, line_no: int, quantity
           WHERE rl.order_id=? AND rl.line_no=? AND rr.status!='rejected'""", (order_id, line_no)).fetchone()[0]
         if not order or order["status"] != "delivered" or not line or used + quantity > line["quantity"]:
             raise ValueError("Return quantity exceeds the delivered quantity available.")
-        return_id = db.execute("""INSERT INTO return_requests(order_id,customer_id,reason,status)
-          VALUES(?,?,?,'requested')""", (order_id, CUSTOMER_ID, reason.strip())).lastrowid
+        return_id = db.execute("""INSERT INTO return_requests(order_id,reason,status)
+          VALUES(?,?,'requested')""", (order_id, reason.strip())).lastrowid
         db.execute("INSERT INTO return_lines VALUES(?,?,?,?)", (return_id, order_id, line_no, quantity))
         db.commit()
     except Exception:
