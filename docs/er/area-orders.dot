@@ -7,7 +7,7 @@ E_addresses [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, 
 E_coupons [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Coupons
 (Shopping and marketing)"];
 E_customers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Customers
-(People and sellers)"];
+(People and accounts)"];
 E_fulfillments [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Fulfillments
 (Fulfilment and delivery)"];
 E_gift_cards [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Gift_Cards
@@ -88,7 +88,7 @@ E_tax_rates [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, 
 (Locations and tax)"];
 subgraph cluster_agg { style=dashed; color="#222222"; penwidth=1.4; margin=14; label="Aggregation: Stocks"; fontsize=12; labeljust=l;
 E_seller_organizations [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Seller_Organizations
-(People and sellers)"];
+(Sellers)"];
 E_variants [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Variants
 (Catalogue)"];
 E_warehouses [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Warehouses

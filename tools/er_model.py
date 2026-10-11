@@ -13,7 +13,8 @@ from the schema, so the diagram cannot drift from the database.
 
 # Areas only group the report and the per-area diagrams; the full diagram is one graph.
 AREAS = {
-    "people": "People and sellers",
+    "people": "People and accounts",
+    "sellers": "Sellers",
     "locations": "Locations and tax",
     "catalogue": "Catalogue",
     "shopping": "Shopping and marketing",
@@ -26,7 +27,7 @@ AREAS = {
 # table -> (area, explanation). `WHY_ENTITY` below adds the entity-vs-attribute
 # argument for the sets that a reader might otherwise expect to be attributes.
 ENTITIES = {
-    # People and sellers
+    # People and accounts (sellers follow)
     "accounts": ("people", "A person who can sign in to the marketplace. Every account is exactly one of a customer, a staff member or a courier (see the ISA hierarchy)."),
     "customers": ("people", "An account that shops: it owns a cart, wishlists, saved payment methods and orders, and collects loyalty points."),
     "staff": ("people", "An account that works for the marketplace or for sellers: verifies sellers, answers questions, inspects warehouses and returns. Every staff member belongs to one department."),
@@ -34,12 +35,12 @@ ENTITIES = {
     "departments": ("people", "An internal unit of the marketplace (for example Seller Operations). It has a budget and at most one managing staff member."),
     "loyalty_tiers": ("people", "A level of the customer loyalty programme (Bronze, Silver, ...). A customer reaches a tier at a points threshold and receives its discount."),
     "vehicles": ("people", "A fleet vehicle (bicycle, motorbike or van) with a carrying capacity. A vehicle is assigned to at most one courier at a time."),
-    "seller_organizations": ("people", "An independent business that sells on the marketplace. It is owned by one account, pays commission under one plan and lists products."),
-    "commission_plans": ("people", "A pricing plan that sets the commission percentage the marketplace keeps from a seller's sales."),
-    "seller_verifications": ("people", "One onboarding check of a seller (identity, tax documents) with its outcome. A seller can be checked several times."),
-    "seller_policies": ("people", "A versioned seller rule shown to buyers, such as a return or shipping policy, with the date it takes effect."),
-    "seller_payout_accounts": ("people", "A bank account (stored masked) into which a seller receives its earnings, with a verification status."),
-    "seller_payouts": ("people", "One transfer of a seller's earnings for a settlement period into one payout account."),
+    "seller_organizations": ("sellers", "An independent business that sells on the marketplace. It is owned by one account, pays commission under one plan and lists products."),
+    "commission_plans": ("sellers", "A pricing plan that sets the commission percentage the marketplace keeps from a seller's sales."),
+    "seller_verifications": ("sellers", "One onboarding check of a seller (identity, tax documents) with its outcome. A seller can be checked several times."),
+    "seller_policies": ("sellers", "A versioned seller rule shown to buyers, such as a return or shipping policy, with the date it takes effect."),
+    "seller_payout_accounts": ("sellers", "A bank account (stored masked) into which a seller receives its earnings, with a verification status."),
+    "seller_payouts": ("sellers", "One transfer of a seller's earnings for a settlement period into one payout account."),
     "customer_notifications": ("people", "A message sent to a customer (order shipped, price dropped) together with when it was read."),
     # Locations and tax
     "countries": ("locations", "A country the marketplace operates in, identified by its two-letter ISO code."),
@@ -150,7 +151,7 @@ ISA = {
 # Relationship sets that the schema implements as their own table (many-to-many or n-ary).
 # table -> (area, name, explanation)
 RELATIONSHIP_TABLES = {
-    "seller_staff": ("people", "Employs", "A seller employs staff members to run its shop; a staff member may work for several sellers. The relationship records when the assignment started."),
+    "seller_staff": ("sellers", "Employs", "A seller employs staff members to run its shop; a staff member may work for several sellers. The relationship records when the assignment started."),
     "courier_zones": ("locations", "Serves", "A courier serves one or more delivery zones and a zone is served by several couriers, each since a given date."),
     "variant_values": ("catalogue", "Has_Value", "A variant has a value for an attribute (Color = Black). The value belongs to the pair, not to either side alone."),
     "cart_lines": ("shopping", "In_Cart", "A cart contains listings, each with a quantity. A listing can be in many customers' carts."),

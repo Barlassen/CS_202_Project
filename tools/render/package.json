@@ -2,8 +2,10 @@
   "name": "marketlab-er-render",
   "private": true,
   "type": "module",
-  "description": "Renders the generated Graphviz DOT files to SVG without a system Graphviz install.",
+  "description": "Renders the generated ER diagrams (SVG, PNG) and the Word report without system Graphviz.",
   "dependencies": {
-    "@viz-js/viz": "3.30.0"
+    "@resvg/resvg-js": "2.6.2",
+    "@viz-js/viz": "3.30.0",
+    "docx": "9.7.0"
   }
 }

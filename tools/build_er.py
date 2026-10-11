@@ -216,22 +216,34 @@ def attr_label(col, underline):
     return f"<<U>{col}</U>>" if underline else q(col)
 
 
-def build_dot(ent, rels, focus, title):
-    """focus: set of entity tables drawn with attributes; other participants are drawn grey."""
+def build_dot(ent, rels, focus, title, only=None, isa=None):
+    """focus: set of entity tables drawn with attributes; other participants are drawn grey.
+
+    only: draw just these relationship names (their participants get attributes).
+    isa: force the ISA hierarchy on or off; by default it is drawn when focus touches it.
+    """
     lines = [
         "digraph ER {",
         f'graph [compound=true, rankdir=TB, newrank=true, nodesep=0.22, ranksep=0.42, fontname="Helvetica", fontsize=22, labelloc=t, label={q(title)}, pad=0.3];',
         'node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];',
         'edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];',
     ]
-    chosen = [r for r in rels if any(p["target"] in focus for p in r["parts"])]
+    if only is not None:
+        chosen = [r for r in rels if r["name"] in only]
+        focus = set(focus) | {p["target"] for r in chosen for p in r["parts"] if p["target"] != AGG}
+    else:
+        chosen = [r for r in rels if any(p["target"] in focus for p in r["parts"])]
     stocks = next(r for r in rels if r.get("table") == M.AGGREGATED)
     stocks_parts = {p["target"] for p in stocks["parts"]}
     uses_agg = any(p["target"] == AGG for r in chosen for p in r["parts"]) or stocks in chosen
     if uses_agg and stocks not in chosen:
         chosen.append(stocks)
+    if uses_agg and only is not None:
+        focus |= stocks_parts
     drawn = set(focus) | {p["target"] for r in chosen for p in r["parts"] if p["target"] != AGG}
-    if M.ISA["parent"] in focus or set(M.ISA["children"]) & focus:
+    if isa is None:
+        isa = M.ISA["parent"] in focus or bool(set(M.ISA["children"]) & focus)
+    if isa:
         drawn |= {M.ISA["parent"], *M.ISA["children"]}
 
     def entity_nodes(table):
@@ -302,7 +314,7 @@ def build_dot(ent, rels, focus, title):
         lines += rel_nodes(i, rel)
         lines += participant_edges(i, rel)
 
-    if M.ISA["parent"] in drawn:
+    if isa:
         note = f"overlap: {'yes' if M.ISA['overlap'] else 'no'}\\ncovering: {'yes' if M.ISA['covering'] else 'no'}"
         lines.append(f'ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="{note}"];')
         lines.append(f"E_{M.ISA['parent']} -> ISA [dir=none];")
@@ -565,6 +577,45 @@ def write_report(ent, rels, tables, checks):
     (DOCS / "REPORT.md").write_text("\n".join(out))
 
 
+def export_json(ent, rels, tables, checks):
+    """Machine-readable model for tools/render/report_docx.mjs (the Word report)."""
+    import json
+
+    def entity(e):
+        t = tables[e["table"]]
+        return dict(
+            name=e["name"], table=e["table"], area=e["area"], text=e["text"], why=M.WHY_ENTITY.get(e["table"]),
+            key=e["key"], partial=e["partial"], inherited=e["inherited"],
+            owner=ent[e["weak_owner"]]["name"] if e["weak_owner"] else None,
+            owner_key=ent[e["weak_owner"]]["key"] if e["weak_owner"] else None,
+            attrs=[dict(name=c["name"], domain=domain(t, c), required=c["notnull"],
+                        unique={c["name"]} in t["uniques"] and c["name"] not in e["key"]) for c in e["attrs"]],
+            checks=t["checks"].get(None, []))
+
+    def relationship(r):
+        attrs = []
+        if r["attrs"]:
+            t = tables[r["table"]]
+            attrs = [dict(name=c["name"], domain=domain(t, c)) for c in r["attrs"]]
+        text = r["text"]
+        for tag in ("TERNARY. ", "AGGREGATION. ", "IDENTIFYING. "):
+            text = text.replace(tag, "")
+        return dict(name=r["name"], area=r["area"], kind=kind(r), identifying=r["identifying"], text=text,
+                    sql=r["sql"].replace("`", ""), attrs=attrs,
+                    parts=[dict(target="Stocks (aggregation)" if p["target"] == AGG else ent[p["target"]]["name"],
+                                aggregation=p["target"] == AGG, key=p["key"], total=p["total"], role=p["role"])
+                           for p in r["parts"]])
+
+    data = dict(
+        areas=M.AREAS, entities=[entity(e) for e in ent.values()], relationships=[relationship(r) for r in rels],
+        isa=dict(parent=name_of(M.ISA["parent"]), children=[name_of(c) for c in M.ISA["children"]],
+                 overlap=M.ISA["overlap"], covering=M.ISA["covering"], text=M.ISA["explanation"]),
+        total_participation=[dict(relationship=r, entity=name_of(t), reason=why) for (r, t), why in M.TOTAL_PARTICIPATION.items()],
+        checks=[dict(requirement=a, ok=b, evidence=c) for a, b, c in checks],
+        tables=len(tables), relationship_tables=len(M.RELATIONSHIP_TABLES))
+    (ER_DIR / "model.json").write_text(json.dumps(data, indent=1, ensure_ascii=False))
+
+
 # --------------------------------------------------------------------------- main
 def main():
     tables = read_schema()
@@ -587,6 +638,11 @@ def main():
     for key, label in M.AREAS.items():
         focus = {t for t, e in ent.items() if e["area"] == key}
         dots[f"area-{key}"] = build_dot(ent, rels, focus, f"MarketLab — {label}")
+    # Small figures for the report: one per required construct.
+    weak_rels = {r["name"] for r in rels if r["identifying"]}
+    dots["concept-weak"] = build_dot(ent, rels, set(), "Weak entities and identifying relationships", only={"Contains", "Offers_Service"} & weak_rels, isa=False)
+    dots["concept-isa"] = build_dot(ent, rels, {M.ISA["parent"], *M.ISA["children"]}, "ISA hierarchy", only=set(), isa=True)
+    dots["concept-aggregation"] = build_dot(ent, rels, set(), "Ternary relationship Stocks and its aggregation", only={"Stocks", "Reserves", "Batch_Of"}, isa=False)
     dots["legend"] = LEGEND_DOT
     paths = []
     for name, text in dots.items():
@@ -594,7 +650,8 @@ def main():
         path.write_text(text)
         paths.append(path)
     write_report(ent, rels, tables, checks)
-    print(f"Wrote {len(paths)} DOT files and docs/REPORT.md")
+    export_json(ent, rels, tables, checks)
+    print(f"Wrote {len(paths)} DOT files, docs/REPORT.md and docs/er/model.json")
 
     if not (RENDER / "node_modules").exists():
         print("SVG rendering skipped: run `npm install` in tools/render once.")
@@ -602,6 +659,7 @@ def main():
     subprocess.run(["node", str(RENDER / "render.mjs"), *map(str, paths)], check=True)
     for path in paths:
         postprocess_svg(path.with_suffix(".svg"))
+    subprocess.run(["node", str(RENDER / "render.mjs"), "--png", *(str(p.with_suffix(".svg")) for p in paths)], check=True)
 
 
 if __name__ == "__main__":

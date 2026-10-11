@@ -94,9 +94,9 @@
 <!-- E_couriers -->
 <g id="node8" class="node">
 <title>E_couriers</title>
-<polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="932.87,-432 819.04,-432 819.04,-396 932.87,-396 932.87,-432"/>
+<polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="938.99,-432 812.92,-432 812.92,-396 938.99,-396 938.99,-432"/>
 <text xml:space="preserve" text-anchor="middle" x="875.96" y="-417.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Couriers</text>
-<text xml:space="preserve" text-anchor="middle" x="875.96" y="-404.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(People and sellers)</text>
+<text xml:space="preserve" text-anchor="middle" x="875.96" y="-404.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(People and accounts)</text>
 </g>
 <!-- E_delivery_attempts -->
 <g id="node9" class="node">
@@ -372,7 +372,7 @@
 <title>E_seller_organizations</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="581.01,-36 462.9,-36 462.9,0 581.01,0 581.01,-36"/>
 <text xml:space="preserve" text-anchor="middle" x="521.96" y="-21.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations</text>
-<text xml:space="preserve" text-anchor="middle" x="521.96" y="-8.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(People and sellers)</text>
+<text xml:space="preserve" text-anchor="middle" x="521.96" y="-8.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Sellers)</text>
 </g>
 <!-- E_shipments -->
 <g id="node28" class="node">

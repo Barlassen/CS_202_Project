@@ -13,7 +13,8 @@ The design has **71 entity sets** and **103 relationship sets**, plus one ISA hi
 | Diagram | Content |
 | --- | --- |
 | [`er/full.svg`](er/full.svg) | The complete connected ER diagram with every entity set, attribute and relationship set. |
-| [`er/area-people.svg`](er/area-people.svg) | People and sellers: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
+| [`er/area-people.svg`](er/area-people.svg) | People and accounts: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
+| [`er/area-sellers.svg`](er/area-sellers.svg) | Sellers: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
 | [`er/area-locations.svg`](er/area-locations.svg) | Locations and tax: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
 | [`er/area-catalogue.svg`](er/area-catalogue.svg) | Catalogue: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
 | [`er/area-shopping.svg`](er/area-shopping.svg) | Shopping and marketing: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
@@ -89,7 +90,7 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
 
 ## Part 1 — Entities
 
-### People and sellers
+### People and accounts
 
 #### E1. Accounts
 
@@ -187,7 +188,26 @@ A fleet vehicle (bicycle, motorbike or van) with a carrying capacity. A vehicle 
 
 **Takes part in:** Drives.
 
-#### E8. Seller_Organizations
+#### E8. Customer_Notifications
+
+A message sent to a customer (order shipped, price dropped) together with when it was read.
+
+**Key:** `notification_id`.
+
+**Why an entity set:** A customer receives many notifications, each with its own read time.
+
+| Attribute | Domain | Notes |
+| --- | --- | --- |
+| `notification_id` | INTEGER | **key**, required |
+| `message` | TEXT | required |
+| `created_at` | TEXT | required |
+| `read_at` | TEXT | optional |
+
+**Takes part in:** Notifies.
+
+### Sellers
+
+#### E9. Seller_Organizations
 
 An independent business that sells on the marketplace. It is owned by one account, pays commission under one plan and lists products.
 
@@ -200,7 +220,7 @@ An independent business that sells on the marketplace. It is owned by one accoun
 
 **Takes part in:** Employs, Handled_By, Offers, Owns, Paid_Into, Publishes, Reviews_Seller, Runs, Stocks, Subscribes_To, Uses_Supplier, Verification_Of, inside the Stocks aggregation.
 
-#### E9. Commission_Plans
+#### E10. Commission_Plans
 
 A pricing plan that sets the commission percentage the marketplace keeps from a seller's sales.
 
@@ -214,7 +234,7 @@ A pricing plan that sets the commission percentage the marketplace keeps from a 
 
 **Takes part in:** Subscribes_To.
 
-#### E10. Seller_Verifications
+#### E11. Seller_Verifications
 
 One onboarding check of a seller (identity, tax documents) with its outcome. A seller can be checked several times.
 
@@ -228,7 +248,7 @@ One onboarding check of a seller (identity, tax documents) with its outcome. A s
 
 **Takes part in:** Checks, Verification_Of.
 
-#### E11. Seller_Policies
+#### E12. Seller_Policies
 
 A versioned seller rule shown to buyers, such as a return or shipping policy, with the date it takes effect.
 
@@ -243,7 +263,7 @@ A versioned seller rule shown to buyers, such as a return or shipping policy, wi
 
 **Takes part in:** Publishes.
 
-#### E12. Seller_Payout_Accounts
+#### E13. Seller_Payout_Accounts
 
 A bank account (stored masked) into which a seller receives its earnings, with a verification status.
 
@@ -257,7 +277,7 @@ A bank account (stored masked) into which a seller receives its earnings, with a
 
 **Takes part in:** Paid_Into, Pays_To.
 
-#### E13. Seller_Payouts
+#### E14. Seller_Payouts
 
 One transfer of a seller's earnings for a settlement period into one payout account.
 
@@ -275,23 +295,6 @@ One transfer of a seller's earnings for a settlement period into one payout acco
 Constraint: `period_end >= period_start`.
 
 **Takes part in:** Pays_To.
-
-#### E14. Customer_Notifications
-
-A message sent to a customer (order shipped, price dropped) together with when it was read.
-
-**Key:** `notification_id`.
-
-**Why an entity set:** A customer receives many notifications, each with its own read time.
-
-| Attribute | Domain | Notes |
-| --- | --- | --- |
-| `notification_id` | INTEGER | **key**, required |
-| `message` | TEXT | required |
-| `created_at` | TEXT | required |
-| `read_at` | TEXT | optional |
-
-**Takes part in:** Notifies.
 
 ### Locations and tax
 
@@ -1141,7 +1144,7 @@ One message in a support ticket's conversation, written by an account.
 
 Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key account_id, but each has its own attributes and takes part in different relationships. Overlap is not allowed: an account has exactly one role, and triggers reject a subtype row whose account has a different role. Covering holds: role is mandatory, so every account is one of the three.
 
-### People and sellers
+### People and accounts
 
 #### R1. Belongs_To
 
@@ -1195,7 +1198,22 @@ A department is managed by at most one staff member (the same Manages example as
 
 Implemented as foreign key `departments(manager_id)` → `staff`.
 
-#### R5. Subscribes_To
+#### R5. Notifies
+
+*binary, many-to-one*
+
+Each notification is sent to exactly one customer.
+
+| Participant | Role | Key constraint | Participation |
+| --- | --- | --- | --- |
+| Customer_Notifications | — | yes: at most one | total |
+| Customers | — | no | partial |
+
+Implemented as foreign key `customer_notifications(customer_id)` → `customers`.
+
+### Sellers
+
+#### R6. Subscribes_To
 
 *binary, many-to-one*
 
@@ -1208,7 +1226,7 @@ Every seller is on exactly one commission plan; a plan has many sellers.
 
 Implemented as foreign key `seller_organizations(plan_id)` → `commission_plans`.
 
-#### R6. Owns
+#### R7. Owns
 
 *binary, many-to-one*
 
@@ -1221,7 +1239,7 @@ Every seller is owned by exactly one account; one person may own several sellers
 
 Implemented as foreign key `seller_organizations(owner_account_id)` → `accounts`.
 
-#### R7. Checks
+#### R8. Checks
 
 *binary, many-to-one*
 
@@ -1234,7 +1252,7 @@ A staff member checks verifications. A verification that is still pending has no
 
 Implemented as foreign key `seller_verifications(checked_by)` → `staff`.
 
-#### R8. Verification_Of
+#### R9. Verification_Of
 
 *binary, many-to-one*
 
@@ -1247,7 +1265,7 @@ Each verification is about exactly one seller; a seller can be verified several 
 
 Implemented as foreign key `seller_verifications(seller_id)` → `seller_organizations`.
 
-#### R9. Publishes
+#### R10. Publishes
 
 *binary, many-to-one*
 
@@ -1260,7 +1278,7 @@ Each policy is published by exactly one seller.
 
 Implemented as foreign key `seller_policies(seller_id)` → `seller_organizations`.
 
-#### R10. Paid_Into
+#### R11. Paid_Into
 
 *binary, many-to-one*
 
@@ -1273,7 +1291,7 @@ Each payout account belongs to exactly one seller; a seller may register several
 
 Implemented as foreign key `seller_payout_accounts(seller_id)` → `seller_organizations`.
 
-#### R11. Pays_To
+#### R12. Pays_To
 
 *binary, many-to-one*
 
@@ -1285,19 +1303,6 @@ Each payout is transferred to exactly one payout account.
 | Seller_Payout_Accounts | — | no | partial |
 
 Implemented as foreign key `seller_payouts(payout_account_id)` → `seller_payout_accounts`.
-
-#### R12. Notifies
-
-*binary, many-to-one*
-
-Each notification is sent to exactly one customer.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Customer_Notifications | — | yes: at most one | total |
-| Customers | — | no | partial |
-
-Implemented as foreign key `customer_notifications(customer_id)` → `customers`.
 
 #### R13. Employs
 

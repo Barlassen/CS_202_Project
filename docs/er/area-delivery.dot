@@ -15,7 +15,7 @@ A__carriers__carrier_id -> E_carriers [dir=none];
 A__carriers__name [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="name"];
 A__carriers__name -> E_carriers [dir=none];
 E_couriers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Couriers
-(People and sellers)"];
+(People and accounts)"];
 E_delivery_attempts [shape=box, penwidth=1, label="Delivery_Attempts"];
 A__delivery_attempts__attempt_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>attempt_id</U>>];
 A__delivery_attempts__attempt_id -> E_delivery_attempts [dir=none];
@@ -49,7 +49,7 @@ A__proof_of_delivery__evidence_url -> E_proof_of_delivery [dir=none];
 A__proof_of_delivery__recorded_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="recorded_at"];
 A__proof_of_delivery__recorded_at -> E_proof_of_delivery [dir=none];
 E_seller_organizations [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Seller_Organizations
-(People and sellers)"];
+(Sellers)"];
 E_shipments [shape=box, penwidth=1, label="Shipments"];
 A__shipments__shipment_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>shipment_id</U>>];
 A__shipments__shipment_id -> E_shipments [dir=none];

@@ -3,9 +3,9 @@ graph [compound=true, rankdir=TB, newrank=true, nodesep=0.22, ranksep=0.42, font
 node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
 edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
 E_accounts [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Accounts
-(People and sellers)"];
+(People and accounts)"];
 E_customers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Customers
-(People and sellers)"];
+(People and accounts)"];
 E_order_lines [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=3, label="Order_Lines
 (Orders and payment)"];
 E_orders [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Orders
@@ -36,7 +36,7 @@ A__return_requests__status -> E_return_requests [dir=none];
 A__return_requests__requested_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="requested_at"];
 A__return_requests__requested_at -> E_return_requests [dir=none];
 E_staff [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Staff
-(People and sellers)"];
+(People and accounts)"];
 E_support_tickets [shape=box, penwidth=1, label="Support_Tickets"];
 A__support_tickets__ticket_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>ticket_id</U>>];
 A__support_tickets__ticket_id -> E_support_tickets [dir=none];
@@ -85,9 +85,4 @@ RA102__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, labe
 RA102__quantity -> R102 [dir=none];
 E_return_requests -> R102 [dir=none];
 R102 -> E_order_lines [dir=none];
-ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="overlap: no\ncovering: yes"];
-E_accounts -> ISA [dir=none];
-ISA -> E_customers [dir=none];
-ISA -> E_staff [dir=none];
-ISA -> E_couriers [dir=none];
 }

@@ -15,7 +15,7 @@ A__coupons__code -> E_coupons [dir=none];
 A__coupons__max_uses [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="max_uses"];
 A__coupons__max_uses -> E_coupons [dir=none];
 E_customers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Customers
-(People and sellers)"];
+(People and accounts)"];
 E_gift_cards [shape=box, penwidth=1, label="Gift_Cards"];
 A__gift_cards__gift_card_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>gift_card_id</U>>];
 A__gift_cards__gift_card_id -> E_gift_cards [dir=none];
@@ -57,7 +57,7 @@ A__reviews__body -> E_reviews [dir=none];
 A__reviews__created_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="created_at"];
 A__reviews__created_at -> E_reviews [dir=none];
 E_seller_organizations [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Seller_Organizations
-(People and sellers)"];
+(Sellers)"];
 E_wishlists [shape=box, penwidth=1, label="Wishlists"];
 A__wishlists__wishlist_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>wishlist_id</U>>];
 A__wishlists__wishlist_id -> E_wishlists [dir=none];

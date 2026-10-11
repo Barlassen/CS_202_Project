@@ -1,0 +1,5260 @@
+{
+ "areas": {
+  "people": "People and accounts",
+  "sellers": "Sellers",
+  "locations": "Locations and tax",
+  "catalogue": "Catalogue",
+  "shopping": "Shopping and marketing",
+  "inventory": "Inventory and procurement",
+  "orders": "Orders and payment",
+  "delivery": "Fulfilment and delivery",
+  "aftersales": "After-sales and support"
+ },
+ "entities": [
+  {
+   "name": "Accounts",
+   "table": "accounts",
+   "area": "people",
+   "text": "A person who can sign in to the marketplace. Every account is exactly one of a customer, a staff member or a courier (see the ISA hierarchy).",
+   "why": null,
+   "key": [
+    "account_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "account_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "email",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "full_name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "role",
+     "domain": "TEXT; CHECK role IN ('customer','staff','courier')",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Customers",
+   "table": "customers",
+   "area": "people",
+   "text": "An account that shops: it owns a cart, wishlists, saved payment methods and orders, and collects loyalty points.",
+   "why": null,
+   "key": [],
+   "partial": [],
+   "inherited": true,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "joined_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "loyalty_points",
+     "domain": "INTEGER; CHECK loyalty_points >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Staff",
+   "table": "staff",
+   "area": "people",
+   "text": "An account that works for the marketplace or for sellers: verifies sellers, answers questions, inspects warehouses and returns. Every staff member belongs to one department.",
+   "why": null,
+   "key": [],
+   "partial": [],
+   "inherited": true,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "title",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Couriers",
+   "table": "couriers",
+   "area": "people",
+   "text": "An account that delivers shipments. A courier holds a licence, may be assigned one vehicle and serves one or more delivery zones.",
+   "why": null,
+   "key": [],
+   "partial": [],
+   "inherited": true,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "license_no",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Departments",
+   "table": "departments",
+   "area": "people",
+   "text": "An internal unit of the marketplace (for example Seller Operations). It has a budget and at most one managing staff member.",
+   "why": null,
+   "key": [
+    "department_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "department_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "budget_cents",
+     "domain": "INTEGER; CHECK budget_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Loyalty_Tiers",
+   "table": "loyalty_tiers",
+   "area": "people",
+   "text": "A level of the customer loyalty programme (Bronze, Silver, ...). A customer reaches a tier at a points threshold and receives its discount.",
+   "why": null,
+   "key": [
+    "tier_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "tier_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "min_points",
+     "domain": "INTEGER; CHECK min_points >= 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "discount_percent",
+     "domain": "INTEGER; CHECK discount_percent BETWEEN 0 AND 50",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Vehicles",
+   "table": "vehicles",
+   "area": "people",
+   "text": "A fleet vehicle (bicycle, motorbike or van) with a carrying capacity. A vehicle is assigned to at most one courier at a time.",
+   "why": null,
+   "key": [
+    "vehicle_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "vehicle_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "fleet_code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "vehicle_type",
+     "domain": "TEXT; CHECK vehicle_type IN ('bicycle','motorbike','van')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "capacity_kg",
+     "domain": "INTEGER; CHECK capacity_kg > 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Seller_Organizations",
+   "table": "seller_organizations",
+   "area": "sellers",
+   "text": "An independent business that sells on the marketplace. It is owned by one account, pays commission under one plan and lists products.",
+   "why": null,
+   "key": [
+    "seller_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "seller_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Commission_Plans",
+   "table": "commission_plans",
+   "area": "sellers",
+   "text": "A pricing plan that sets the commission percentage the marketplace keeps from a seller's sales.",
+   "why": null,
+   "key": [
+    "plan_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "plan_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "rate_percent",
+     "domain": "REAL; CHECK rate_percent BETWEEN 0 AND 50",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Seller_Verifications",
+   "table": "seller_verifications",
+   "area": "sellers",
+   "text": "One onboarding check of a seller (identity, tax documents) with its outcome. A seller can be checked several times.",
+   "why": null,
+   "key": [
+    "verification_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "verification_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('pending','approved','rejected')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "checked_at",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Seller_Policies",
+   "table": "seller_policies",
+   "area": "sellers",
+   "text": "A versioned seller rule shown to buyers, such as a return or shipping policy, with the date it takes effect.",
+   "why": null,
+   "key": [
+    "policy_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "policy_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "policy_type",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "body",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "effective_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Seller_Payout_Accounts",
+   "table": "seller_payout_accounts",
+   "area": "sellers",
+   "text": "A bank account (stored masked) into which a seller receives its earnings, with a verification status.",
+   "why": null,
+   "key": [
+    "payout_account_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "payout_account_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "masked_iban",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('pending','verified','disabled')",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Seller_Payouts",
+   "table": "seller_payouts",
+   "area": "sellers",
+   "text": "One transfer of a seller's earnings for a settlement period into one payout account.",
+   "why": null,
+   "key": [
+    "payout_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "payout_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "period_start",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "period_end",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "amount_cents",
+     "domain": "INTEGER; CHECK amount_cents >= 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('scheduled','paid','failed')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "paid_at",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    }
+   ],
+   "checks": [
+    "period_end >= period_start"
+   ]
+  },
+  {
+   "name": "Customer_Notifications",
+   "table": "customer_notifications",
+   "area": "people",
+   "text": "A message sent to a customer (order shipped, price dropped) together with when it was read.",
+   "why": "A customer receives many notifications, each with its own read time.",
+   "key": [
+    "notification_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "notification_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "message",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "created_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "read_at",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Countries",
+   "table": "countries",
+   "area": "locations",
+   "text": "A country the marketplace operates in, identified by its two-letter ISO code.",
+   "why": "Cities and tax rates both depend on the country; a separate entity stores the country name once.",
+   "key": [
+    "country_code"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "country_code",
+     "domain": "TEXT; CHECK length(country_code) = 2",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Cities",
+   "table": "cities",
+   "area": "locations",
+   "text": "A city inside a country. Addresses, warehouses, delivery zones and pickup points are located in cities.",
+   "why": "Addresses, warehouses, zones and pickup points all refer to cities, and we want to search by city. As the slide on addresses says, when the structure matters it must be an entity.",
+   "key": [
+    "city_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "city_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Addresses",
+   "table": "addresses",
+   "area": "locations",
+   "text": "A delivery address saved by an account, located in one city.",
+   "why": null,
+   "key": [
+    "address_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "address_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "label",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "street",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "postal_code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Delivery_Zones",
+   "table": "delivery_zones",
+   "area": "locations",
+   "text": "A district of a city that couriers are assigned to serve.",
+   "why": null,
+   "key": [
+    "delivery_zone_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "delivery_zone_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Pickup_Points",
+   "table": "pickup_points",
+   "area": "locations",
+   "text": "A parcel locker or partner shop in a city where a customer may collect an order instead of home delivery.",
+   "why": null,
+   "key": [
+    "pickup_point_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "pickup_point_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "opening_hours",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Tax_Rates",
+   "table": "tax_rates",
+   "area": "locations",
+   "text": "A named sales-tax rate (for example Standard VAT 20%) defined by one country and applied to invoice lines.",
+   "why": null,
+   "key": [
+    "tax_rate_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "tax_rate_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "rate_percent",
+     "domain": "REAL; CHECK rate_percent BETWEEN 0 AND 100",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Categories",
+   "table": "categories",
+   "area": "catalogue",
+   "text": "A product classification. Categories form a tree: a category may have a parent category.",
+   "why": null,
+   "key": [
+    "category_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "category_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Brands",
+   "table": "brands",
+   "area": "catalogue",
+   "text": "A manufacturer or brand name that labels products.",
+   "why": null,
+   "key": [
+    "brand_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "brand_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Products",
+   "table": "products",
+   "area": "catalogue",
+   "text": "A shared catalogue description of a product (name, text) that belongs to one category and one brand. Sellers sell its variants.",
+   "why": null,
+   "key": [
+    "product_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "product_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "description",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Variants",
+   "table": "variants",
+   "area": "catalogue",
+   "text": "A concrete, stock-keeping version of a product (for example the black headphones), identified by its SKU.",
+   "why": null,
+   "key": [
+    "variant_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "variant_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "sku",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "variant_name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Product_Images",
+   "table": "product_images",
+   "area": "catalogue",
+   "text": "A picture of a product with alternative text and a display position.",
+   "why": "A product has many images, each with its own URL, text and position. Attributes cannot be set-valued, so images are an entity set.",
+   "key": [
+    "image_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "image_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "image_url",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "alt_text",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "display_order",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Attributes",
+   "table": "attributes",
+   "area": "catalogue",
+   "text": "A dimension along which variants differ, such as Color or Size.",
+   "why": null,
+   "key": [
+    "attribute_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "attribute_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Listings",
+   "table": "listings",
+   "area": "catalogue",
+   "text": "One seller's priced offer of one variant. A seller can list a variant at most once.",
+   "why": null,
+   "key": [
+    "listing_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "listing_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "price_cents",
+     "domain": "INTEGER; CHECK price_cents > 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "active",
+     "domain": "INTEGER; CHECK active IN (0,1)",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Price_History",
+   "table": "price_history",
+   "area": "catalogue",
+   "text": "One recorded price change of a listing: the old price, the new price and when it changed.",
+   "why": "A listing changes price many times and each change has its own old price, new price and time. Storing only the current price would lose the history.",
+   "key": [
+    "price_history_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "price_history_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "old_price_cents",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "new_price_cents",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "changed_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Product_Questions",
+   "table": "product_questions",
+   "area": "catalogue",
+   "text": "A public question that a customer asks about a product.",
+   "why": null,
+   "key": [
+    "question_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "question_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "body",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "asked_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Product_Answers",
+   "table": "product_answers",
+   "area": "catalogue",
+   "text": "A staff member's answer to a product question.",
+   "why": null,
+   "key": [
+    "answer_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "answer_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "body",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "answered_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Product_Documents",
+   "table": "product_documents",
+   "area": "catalogue",
+   "text": "A downloadable file for a product, such as a manual or a warranty certificate.",
+   "why": "A product may have several documents of different types.",
+   "key": [
+    "document_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "document_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "document_type",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "file_url",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Seller_Reviews",
+   "table": "seller_reviews",
+   "area": "catalogue",
+   "text": "A customer's star rating and comment about a seller (at most one per customer and seller).",
+   "why": null,
+   "key": [
+    "seller_review_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "seller_review_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "stars",
+     "domain": "INTEGER; CHECK stars BETWEEN 1 AND 5",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "body",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "created_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Carts",
+   "table": "carts",
+   "area": "shopping",
+   "text": "The single shopping cart that a customer is currently filling.",
+   "why": null,
+   "key": [
+    "cart_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "cart_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "updated_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Wishlists",
+   "table": "wishlists",
+   "area": "shopping",
+   "text": "A named list in which a customer saves listings for later.",
+   "why": null,
+   "key": [
+    "wishlist_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "wishlist_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Promotions",
+   "table": "promotions",
+   "area": "shopping",
+   "text": "A time-limited discount campaign run by a seller.",
+   "why": null,
+   "key": [
+    "promotion_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "promotion_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "starts_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "ends_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "discount_percent",
+     "domain": "INTEGER; CHECK discount_percent BETWEEN 1 AND 100",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Coupons",
+   "table": "coupons",
+   "area": "shopping",
+   "text": "A code issued under a promotion that can be redeemed a limited number of times.",
+   "why": null,
+   "key": [
+    "coupon_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "coupon_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "max_uses",
+     "domain": "INTEGER; CHECK max_uses > 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Reviews",
+   "table": "reviews",
+   "area": "shopping",
+   "text": "A customer's star rating and comment about a product (at most one per customer and product).",
+   "why": null,
+   "key": [
+    "review_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "review_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "stars",
+     "domain": "INTEGER; CHECK stars BETWEEN 1 AND 5",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "body",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "created_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Review_Images",
+   "table": "review_images",
+   "area": "shopping",
+   "text": "A photo attached to a product review.",
+   "why": "A review can carry several photos, so the photos cannot be a single-valued attribute of the review.",
+   "key": [
+    "review_image_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "review_image_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "image_url",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Gift_Cards",
+   "table": "gift_cards",
+   "area": "shopping",
+   "text": "A prepaid card bought by a customer, with a code, an initial value and a remaining balance.",
+   "why": null,
+   "key": [
+    "gift_card_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "gift_card_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "initial_cents",
+     "domain": "INTEGER; CHECK initial_cents > 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "balance_cents",
+     "domain": "INTEGER; CHECK balance_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Warehouses",
+   "table": "warehouses",
+   "area": "inventory",
+   "text": "A fulfilment centre in a city where sellers keep stock.",
+   "why": null,
+   "key": [
+    "warehouse_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "warehouse_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Storage_Zones",
+   "table": "storage_zones",
+   "area": "inventory",
+   "text": "An area of a warehouse (for example zone A), identified by a code within the warehouse.",
+   "why": null,
+   "key": [
+    "zone_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "zone_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Storage_Bins",
+   "table": "storage_bins",
+   "area": "inventory",
+   "text": "A shelf location inside a storage zone where stock batches are placed.",
+   "why": null,
+   "key": [
+    "bin_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "bin_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Stock_Batches",
+   "table": "stock_batches",
+   "area": "inventory",
+   "text": "A physical quantity of one stock position received at one time and stored in one bin. Batches let the system issue the oldest stock first.",
+   "why": null,
+   "key": [
+    "batch_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "batch_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "received_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Stock_Movements",
+   "table": "stock_movements",
+   "area": "inventory",
+   "text": "A signed change of a batch's quantity with its reason (reservation, damage, count).",
+   "why": "A batch changes many times and each change must be auditable with its reason and time.",
+   "key": [
+    "movement_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "movement_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "quantity_delta",
+     "domain": "INTEGER; CHECK quantity_delta <> 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "reason",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "moved_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Suppliers",
+   "table": "suppliers",
+   "area": "inventory",
+   "text": "A wholesaler from which a seller buys goods.",
+   "why": null,
+   "key": [
+    "supplier_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "supplier_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "contact_email",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Purchase_Orders",
+   "table": "purchase_orders",
+   "area": "inventory",
+   "text": "An order a seller places with a supplier for delivery to one warehouse.",
+   "why": null,
+   "key": [
+    "purchase_order_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "purchase_order_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "ordered_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Purchase_Order_Lines",
+   "table": "purchase_order_lines",
+   "area": "inventory",
+   "text": "One line of a purchase order: which variant, how many and at what unit cost. Numbered within its purchase order.",
+   "why": null,
+   "key": [],
+   "partial": [
+    "line_no"
+   ],
+   "inherited": false,
+   "owner": "Purchase_Orders",
+   "owner_key": [
+    "purchase_order_id"
+   ],
+   "attrs": [
+    {
+     "name": "line_no",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity > 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "unit_cost_cents",
+     "domain": "INTEGER; CHECK unit_cost_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Goods_Receipts",
+   "table": "goods_receipts",
+   "area": "inventory",
+   "text": "The record of a delivery arriving at the warehouse against a purchase order. One purchase order may arrive in several deliveries.",
+   "why": null,
+   "key": [
+    "receipt_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "receipt_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "received_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Warehouse_Inspections",
+   "table": "warehouse_inspections",
+   "area": "inventory",
+   "text": "A safety or quality inspection of a warehouse performed by a staff member, with its result.",
+   "why": null,
+   "key": [
+    "inspection_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "inspection_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "result",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "inspected_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Inventory_Adjustments",
+   "table": "inventory_adjustments",
+   "area": "inventory",
+   "text": "A manual correction of a batch's quantity (after a count or damage), authorised by a staff member.",
+   "why": null,
+   "key": [
+    "adjustment_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "adjustment_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "quantity_delta",
+     "domain": "INTEGER; CHECK quantity_delta <> 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "reason",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "adjusted_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Orders",
+   "table": "orders",
+   "area": "orders",
+   "text": "A customer's purchase of one or more listings, delivered to an address or a pickup point, with its status and total.",
+   "why": null,
+   "key": [
+    "order_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "order_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "placed_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('placed','shipped','delivered','cancelled')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "total_cents",
+     "domain": "INTEGER; CHECK total_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Order_Lines",
+   "table": "order_lines",
+   "area": "orders",
+   "text": "One line of an order: which listing, how many and the unit price at checkout. Numbered within its order.",
+   "why": null,
+   "key": [],
+   "partial": [
+    "line_no"
+   ],
+   "inherited": false,
+   "owner": "Orders",
+   "owner_key": [
+    "order_id"
+   ],
+   "attrs": [
+    {
+     "name": "line_no",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity > 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "unit_price_cents",
+     "domain": "INTEGER; CHECK unit_price_cents > 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Order_Status_Events",
+   "table": "order_status_events",
+   "area": "orders",
+   "text": "One step in an order's history (placed, shipped, delivered) with its time.",
+   "why": "An order passes through several statuses and we want the time of each. A single status attribute keeps only the latest one.",
+   "key": [
+    "event_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "event_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "event_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Payment_Methods",
+   "table": "payment_methods",
+   "area": "orders",
+   "text": "A card, wallet or bank account a customer has saved for paying (stored masked).",
+   "why": null,
+   "key": [
+    "payment_method_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "payment_method_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "method_type",
+     "domain": "TEXT; CHECK method_type IN ('card','wallet','bank_transfer')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "masked_number",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "expires_on",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Payments",
+   "table": "payments",
+   "area": "orders",
+   "text": "The payment of one order, made with one payment method, with its amount and status.",
+   "why": null,
+   "key": [
+    "payment_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "payment_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "amount_cents",
+     "domain": "INTEGER; CHECK amount_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Payment_Transactions",
+   "table": "payment_transactions",
+   "area": "orders",
+   "text": "One money movement of a payment, such as the capture or a refund.",
+   "why": "One payment produces several money movements over time (capture, later refunds).",
+   "key": [
+    "transaction_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "transaction_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "kind",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "amount_cents",
+     "domain": "INTEGER; CHECK amount_cents >= 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "created_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Invoices",
+   "table": "invoices",
+   "area": "orders",
+   "text": "The legal invoice issued for an order.",
+   "why": null,
+   "key": [
+    "invoice_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "invoice_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "issued_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "total_cents",
+     "domain": "INTEGER; CHECK total_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Invoice_Lines",
+   "table": "invoice_lines",
+   "area": "orders",
+   "text": "One line of an invoice: the billed amount for one order line and the tax rate applied. Numbered within its invoice.",
+   "why": null,
+   "key": [],
+   "partial": [
+    "line_no"
+   ],
+   "inherited": false,
+   "owner": "Invoices",
+   "owner_key": [
+    "invoice_id"
+   ],
+   "attrs": [
+    {
+     "name": "line_no",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "amount_cents",
+     "domain": "INTEGER; CHECK amount_cents >= 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Fulfillments",
+   "table": "fulfillments",
+   "area": "delivery",
+   "text": "The part of an order that one seller prepares from one warehouse. A multi-seller order is split into several fulfilments.",
+   "why": null,
+   "key": [
+    "fulfillment_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "fulfillment_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "created_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Packages",
+   "table": "packages",
+   "area": "delivery",
+   "text": "A physical parcel packed for a fulfilment, with its weight.",
+   "why": null,
+   "key": [
+    "package_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "package_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "weight_grams",
+     "domain": "INTEGER; CHECK weight_grams > 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Carriers",
+   "table": "carriers",
+   "area": "delivery",
+   "text": "A shipping company that transports packages.",
+   "why": null,
+   "key": [
+    "carrier_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "carrier_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Carrier_Services",
+   "table": "carrier_services",
+   "area": "delivery",
+   "text": "A delivery service offered by a carrier (Standard, Express) with its maximum delivery time. The service code is only unique within its carrier.",
+   "why": null,
+   "key": [],
+   "partial": [
+    "service_code"
+   ],
+   "inherited": false,
+   "owner": "Carriers",
+   "owner_key": [
+    "carrier_id"
+   ],
+   "attrs": [
+    {
+     "name": "service_code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "max_delivery_days",
+     "domain": "INTEGER; CHECK max_delivery_days > 0",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Shipments",
+   "table": "shipments",
+   "area": "delivery",
+   "text": "The transport of one package with one carrier service, identified by a tracking code.",
+   "why": null,
+   "key": [
+    "shipment_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "shipment_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "tracking_code",
+     "domain": "TEXT",
+     "required": true,
+     "unique": true
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('shipped','delivered')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "shipped_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "delivered_at",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Tracking_Events",
+   "table": "tracking_events",
+   "area": "delivery",
+   "text": "One scan of a shipment along its route: status, location and time.",
+   "why": "A shipment is scanned many times, each scan with a location and time.",
+   "key": [
+    "tracking_event_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "tracking_event_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "location",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "event_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Delivery_Attempts",
+   "table": "delivery_attempts",
+   "area": "delivery",
+   "text": "One try by a courier to hand over a shipment, with its outcome.",
+   "why": null,
+   "key": [
+    "attempt_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "attempt_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "attempted_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "outcome",
+     "domain": "TEXT; CHECK outcome IN ('delivered','failed')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "notes",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Proof_Of_Delivery",
+   "table": "proof_of_delivery",
+   "area": "delivery",
+   "text": "The evidence recorded for a successful delivery attempt: who received the parcel and a photo or signature link.",
+   "why": "The evidence is recorded only for successful attempts and has its own attributes; keeping it separate avoids empty attribute values on failed attempts.",
+   "key": [
+    "proof_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "proof_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "recipient_name",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "evidence_url",
+     "domain": "TEXT",
+     "required": false,
+     "unique": false
+    },
+    {
+     "name": "recorded_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Return_Requests",
+   "table": "return_requests",
+   "area": "aftersales",
+   "text": "A customer's request to send back items of a delivered order, with the reason and its status.",
+   "why": null,
+   "key": [
+    "return_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "return_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "reason",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('requested','approved','rejected')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "requested_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Refunds",
+   "table": "refunds",
+   "area": "aftersales",
+   "text": "Money paid back for an approved return, charged against the order's payment.",
+   "why": null,
+   "key": [
+    "refund_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "refund_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "amount_cents",
+     "domain": "INTEGER; CHECK amount_cents > 0",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('pending','completed','rejected')",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Return_Inspections",
+   "table": "return_inspections",
+   "area": "aftersales",
+   "text": "The check of returned goods by a staff member before they may be restocked.",
+   "why": null,
+   "key": [
+    "return_inspection_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "return_inspection_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "condition",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "inspected_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Support_Tickets",
+   "table": "support_tickets",
+   "area": "aftersales",
+   "text": "A help request opened by a customer, optionally about a specific order.",
+   "why": null,
+   "key": [
+    "ticket_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "ticket_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "subject",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "status",
+     "domain": "TEXT; CHECK status IN ('open','closed')",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "created_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  },
+  {
+   "name": "Ticket_Messages",
+   "table": "ticket_messages",
+   "area": "aftersales",
+   "text": "One message in a support ticket's conversation, written by an account.",
+   "why": "A ticket holds a conversation of many messages, each with its own author, which is itself a relationship to Accounts.",
+   "key": [
+    "message_id"
+   ],
+   "partial": [],
+   "inherited": false,
+   "owner": null,
+   "owner_key": null,
+   "attrs": [
+    {
+     "name": "message_id",
+     "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "body",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "sent_at",
+     "domain": "TEXT",
+     "required": true,
+     "unique": false
+    }
+   ],
+   "checks": []
+  }
+ ],
+ "relationships": [
+  {
+   "name": "Belongs_To",
+   "area": "people",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A customer belongs to at most one loyalty tier (none before the first purchase); a tier has many customers.",
+   "sql": "foreign key customers(tier_id) → loyalty_tiers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Loyalty_Tiers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Works_In",
+   "area": "people",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every staff member works in exactly one department; a department has many staff.",
+   "sql": "foreign key staff(department_id) → departments",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Departments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Drives",
+   "area": "people",
+   "kind": "binary, one-to-one",
+   "identifying": false,
+   "text": "One-to-one: a courier drives at most one vehicle and a vehicle is assigned to at most one courier. Both sides are optional.",
+   "sql": "foreign key couriers(vehicle_id) → vehicles",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Couriers",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Vehicles",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Manages",
+   "area": "people",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A department is managed by at most one staff member (the same Manages example as the Key Constraints slide). Not every department needs a manager, so participation is partial.",
+   "sql": "foreign key departments(manager_id) → staff",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Departments",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": "managed dept"
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": "manager"
+    }
+   ]
+  },
+  {
+   "name": "Subscribes_To",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every seller is on exactly one commission plan; a plan has many sellers.",
+   "sql": "foreign key seller_organizations(plan_id) → commission_plans",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Commission_Plans",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Owns",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every seller is owned by exactly one account; one person may own several sellers.",
+   "sql": "foreign key seller_organizations(owner_account_id) → accounts",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Accounts",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Checks",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A staff member checks verifications. A verification that is still pending has no checker yet, so the Verification side is partial.",
+   "sql": "foreign key seller_verifications(checked_by) → staff",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Verifications",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Verification_Of",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each verification is about exactly one seller; a seller can be verified several times.",
+   "sql": "foreign key seller_verifications(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Verifications",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Publishes",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each policy is published by exactly one seller.",
+   "sql": "foreign key seller_policies(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Policies",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Paid_Into",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each payout account belongs to exactly one seller; a seller may register several.",
+   "sql": "foreign key seller_payout_accounts(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Payout_Accounts",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Pays_To",
+   "area": "sellers",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each payout is transferred to exactly one payout account.",
+   "sql": "foreign key seller_payouts(payout_account_id) → seller_payout_accounts",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Payouts",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Payout_Accounts",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Notifies",
+   "area": "people",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each notification is sent to exactly one customer.",
+   "sql": "foreign key customer_notifications(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Customer_Notifications",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Part_Of",
+   "area": "locations",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each city is part of exactly one country; a country has many cities.",
+   "sql": "foreign key cities(country_code) → countries",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Cities",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Countries",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Lies_In",
+   "area": "locations",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each address lies in exactly one city.",
+   "sql": "foreign key addresses(city_id) → cities",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Addresses",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Cities",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Saves_Address",
+   "area": "locations",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each address is saved by exactly one account; an account can save many addresses.",
+   "sql": "foreign key addresses(account_id) → accounts",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Addresses",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Accounts",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Zone_Of",
+   "area": "locations",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each delivery zone lies in exactly one city; a city may be divided into several zones.",
+   "sql": "foreign key delivery_zones(city_id) → cities",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Delivery_Zones",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Cities",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Placed_In",
+   "area": "locations",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each pickup point is in exactly one city.",
+   "sql": "foreign key pickup_points(city_id) → cities",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Pickup_Points",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Cities",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Levied_By",
+   "area": "locations",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each tax rate is defined by exactly one country; a country defines several rates.",
+   "sql": "foreign key tax_rates(country_code) → countries",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Tax_Rates",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Countries",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Subcategory_Of",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A category may have one parent category; a parent has many subcategories. The same entity set appears in two roles, as in the Reports_To example.",
+   "sql": "foreign key categories(parent_id) → categories",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Categories",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": "child"
+    },
+    {
+     "target": "Categories",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": "parent"
+    }
+   ]
+  },
+  {
+   "name": "Made_By",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every product is made by exactly one brand.",
+   "sql": "foreign key products(brand_id) → brands",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Brands",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Classified_As",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every product is classified under exactly one category.",
+   "sql": "foreign key products(category_id) → categories",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Categories",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Variant_Of",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every variant is a version of exactly one product; a product has at least one variant.",
+   "sql": "foreign key variants(product_id) → products",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Variants",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": false,
+     "total": true,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Illustrates",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each image illustrates exactly one product.",
+   "sql": "foreign key product_images(product_id) → products",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Product_Images",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Lists",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each listing sells exactly one variant; a variant can be listed by several sellers.",
+   "sql": "foreign key listings(variant_id) → variants",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Listings",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Variants",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Offers",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each listing is offered by exactly one seller.",
+   "sql": "foreign key listings(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Listings",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Price_Change_Of",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each price change belongs to exactly one listing.",
+   "sql": "foreign key price_history(listing_id) → listings",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Price_History",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Listings",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Asks",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each question is asked by exactly one customer.",
+   "sql": "foreign key product_questions(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Product_Questions",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Asked_About",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each question is about exactly one product.",
+   "sql": "foreign key product_questions(product_id) → products",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Product_Questions",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Writes_Answer",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each answer is written by exactly one staff member.",
+   "sql": "foreign key product_answers(staff_id) → staff",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Product_Answers",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Answers",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each answer replies to exactly one question; a question may get several answers.",
+   "sql": "foreign key product_answers(question_id) → product_questions",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Product_Answers",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Product_Questions",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Documents",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each document belongs to exactly one product.",
+   "sql": "foreign key product_documents(product_id) → products",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Product_Documents",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Writes_Seller_Review",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each seller review is written by exactly one customer.",
+   "sql": "foreign key seller_reviews(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Reviews",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Reviews_Seller",
+   "area": "catalogue",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each seller review is about exactly one seller.",
+   "sql": "foreign key seller_reviews(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Seller_Reviews",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Has_Cart",
+   "area": "shopping",
+   "kind": "binary, one-to-one",
+   "identifying": false,
+   "text": "One-to-one: every cart belongs to exactly one customer and a customer has at most one cart.",
+   "sql": "foreign key carts(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Carts",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Keeps",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each wishlist is kept by exactly one customer.",
+   "sql": "foreign key wishlists(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Wishlists",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Runs",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each promotion is run by exactly one seller.",
+   "sql": "foreign key promotions(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Promotions",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Issues",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each coupon is issued under exactly one promotion.",
+   "sql": "foreign key coupons(promotion_id) → promotions",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Coupons",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Promotions",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Writes_Review",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each review is written by exactly one customer.",
+   "sql": "foreign key reviews(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Reviews",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Reviews_Product",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each review is about exactly one product.",
+   "sql": "foreign key reviews(product_id) → products",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Reviews",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Products",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Attached_To",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each review image is attached to exactly one review.",
+   "sql": "foreign key review_images(review_id) → reviews",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Review_Images",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Reviews",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Buys_Gift_Card",
+   "area": "shopping",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each gift card is bought by exactly one customer.",
+   "sql": "foreign key gift_cards(buyer_customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Gift_Cards",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Sited_In",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each warehouse is sited in exactly one city.",
+   "sql": "foreign key warehouses(city_id) → cities",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Warehouses",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Cities",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Divided_Into",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each storage zone belongs to exactly one warehouse; a warehouse is divided into many zones.",
+   "sql": "foreign key storage_zones(warehouse_id) → warehouses",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Storage_Zones",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Warehouses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Holds_Bin",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each bin is inside exactly one storage zone.",
+   "sql": "foreign key storage_bins(zone_id) → storage_zones",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Storage_Bins",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Storage_Zones",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Batch_Of",
+   "area": "inventory",
+   "kind": "relationship with an aggregation",
+   "identifying": false,
+   "text": "Each batch belongs to exactly one stock position, that is, to one Stocks relationship (aggregation). A stock position consists of many batches.",
+   "sql": "foreign key stock_batches(seller_id, variant_id, warehouse_id) → stock_positions",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Stock_Batches",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Stocks (aggregation)",
+     "aggregation": true,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Stored_In",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each batch is stored in exactly one bin.",
+   "sql": "foreign key stock_batches(bin_id) → storage_bins",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Stock_Batches",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Storage_Bins",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Moves",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each movement changes exactly one batch.",
+   "sql": "foreign key stock_movements(batch_id) → stock_batches",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Stock_Movements",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Stock_Batches",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Uses_Supplier",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each supplier record belongs to exactly one seller.",
+   "sql": "foreign key suppliers(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Suppliers",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Delivered_To",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each purchase order is delivered to exactly one warehouse.",
+   "sql": "foreign key purchase_orders(warehouse_id) → warehouses",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Purchase_Orders",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Warehouses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Ordered_From",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each purchase order is placed with exactly one supplier.",
+   "sql": "foreign key purchase_orders(supplier_id) → suppliers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Purchase_Orders",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Suppliers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Orders_Variant",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each purchase-order line orders exactly one variant.",
+   "sql": "foreign key purchase_order_lines(variant_id) → variants",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Purchase_Order_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Variants",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "PO_Has_Line",
+   "area": "inventory",
+   "kind": "identifying relationship of a weak entity (one owner, many weak entities)",
+   "identifying": true,
+   "text": "A purchase-order line exists only inside its purchase order and is numbered within it.",
+   "sql": "foreign key purchase_order_lines(purchase_order_id) → purchase_orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Purchase_Order_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Purchase_Orders",
+     "aggregation": false,
+     "key": false,
+     "total": true,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Receipt_For",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each goods receipt is for exactly one purchase order.",
+   "sql": "foreign key goods_receipts(purchase_order_id) → purchase_orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Goods_Receipts",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Purchase_Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Conducts",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each inspection is conducted by exactly one staff member.",
+   "sql": "foreign key warehouse_inspections(staff_id) → staff",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Warehouse_Inspections",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Inspects",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each inspection is of exactly one warehouse.",
+   "sql": "foreign key warehouse_inspections(warehouse_id) → warehouses",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Warehouse_Inspections",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Warehouses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Authorizes",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each adjustment is authorised by exactly one staff member.",
+   "sql": "foreign key inventory_adjustments(staff_id) → staff",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Inventory_Adjustments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Adjusts",
+   "area": "inventory",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each adjustment corrects exactly one batch.",
+   "sql": "foreign key inventory_adjustments(batch_id) → stock_batches",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Inventory_Adjustments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Stock_Batches",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Collect_At",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "An order may be collected at one pickup point instead of being delivered home.",
+   "sql": "foreign key orders(pickup_point_id) → pickup_points",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Pickup_Points",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Ships_To",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every order has exactly one delivery or billing address.",
+   "sql": "foreign key orders(address_id) → addresses",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Addresses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Places",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every order is placed by exactly one customer.",
+   "sql": "foreign key orders(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Buys",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each order line buys exactly one listing.",
+   "sql": "foreign key order_lines(listing_id) → listings",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Order_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Listings",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Contains",
+   "area": "orders",
+   "kind": "identifying relationship of a weak entity (one owner, many weak entities)",
+   "identifying": true,
+   "text": "An order line exists only inside its order and is numbered within it. Every order has at least one line.",
+   "sql": "foreign key order_lines(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Order_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": true,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Status_Of",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each status event belongs to exactly one order.",
+   "sql": "foreign key order_status_events(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Order_Status_Events",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Saves_Method",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each payment method is saved by exactly one customer.",
+   "sql": "foreign key payment_methods(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Payment_Methods",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Uses_Method",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every payment uses exactly one saved payment method.",
+   "sql": "foreign key payments(payment_method_id) → payment_methods",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Payments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Payment_Methods",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Paid_By",
+   "area": "orders",
+   "kind": "binary, one-to-one",
+   "identifying": false,
+   "text": "One-to-one: every payment is for exactly one order and an order has at most one payment.",
+   "sql": "foreign key payments(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Payments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Transaction_Of",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each transaction belongs to exactly one payment.",
+   "sql": "foreign key payment_transactions(payment_id) → payments",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Payment_Transactions",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Payments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Invoiced_As",
+   "area": "orders",
+   "kind": "binary, one-to-one",
+   "identifying": false,
+   "text": "One-to-one: every invoice is for exactly one order and an order has at most one invoice.",
+   "sql": "foreign key invoices(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Invoices",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Bills",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each invoice line bills exactly one order line.",
+   "sql": "foreign key invoice_lines(order_id, order_line_no) → order_lines",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Invoice_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Order_Lines",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Taxed_At",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "An invoice line is taxed at most at one tax rate (none for tax-exempt lines).",
+   "sql": "foreign key invoice_lines(tax_rate_id) → tax_rates",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Invoice_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Tax_Rates",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Invoice_Has_Line",
+   "area": "orders",
+   "kind": "identifying relationship of a weak entity (one owner, many weak entities)",
+   "identifying": true,
+   "text": "An invoice line exists only inside its invoice and is numbered within it.",
+   "sql": "foreign key invoice_lines(invoice_id) → invoices",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Invoice_Lines",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Invoices",
+     "aggregation": false,
+     "key": false,
+     "total": true,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Picked_From",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each fulfilment is picked from exactly one warehouse.",
+   "sql": "foreign key fulfillments(warehouse_id) → warehouses",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Fulfillments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Warehouses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Handled_By",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each fulfilment is handled by exactly one seller.",
+   "sql": "foreign key fulfillments(seller_id) → seller_organizations",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Fulfillments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Fulfills",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each fulfilment fulfils exactly one order.",
+   "sql": "foreign key fulfillments(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Fulfillments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Packed_For",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each package is packed for exactly one fulfilment.",
+   "sql": "foreign key packages(fulfillment_id) → fulfillments",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Packages",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Fulfillments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Offers_Service",
+   "area": "delivery",
+   "kind": "identifying relationship of a weak entity (one owner, many weak entities)",
+   "identifying": true,
+   "text": "A carrier service exists only for its carrier; the service code (STD, EXP) is unique only within the carrier. Every carrier offers at least one service.",
+   "sql": "foreign key carrier_services(carrier_id) → carriers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Carrier_Services",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Carriers",
+     "aggregation": false,
+     "key": false,
+     "total": true,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Ships_Via",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Every shipment travels with exactly one carrier service.",
+   "sql": "foreign key shipments(carrier_id, service_code) → carrier_services",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Shipments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Carrier_Services",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Ships",
+   "area": "delivery",
+   "kind": "binary, one-to-one",
+   "identifying": false,
+   "text": "One-to-one: every shipment carries exactly one package and a package is shipped at most once.",
+   "sql": "foreign key shipments(package_id) → packages",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Shipments",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Packages",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Tracks",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each tracking event is for exactly one shipment.",
+   "sql": "foreign key tracking_events(shipment_id) → shipments",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Tracking_Events",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Shipments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Makes_Attempt",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each delivery attempt is made by exactly one courier.",
+   "sql": "foreign key delivery_attempts(courier_id) → couriers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Delivery_Attempts",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Couriers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Attempts",
+   "area": "delivery",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each delivery attempt is for exactly one shipment.",
+   "sql": "foreign key delivery_attempts(shipment_id) → shipments",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Delivery_Attempts",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Shipments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Proves",
+   "area": "delivery",
+   "kind": "binary, one-to-one",
+   "identifying": false,
+   "text": "One-to-one: a proof belongs to exactly one attempt and an attempt has at most one proof.",
+   "sql": "foreign key proof_of_delivery(attempt_id) → delivery_attempts",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Proof_Of_Delivery",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Delivery_Attempts",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Return_Of",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each return request is for exactly one order. The customer is reached through the order.",
+   "sql": "foreign key return_requests(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Return_Requests",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Refunded_From",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each refund is paid back against exactly one payment.",
+   "sql": "foreign key refunds(payment_id) → payments",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Refunds",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Payments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Refund_For",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each refund is for exactly one return request.",
+   "sql": "foreign key refunds(return_id) → return_requests",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Refunds",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Return_Requests",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Inspects_Return",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each return inspection is done by exactly one staff member.",
+   "sql": "foreign key return_inspections(staff_id) → staff",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Return_Inspections",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Inspection_Of",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each inspection checks exactly one return request.",
+   "sql": "foreign key return_inspections(return_id) → return_requests",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Return_Inspections",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Return_Requests",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "About_Order",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A ticket may be about one order.",
+   "sql": "foreign key support_tickets(order_id) → orders",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Support_Tickets",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Opens",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each ticket is opened by exactly one customer.",
+   "sql": "foreign key support_tickets(customer_id) → customers",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Support_Tickets",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Customers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Writes_Message",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each message is written by exactly one account (customer or staff).",
+   "sql": "foreign key ticket_messages(author_account_id) → accounts",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Ticket_Messages",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Accounts",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Message_In",
+   "area": "aftersales",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "Each message belongs to exactly one ticket.",
+   "sql": "foreign key ticket_messages(ticket_id) → support_tickets",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Ticket_Messages",
+     "aggregation": false,
+     "key": true,
+     "total": true,
+     "role": null
+    },
+    {
+     "target": "Support_Tickets",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Employs",
+   "area": "sellers",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A seller employs staff members to run its shop; a staff member may work for several sellers. The relationship records when the assignment started.",
+   "sql": "table seller_staff (primary key seller_id, staff_account_id)",
+   "attrs": [
+    {
+     "name": "assigned_at",
+     "domain": "TEXT"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Staff",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Serves",
+   "area": "locations",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A courier serves one or more delivery zones and a zone is served by several couriers, each since a given date.",
+   "sql": "table courier_zones (primary key courier_id, delivery_zone_id)",
+   "attrs": [
+    {
+     "name": "since",
+     "domain": "TEXT"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Couriers",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Delivery_Zones",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Has_Value",
+   "area": "catalogue",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A variant has a value for an attribute (Color = Black). The value belongs to the pair, not to either side alone.",
+   "sql": "table variant_values (primary key variant_id, attribute_id)",
+   "attrs": [
+    {
+     "name": "value",
+     "domain": "TEXT"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Variants",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Attributes",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "In_Cart",
+   "area": "shopping",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A cart contains listings, each with a quantity. A listing can be in many customers' carts.",
+   "sql": "table cart_lines (primary key cart_id, listing_id)",
+   "attrs": [
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity > 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Carts",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Listings",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Saved_In",
+   "area": "shopping",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A wishlist holds listings, and the same listing may be saved in many wishlists.",
+   "sql": "table wishlist_items (primary key wishlist_id, listing_id)",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Wishlists",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Listings",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Redeems",
+   "area": "shopping",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "An order redeems coupons. A coupon can be used by several orders up to its limit, and an order may use several coupons. The customer is not stored again because it is the customer of the order.",
+   "sql": "table coupon_redemptions (primary key coupon_id, order_id)",
+   "attrs": [
+    {
+     "name": "redeemed_at",
+     "domain": "TEXT"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Coupons",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Pays_With",
+   "area": "shopping",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "An order is partly paid with gift cards; the relationship records how much of each card was spent.",
+   "sql": "table gift_card_uses (primary key gift_card_id, order_id)",
+   "attrs": [
+    {
+     "name": "amount_cents",
+     "domain": "INTEGER; CHECK amount_cents > 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Gift_Cards",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Stocks",
+   "area": "inventory",
+   "kind": "3-ary (ternary) relationship",
+   "identifying": false,
+   "text": "A seller stocks a variant in a warehouse, with the available quantity and a reorder point. The quantity belongs to the triple: knowing that a seller sells a variant, that the seller uses a warehouse and that the warehouse holds the variant does not tell how many units of that seller's variant are in that warehouse (the Contracts argument on the Binary vs. Ternary slide).",
+   "sql": "table stock_positions (primary key seller_id, variant_id, warehouse_id)",
+   "attrs": [
+    {
+     "name": "available_qty",
+     "domain": "INTEGER; CHECK available_qty >= 0"
+    },
+    {
+     "name": "reorder_point",
+     "domain": "INTEGER; CHECK reorder_point >= 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Seller_Organizations",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Variants",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Warehouses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Receives",
+   "area": "inventory",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A goods receipt receives some quantity of purchase-order lines. A line can arrive across several receipts.",
+   "sql": "table goods_receipt_lines (primary key receipt_id, purchase_order_id, line_no)",
+   "attrs": [
+    {
+     "name": "received_qty",
+     "domain": "INTEGER; CHECK received_qty > 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Goods_Receipts",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Purchase_Order_Lines",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Reserves",
+   "area": "orders",
+   "kind": "relationship with an aggregation",
+   "identifying": false,
+   "text": "An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses.",
+   "sql": "table stock_reservations (primary key order_id, line_no, seller_id, variant_id, warehouse_id)",
+   "attrs": [
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity > 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Order_Lines",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Stocks (aggregation)",
+     "aggregation": true,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Includes",
+   "area": "delivery",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A fulfilment includes some quantity of order lines; a line split across warehouses appears in several fulfilments.",
+   "sql": "table fulfillment_lines (primary key fulfillment_id, order_id, line_no)",
+   "attrs": [
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity > 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Fulfillments",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Order_Lines",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Returns",
+   "area": "aftersales",
+   "kind": "binary, many-to-many",
+   "identifying": false,
+   "text": "A return request returns some quantity of order lines.",
+   "sql": "table return_lines (primary key return_id, order_id, line_no)",
+   "attrs": [
+    {
+     "name": "quantity",
+     "domain": "INTEGER; CHECK quantity > 0"
+    }
+   ],
+   "parts": [
+    {
+     "target": "Return_Requests",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Order_Lines",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  }
+ ],
+ "isa": {
+  "parent": "Accounts",
+  "children": [
+   "Customers",
+   "Staff",
+   "Couriers"
+  ],
+  "overlap": false,
+  "covering": true,
+  "text": "Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key account_id, but each has its own attributes and takes part in different relationships. Overlap is not allowed: an account has exactly one role, and triggers reject a subtype row whose account has a different role. Covering holds: role is mandatory, so every account is one of the three."
+ },
+ "total_participation": [
+  {
+   "relationship": "Contains",
+   "entity": "Orders",
+   "reason": "checkout always creates at least one order line"
+  },
+  {
+   "relationship": "PO_Has_Line",
+   "entity": "Purchase_Orders",
+   "reason": "a purchase order is created together with its lines"
+  },
+  {
+   "relationship": "Invoice_Has_Line",
+   "entity": "Invoices",
+   "reason": "an invoice is issued with one line per order line"
+  },
+  {
+   "relationship": "Variant_Of",
+   "entity": "Products",
+   "reason": "a product is only published with at least one variant"
+  },
+  {
+   "relationship": "Offers_Service",
+   "entity": "Carriers",
+   "reason": "a carrier is only usable with at least one service"
+  }
+ ],
+ "checks": [
+  {
+   "requirement": "1. At least 50 entities (two-person project)",
+   "ok": true,
+   "evidence": "71 entity sets"
+  },
+  {
+   "requirement": "2. One connected ER design",
+   "ok": true,
+   "evidence": "71 entity sets, 103 relationship sets and the ISA hierarchy form one connected component"
+  },
+  {
+   "requirement": "3a. Weak entity",
+   "ok": true,
+   "evidence": "Order_Lines (owner Orders), Purchase_Order_Lines (owner Purchase_Orders), Invoice_Lines (owner Invoices), Carrier_Services (owner Carriers); each has a partial key and total participation with a key constraint in its identifying relationship"
+  },
+  {
+   "requirement": "3b. ISA hierarchy",
+   "ok": true,
+   "evidence": "Accounts ISA Customers, Staff, Couriers (overlap: not allowed, covering: yes)"
+  },
+  {
+   "requirement": "3c. Ternary relationship",
+   "ok": true,
+   "evidence": "Stocks"
+  },
+  {
+   "requirement": "3d. Aggregation",
+   "ok": true,
+   "evidence": "Stocks is aggregated; used by Batch_Of, Reserves"
+  },
+  {
+   "requirement": "4. Every entity has a clearly defined key",
+   "ok": true,
+   "evidence": "own key underlined for strong entity sets, partial key (dashed) + owner key for weak ones, key inherited from Accounts for subclasses"
+  }
+ ],
+ "tables": 83,
+ "relationship_tables": 12
+}

@@ -20,7 +20,7 @@ A__categories__category_id -> E_categories [dir=none];
 A__categories__name [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="name"];
 A__categories__name -> E_categories [dir=none];
 E_customers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Customers
-(People and sellers)"];
+(People and accounts)"];
 E_listings [shape=box, penwidth=1, label="Listings"];
 A__listings__listing_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>listing_id</U>>];
 A__listings__listing_id -> E_listings [dir=none];
@@ -90,12 +90,12 @@ A__seller_reviews__body -> E_seller_reviews [dir=none];
 A__seller_reviews__created_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="created_at"];
 A__seller_reviews__created_at -> E_seller_reviews [dir=none];
 E_staff [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Staff
-(People and sellers)"];
+(People and accounts)"];
 E_wishlists [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Wishlists
 (Shopping and marketing)"];
 subgraph cluster_agg { style=dashed; color="#222222"; penwidth=1.4; margin=14; label="Aggregation: Stocks"; fontsize=12; labeljust=l;
 E_seller_organizations [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Seller_Organizations
-(People and sellers)"];
+(Sellers)"];
 E_variants [shape=box, penwidth=1, label="Variants"];
 A__variants__variant_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>variant_id</U>>];
 A__variants__variant_id -> E_variants [dir=none];

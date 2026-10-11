@@ -1,0 +1,30 @@
+digraph ER {
+graph [compound=true, rankdir=TB, newrank=true, nodesep=0.22, ranksep=0.42, fontname="Helvetica", fontsize=22, labelloc=t, label="ISA hierarchy", pad=0.3];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+E_accounts [shape=box, penwidth=1, label="Accounts"];
+A__accounts__account_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>account_id</U>>];
+A__accounts__account_id -> E_accounts [dir=none];
+A__accounts__email [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="email"];
+A__accounts__email -> E_accounts [dir=none];
+A__accounts__full_name [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="full_name"];
+A__accounts__full_name -> E_accounts [dir=none];
+A__accounts__role [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="role"];
+A__accounts__role -> E_accounts [dir=none];
+E_couriers [shape=box, penwidth=1, label="Couriers"];
+A__couriers__license_no [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="license_no"];
+A__couriers__license_no -> E_couriers [dir=none];
+E_customers [shape=box, penwidth=1, label="Customers"];
+A__customers__joined_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="joined_at"];
+A__customers__joined_at -> E_customers [dir=none];
+A__customers__loyalty_points [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="loyalty_points"];
+A__customers__loyalty_points -> E_customers [dir=none];
+E_staff [shape=box, penwidth=1, label="Staff"];
+A__staff__title [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="title"];
+A__staff__title -> E_staff [dir=none];
+ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="overlap: no\ncovering: yes"];
+E_accounts -> ISA [dir=none];
+ISA -> E_customers [dir=none];
+ISA -> E_staff [dir=none];
+ISA -> E_couriers [dir=none];
+}

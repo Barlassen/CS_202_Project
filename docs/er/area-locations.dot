@@ -3,7 +3,7 @@ graph [compound=true, rankdir=TB, newrank=true, nodesep=0.22, ranksep=0.42, font
 node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
 edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
 E_accounts [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Accounts
-(People and sellers)"];
+(People and accounts)"];
 E_addresses [shape=box, penwidth=1, label="Addresses"];
 A__addresses__address_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>address_id</U>>];
 A__addresses__address_id -> E_addresses [dir=none];
@@ -24,7 +24,7 @@ A__countries__country_code -> E_countries [dir=none];
 A__countries__name [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="name"];
 A__countries__name -> E_countries [dir=none];
 E_couriers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Couriers
-(People and sellers)"];
+(People and accounts)"];
 E_delivery_zones [shape=box, penwidth=1, label="Delivery_Zones"];
 A__delivery_zones__delivery_zone_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>delivery_zone_id</U>>];
 A__delivery_zones__delivery_zone_id -> E_delivery_zones [dir=none];
@@ -85,9 +85,4 @@ RA92__since [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="s
 RA92__since -> R92 [dir=none];
 E_couriers -> R92 [dir=none];
 R92 -> E_delivery_zones [dir=none];
-ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="overlap: no\ncovering: yes"];
-E_accounts -> ISA [dir=none];
-ISA -> E_customers [dir=none];
-ISA -> E_staff [dir=none];
-ISA -> E_couriers [dir=none];
 }

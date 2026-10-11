@@ -1,0 +1,122 @@
+digraph ER {
+graph [compound=true, rankdir=TB, newrank=true, nodesep=0.22, ranksep=0.42, fontname="Helvetica", fontsize=22, labelloc=t, label="MarketLab — Sellers", pad=0.3];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+E_accounts [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Accounts
+(People and accounts)"];
+E_commission_plans [shape=box, penwidth=1, label="Commission_Plans"];
+A__commission_plans__plan_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>plan_id</U>>];
+A__commission_plans__plan_id -> E_commission_plans [dir=none];
+A__commission_plans__name [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="name"];
+A__commission_plans__name -> E_commission_plans [dir=none];
+A__commission_plans__rate_percent [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="rate_percent"];
+A__commission_plans__rate_percent -> E_commission_plans [dir=none];
+E_fulfillments [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Fulfillments
+(Fulfilment and delivery)"];
+E_listings [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Listings
+(Catalogue)"];
+E_promotions [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Promotions
+(Shopping and marketing)"];
+E_seller_payout_accounts [shape=box, penwidth=1, label="Seller_Payout_Accounts"];
+A__seller_payout_accounts__payout_account_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>payout_account_id</U>>];
+A__seller_payout_accounts__payout_account_id -> E_seller_payout_accounts [dir=none];
+A__seller_payout_accounts__masked_iban [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="masked_iban"];
+A__seller_payout_accounts__masked_iban -> E_seller_payout_accounts [dir=none];
+A__seller_payout_accounts__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__seller_payout_accounts__status -> E_seller_payout_accounts [dir=none];
+E_seller_payouts [shape=box, penwidth=1, label="Seller_Payouts"];
+A__seller_payouts__payout_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>payout_id</U>>];
+A__seller_payouts__payout_id -> E_seller_payouts [dir=none];
+A__seller_payouts__period_start [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="period_start"];
+A__seller_payouts__period_start -> E_seller_payouts [dir=none];
+A__seller_payouts__period_end [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="period_end"];
+A__seller_payouts__period_end -> E_seller_payouts [dir=none];
+A__seller_payouts__amount_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="amount_cents"];
+A__seller_payouts__amount_cents -> E_seller_payouts [dir=none];
+A__seller_payouts__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__seller_payouts__status -> E_seller_payouts [dir=none];
+A__seller_payouts__paid_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="paid_at"];
+A__seller_payouts__paid_at -> E_seller_payouts [dir=none];
+E_seller_policies [shape=box, penwidth=1, label="Seller_Policies"];
+A__seller_policies__policy_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>policy_id</U>>];
+A__seller_policies__policy_id -> E_seller_policies [dir=none];
+A__seller_policies__policy_type [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="policy_type"];
+A__seller_policies__policy_type -> E_seller_policies [dir=none];
+A__seller_policies__body [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="body"];
+A__seller_policies__body -> E_seller_policies [dir=none];
+A__seller_policies__effective_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="effective_at"];
+A__seller_policies__effective_at -> E_seller_policies [dir=none];
+E_seller_reviews [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Seller_Reviews
+(Catalogue)"];
+E_seller_verifications [shape=box, penwidth=1, label="Seller_Verifications"];
+A__seller_verifications__verification_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>verification_id</U>>];
+A__seller_verifications__verification_id -> E_seller_verifications [dir=none];
+A__seller_verifications__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
+A__seller_verifications__status -> E_seller_verifications [dir=none];
+A__seller_verifications__checked_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="checked_at"];
+A__seller_verifications__checked_at -> E_seller_verifications [dir=none];
+E_staff [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Staff
+(People and accounts)"];
+E_suppliers [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Suppliers
+(Inventory and procurement)"];
+subgraph cluster_agg { style=dashed; color="#222222"; penwidth=1.4; margin=14; label="Aggregation: Stocks"; fontsize=12; labeljust=l;
+E_seller_organizations [shape=box, penwidth=1, label="Seller_Organizations"];
+A__seller_organizations__seller_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>seller_id</U>>];
+A__seller_organizations__seller_id -> E_seller_organizations [dir=none];
+A__seller_organizations__name [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="name"];
+A__seller_organizations__name -> E_seller_organizations [dir=none];
+E_variants [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Variants
+(Catalogue)"];
+E_warehouses [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Warehouses
+(Inventory and procurement)"];
+R98 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Stocks"];
+RA98__available_qty [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="available_qty"];
+RA98__available_qty -> R98 [dir=none];
+RA98__reorder_point [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="reorder_point"];
+RA98__reorder_point -> R98 [dir=none];
+E_seller_organizations -> R98 [dir=none];
+R98 -> E_variants [dir=none];
+R98 -> E_warehouses [dir=none];
+}
+R4 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Subscribes_To"];
+E_seller_organizations -> R4 [dir=forward, arrowhead=normal, penwidth=3];
+R4 -> E_commission_plans [dir=none];
+R5 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Owns"];
+E_seller_organizations -> R5 [dir=forward, arrowhead=normal, penwidth=3];
+R5 -> E_accounts [dir=none];
+R6 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Checks"];
+E_seller_verifications -> R6 [dir=forward, arrowhead=normal];
+R6 -> E_staff [dir=none];
+R7 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Verification_Of"];
+E_seller_verifications -> R7 [dir=forward, arrowhead=normal, penwidth=3];
+R7 -> E_seller_organizations [dir=none];
+R8 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Publishes"];
+E_seller_policies -> R8 [dir=forward, arrowhead=normal, penwidth=3];
+R8 -> E_seller_organizations [dir=none];
+R9 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Paid_Into"];
+E_seller_payout_accounts -> R9 [dir=forward, arrowhead=normal, penwidth=3];
+R9 -> E_seller_organizations [dir=none];
+R10 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Pays_To"];
+E_seller_payouts -> R10 [dir=forward, arrowhead=normal, penwidth=3];
+R10 -> E_seller_payout_accounts [dir=none];
+R24 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Offers"];
+E_listings -> R24 [dir=forward, arrowhead=normal, penwidth=3];
+R24 -> E_seller_organizations [dir=none];
+R32 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Reviews_Seller"];
+E_seller_reviews -> R32 [dir=forward, arrowhead=normal, penwidth=3];
+R32 -> E_seller_organizations [dir=none];
+R35 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Runs"];
+E_promotions -> R35 [dir=forward, arrowhead=normal, penwidth=3];
+R35 -> E_seller_organizations [dir=none];
+R47 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Uses_Supplier"];
+E_suppliers -> R47 [dir=forward, arrowhead=normal, penwidth=3];
+R47 -> E_seller_organizations [dir=none];
+R72 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Handled_By"];
+E_fulfillments -> R72 [dir=forward, arrowhead=normal, penwidth=3];
+R72 -> E_seller_organizations [dir=none];
+R91 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Employs"];
+RA91__assigned_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="assigned_at"];
+RA91__assigned_at -> R91 [dir=none];
+E_seller_organizations -> R91 [dir=none];
+R91 -> E_staff [dir=none];
+}
