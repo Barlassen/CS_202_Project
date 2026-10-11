@@ -2,11 +2,47 @@
 
 **Proposed e-sheet title:** Multi-Vendor Marketplace and Order Fulfillment Management System
 
-MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **71 entity sets and 103 relationship sets** in one connected diagram, implemented as an **83-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The code uses Python's standard library only; there is no package installation, external API, or GitHub dependency.
+MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **71 entity sets and 103 relationship sets** in one connected diagram, implemented as an **83-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The application uses Python's standard library only; there is no package installation, external API, or GitHub dependency. Only re-rendering the ER diagrams needs Node.js (see below).
 
 **Course-fit status:** This is a working draft. Read [`docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md`](docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md) before treating it as a submission. The team confirmed that the project-specific AI allowance applies to two-person projects; all generated work must still be checked and understood. PostgreSQL and the exact required SQL queries still need confirmation.
 
 **ER design (Part 1 deliverable):** [`docs/REPORT.md`](docs/REPORT.md) starts with the guideline checklist and the four required concepts, followed by Part 1 (every entity) and Part 2 (every relationship). The diagrams in [`docs/er/`](docs/er/) use the notation of the course slides.
+
+## Changes in the `project_changes` branch
+
+This branch reworks the ER design against `Guidelines.pdf` and the instructor's Chapter 2 slides. Compared with `main`:
+
+**Entities: 59 → 71.** Twelve new entity sets, each with its own attributes and relationships:
+
+| Area | New entity sets |
+| --- | --- |
+| Locations and tax | Countries, Cities, Delivery_Zones, Pickup_Points, Tax_Rates |
+| People and sellers | Departments, Loyalty_Tiers, Vehicles, Commission_Plans, Seller_Payouts |
+| Orders and payment | Payment_Methods |
+| Delivery | Carrier_Services (a second weak entity: the service code is unique only within its carrier) |
+
+Entity sets that could look like attributes (images, price history, status events, ...) now carry an explicit *entity vs. attribute* justification in the report. Even if all 13 of them were rejected, 58 entities would remain.
+
+**Diagrams in course notation** ([`docs/er/`](docs/er/)): attributes as ovals with the key underlined; arrows for key constraints, bold lines for total participation; weak entities and identifying relationships drawn bold with a dashed partial key; ISA triangle with its overlap and covering decisions; aggregation as a dashed box. There is one complete diagram (`full.svg`), one per business area (`area-*.svg`) and a legend.
+
+**Two corrected constructs:**
+- *Weak entity:* `Order_Lines` shows only its partial key `line_no`; the owner's key comes from the bold identifying relationship `Contains`, not from the entity box.
+- *Aggregation:* `Reserves` now connects to the dashed aggregation box around `Stocks`, not to the `Stocks` diamond. `Batch_Of` (each stock batch belongs to exactly one stock position) is a second relationship on the aggregation.
+
+**ISA decided and enforced:** overlap not allowed, covering holds. Triggers reject a `customers`/`staff`/`couriers` row whose account has a different role.
+
+**Report rewritten** ([`docs/REPORT.md`](docs/REPORT.md)): guideline checklist, the four required concepts, design choices, Part 1 with every entity (key, attributes with domains, justification) and Part 2 with every relationship (participants, key constraint, participation, attributes, SQL implementation).
+
+**Single source of truth:** the report and diagrams are generated from [`tools/er_model.py`](tools/er_model.py) by [`tools/build_er.py`](tools/build_er.py), which also checks the model against `schema.sql` and guideline items 1–4. `tests/test_design.py` runs those checks.
+
+**Schema clean-ups:**
+- The customer is no longer stored again in `coupon_redemptions` and `return_requests`, because the order already determines it.
+- Relationship tables (`coupon_redemptions`, `gift_card_uses`, `stock_reservations`) are keyed by their participants instead of a surrogate id.
+- `addresses` and `warehouses` refer to `cities`; `payments` refer to `payment_methods`; `shipments` refer to `carrier_services`.
+
+**Removed** (superseded, still in git history): `docs/CONCEPTUAL_ER.md`, `ENTITIES.md`, `RELATIONSHIPS.md`, `FOREIGN_KEYS.md`, `GUIDELINE_STATUS.md`, the old `er_*.svg/dot/png` files and the two old generator scripts.
+
+**If you ran `main` before:** delete your old `marketplace.db`. The schema changed from 70 to 83 tables, and the app refuses to open the old database.
 
 ## Run
 
