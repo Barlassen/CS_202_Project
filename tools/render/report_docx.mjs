@@ -6,14 +6,13 @@ import { fileURLToPath } from "node:url";
 import {
   AlignmentType, BorderStyle, Document, Footer, HeadingLevel, ImageRun, LevelFormat, Packer, PageBreak,
   PageNumber, PageOrientation, Paragraph, ShadingType, Table, TableCell, TableRow, TextRun, UnderlineType,
-  WidthType, ExternalHyperlink,
+  WidthType,
 } from "docx";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
 const ER = join(ROOT, "docs", "er");
 const OUT = join(ROOT, "docs", "MarketLab_Project_Description.docx");
 const M = JSON.parse(readFileSync(join(ER, "model.json"), "utf8"));
-const REPO = "https://github.com/Barlassen/CS_202_Project";
 
 // A4 with 2 cm margins.
 const PAGE = { width: 11906, height: 16838 };
@@ -167,8 +166,7 @@ const overview = [
   para([run("Example. ", { bold: true }), run("A customer buys two headphones from Nova Teknoloji (stocked in Istanbul) and a notebook set from Ev & Yaşam (stocked in Ankara). "
     + "This is one order with two order lines, two stock reservations and two fulfilments, each with its own package and shipment. "
     + "If one headphone arrives damaged, the return refers to the original order line, so the refund uses the price paid at checkout.")]),
-  para(`The design contains ${nEnt} entity sets and ${nRel} relationship sets, plus one ISA hierarchy, and they form a single connected ER diagram (Figure A1 in Appendix A). `
-    + `It is implemented as ${M.tables} relational tables; the schema and a working web prototype are in the project repository.`),
+  para(`The design contains ${nEnt} entity sets and ${nRel} relationship sets, plus one ISA hierarchy, and they form a single connected ER diagram (Figure A1 in Appendix A).`),
 ];
 
 const checklist = [
@@ -214,7 +212,7 @@ const constructs = [
   heading("4.2 ISA hierarchy", HeadingLevel.HEADING_2),
   para(`${M.isa.parent} is specialised into ${M.isa.children.join(", ")}. The subclasses inherit the attributes of an account and its key, and each adds its own attributes `
     + "and its own relationships: only customers place orders, only staff members work in departments, and only couriers drive vehicles and attempt deliveries."),
-  bullet([run("Overlap: not allowed. ", { bold: true }), run("An account has exactly one role. The database rejects a subclass row whose account has a different role.")]),
+  bullet([run("Overlap: not allowed. ", { bold: true }), run("An account has exactly one role, and a subclass entity must match the role recorded on its account.")]),
   bullet([run("Covering: yes. ", { bold: true }), run("The role is mandatory, so every account belongs to one of the three subclasses.")]),
   ...figure("concept-isa", "ISA hierarchy of accounts.", BODY_W, 4600),
   heading("4.3 Ternary relationship", HeadingLevel.HEADING_2),
@@ -242,7 +240,7 @@ for (const [area, label] of Object.entries(M.areas)) {
   sec += 1;
   const list = byArea(entities, area);
   part1.push(heading(`5.${sec} ${label}`, HeadingLevel.HEADING_2));
-  part1.push(tableCaption(`${label}: ${list.length} entity sets (diagram in Appendix A).`));
+  part1.push(tableCaption(`${label}: ${list.length} entity sets.`));
   part1.push(table([520, 1900, 3318, 1700, 2200], ["#", "Entity set", "Meaning", "Key", "Attributes"],
     list.map((e) => {
       e_no += 1;
@@ -267,7 +265,8 @@ const part2 = [
   para("Each relationship set is listed under the business area it belongs to. The participants column gives, for every participating entity set, "
     + "how many relationships of this set each of its entities takes part in, using the wording of Table 2. Role names are given where one entity set appears twice."),
   heading("6.0 ISA", HeadingLevel.HEADING_2),
-  para(`${M.isa.parent} ISA ${M.isa.children.join(", ")}. ${M.isa.text}`),
+  para(`${M.isa.parent} ISA ${M.isa.children.join(", ")}. The subclasses inherit the attributes of an account and its key, account_id, and each takes part in its own relationships. `
+    + "Overlap is not allowed, because every account has exactly one role; covering holds, because the role is mandatory."),
 ];
 sec = 0;
 for (const [area, label] of Object.entries(M.areas)) {
@@ -295,28 +294,22 @@ const decisions = [
   bullet([run("No redundant links. ", { bold: true }), run("A coupon redemption and a return request do not point to the customer again; the customer follows from the order. Storing it twice would allow the two to disagree.")]),
   bullet([run("Listing between seller and variant. ", { bold: true }), run("The catalogue (products, variants) is shared, while price and availability belong to a seller's listing. Two sellers can therefore offer the same variant at different prices.")]),
   bullet([run("Price kept on the order line. ", { bold: true }), run("Order_Lines stores the unit price at checkout, so later price changes, which are recorded in Price_History, do not alter past orders or refunds.")]),
-  bullet([run("Participation that the tables cannot enforce. ", { bold: true }), run("The following total participations are guaranteed by the application rather than by a foreign key:")]),
+  bullet([run("Total participation on the \"one\" side. ", { bold: true }), run("Some owners must always have at least one related entity. These are business rules of the marketplace:")]),
   ...M.total_participation.map((t) => new Paragraph({ numbering: { reference: "bullets", level: 1 }, spacing: { after: 40 },
     children: [run(`${t.entity} in ${t.relationship}: ${t.reason}.`)] })),
-  heading("8. From the ER design to tables", HeadingLevel.HEADING_1),
-  para(`Each entity set becomes a table with its key as primary key. A weak entity's table uses the owner's key plus the partial key as a composite primary key, and its identifying relationship is that same foreign key. `
-    + `Many-to-many and ternary relationship sets get their own table whose key combines the participants' keys (${M.relationship_tables} such tables, for example stock_positions for Stocks). `
-    + "Many-to-one relationships become a foreign key on the \"many\" side, NOT NULL when participation is total. The aggregation is implemented by foreign keys that reference the composite key of stock_positions. "
-    + "ISA subclasses share the account key, which is both their primary key and a foreign key to accounts."),
-  para([run("Repository: "), new ExternalHyperlink({ link: REPO, children: [run(REPO, { style: "Hyperlink", color: "1F5FAD", underline: {} })] })]),
 ];
 
 const areaFigures = [
   heading("Appendix A – ER diagrams", HeadingLevel.HEADING_1),
-  para("Figure A1 is the complete diagram; it is large and best viewed zoomed in (the repository also holds it as SVG). The figures after it show each business area in the same notation. "
-    + "Grey dashed boxes stand for entity sets of another area, drawn without attributes."),
+  para("Figure A1 is the complete diagram; it is large and best viewed zoomed in. Figures A2 and A3 enlarge the two central areas, where orders meet stock: "
+    + "they contain the weak entity Order_Lines, the ternary relationship Stocks and its aggregation. Grey dashed boxes stand for entity sets of another area, drawn without attributes."),
 ];
 let appendixNo = 0;
 const figA = (name, caption) => figure(name, caption, LAND_W, LAND_H - 900, `Figure A${++appendixNo}. `);
 areaFigures.push(...figA("full", `Complete ER diagram: ${nEnt} entity sets and ${nRel} relationship sets in one connected component.`));
-for (const [area, label] of Object.entries(M.areas)) {
+for (const area of ["orders", "inventory"]) {
   areaFigures.push(new Paragraph({ children: [new PageBreak()] }));
-  areaFigures.push(...figA(`area-${area}`, `${label}.`));
+  areaFigures.push(...figA(`area-${area}`, `${M.areas[area]}.`));
 }
 
 // ------------------------------------------------------------------ document
