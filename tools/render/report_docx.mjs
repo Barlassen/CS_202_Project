@@ -1,25 +1,23 @@
-// Builds docs/MarketLab_Project_Description.docx from docs/er/model.json and the PNG diagrams.
-// Run python3 tools/build_er.py first (it writes both). Usage: node tools/render/report_docx.mjs
+// Builds docs/MarketLab_Project_Description.docx from docs/er/model.json.
+// Run python3 tools/build_er.py first. Usage: node tools/render/report_docx.mjs
+// The report follows item 5 of Guidelines.pdf: a short introduction, then
+// Part 1 (every entity) and Part 2 (every relationship). The ER diagram is a separate file.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
-  AlignmentType, BorderStyle, Document, Footer, HeadingLevel, ImageRun, LevelFormat, Packer, PageBreak,
-  PageNumber, PageOrientation, Paragraph, ShadingType, Table, TableCell, TableRow, TextRun, UnderlineType,
-  WidthType,
+  AlignmentType, BorderStyle, Document, Footer, HeadingLevel, LevelFormat, Packer, PageBreak,
+  PageNumber, Paragraph, ShadingType, Table, TableCell, TableRow, TextRun, UnderlineType, WidthType,
 } from "docx";
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..", "..");
-const ER = join(ROOT, "docs", "er");
 const OUT = join(ROOT, "docs", "MarketLab_Project_Description.docx");
-const M = JSON.parse(readFileSync(join(ER, "model.json"), "utf8"));
+const M = JSON.parse(readFileSync(join(ROOT, "docs", "er", "model.json"), "utf8"));
+export const DIAGRAM_FILE = "MarketLab_ER_Diagram.pdf";
 
 // A4 with 2 cm margins.
 const PAGE = { width: 11906, height: 16838 };
 const MARGIN = { top: 1134, bottom: 1134, left: 1134, right: 1134 };
-const BODY_W = PAGE.width - MARGIN.left - MARGIN.right; // 9638 DXA
-const LAND_W = PAGE.height - MARGIN.left - MARGIN.right; // 14570 DXA
-const LAND_H = PAGE.width - MARGIN.top - MARGIN.bottom;
 const FONT = "Calibri";
 const INK = "1F2933";
 const MUTED = "52606D";
@@ -32,38 +30,8 @@ const para = (children, o = {}) =>
   new Paragraph({ spacing: { after: 120, line: 276 }, ...o, children: typeof children === "string" ? [run(children)] : children });
 const heading = (text, level) => new Paragraph({ heading: level, children: [run(text)] });
 const bullet = (children) => new Paragraph({ numbering: { reference: "bullets", level: 0 }, spacing: { after: 60 }, children: typeof children === "string" ? [run(children)] : children });
-const code = (text) => run(text, { font: "Consolas", size: 19 });
 const key = (text) => run(text, { underline: { type: UnderlineType.SINGLE } });
 const partialKey = (text) => run(text, { underline: { type: UnderlineType.DASH } });
-
-let figureNo = 0;
-let tableNo = 0;
-
-function pngSize(file) {
-  const b = readFileSync(file);
-  return { w: b.readUInt32BE(16), h: b.readUInt32BE(20), data: b };
-}
-
-function figure(name, caption, maxW, maxH, label) {
-  const { w, h, data } = pngSize(join(ER, `${name}.png`));
-  const maxWpx = (maxW / 1440) * 96;
-  const maxHpx = (maxH / 1440) * 96;
-  const s = Math.min(maxWpx / w, maxHpx / h);
-  figureNo += 1;
-  label = label ?? `Figure ${figureNo}. `;
-  return [
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 120, after: 60 }, keepNext: true,
-      children: [new ImageRun({ type: "png", data, transformation: { width: Math.round(w * s), height: Math.round(h * s) } })] }),
-    new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 200 },
-      children: [run(label, { bold: true, size: 18, color: MUTED }), run(caption, { size: 18, color: MUTED })] }),
-  ];
-}
-
-function tableCaption(text) {
-  tableNo += 1;
-  return new Paragraph({ spacing: { before: 120, after: 60 }, keepNext: true,
-    children: [run(`Table ${tableNo}. `, { bold: true, size: 18, color: MUTED }), run(text, { size: 18, color: MUTED })] });
-}
 
 const border = { style: BorderStyle.SINGLE, size: 4, color: GRID };
 const borders = { top: border, bottom: border, left: border, right: border };
@@ -131,17 +99,13 @@ const KIND = {
   "binary, many-to-one": "many-to-one",
   "binary, many-to-many": "many-to-many",
   "3-ary (ternary) relationship": "ternary",
-  "relationship with an aggregation": "uses the aggregation",
+  "relationship with an aggregation": "uses the aggregation of Stocks",
   "identifying relationship of a weak entity (one owner, many weak entities)": "identifying (weak entity)",
 };
 
 // ------------------------------------------------------------------ content
 const nEnt = entities.length;
 const nRel = rels.length;
-const weak = entities.filter((e) => e.owner);
-const stocks = rels.find((r) => r.name === "Stocks");
-const aggUsers = rels.filter((r) => r.parts.some((p) => p.aggregation));
-const check = (prefix) => M.checks.find((c) => c.requirement.startsWith(prefix));
 
 const titleBlock = [
   new Paragraph({ spacing: { after: 40 }, children: [run("MarketLab", { size: 52, bold: true, color: ACCENT })] }),
@@ -155,117 +119,50 @@ const titleBlock = [
   para("", { spacing: { after: 120 } }),
 ];
 
-const overview = [
-  heading("1. Overview", HeadingLevel.HEADING_1),
-  para("MarketLab is the database behind an online marketplace where many independent sellers offer their goods side by side. "
-    + "Products are described once in a shared catalogue; each seller then publishes its own priced listing for a specific variant of a product. "
-    + "Sellers keep stock in shared fulfilment warehouses, buy from their own suppliers, and are paid out by the marketplace after commission."),
-  para("A single customer order can therefore involve several sellers and several warehouses. At checkout, stock is reserved from the exact seller–variant–warehouse "
-    + "position that will ship it, and the order is split into one fulfilment per seller and warehouse. Each fulfilment is packed, handed to a carrier service and "
-    + "delivered by a courier, either to the customer's address or to a pickup point. After delivery the customer can return items, which are inspected before any refund."),
-  para([run("Example. ", { bold: true }), run("A customer buys two headphones from Nova Teknoloji (stocked in Istanbul) and a notebook set from Ev & Yaşam (stocked in Ankara). "
-    + "This is one order with two order lines, two stock reservations and two fulfilments, each with its own package and shipment. "
-    + "If one headphone arrives damaged, the return refers to the original order line, so the refund uses the price paid at checkout.")]),
-  para(`The design contains ${nEnt} entity sets and ${nRel} relationship sets, plus one ISA hierarchy, and they form a single connected ER diagram (Figure A1 in Appendix A).`),
-];
-
-const checklist = [
-  heading("2. How the design meets the guidelines", HeadingLevel.HEADING_1),
-  tableCaption("Project guidelines and where each one is satisfied."),
-  table([3000, 6638], ["Guideline", "In this design"], [
-    ["At least 50 entities (two-person project)", `${nEnt} entity sets, defined one by one in Part 1 (Section 5). Relationship sets are not counted, even where they have their own table.`],
-    ["One connected ER design", `All ${nEnt} entity sets are linked through the ${nRel} relationship sets and the ISA hierarchy; no entity or group is isolated. The complete diagram is Figure A1.`],
-    ["Weak entity", `${weak.map((e) => e.name).join(", ")} (Section 4.1).`],
-    ["ISA hierarchy", `${M.isa.parent} ISA ${M.isa.children.join(", ")}; overlap not allowed, covering holds (Section 4.2).`],
-    ["Ternary relationship", "Stocks between Seller_Organizations, Variants and Warehouses (Section 4.3)."],
-    ["Aggregation", `Stocks is aggregated and used by ${aggUsers.map((r) => r.name).join(" and ")} (Section 4.4).`],
-    ["A clear key for every entity", "Given in the Key column of Part 1: an own key for strong entity sets, partial key plus owner key for weak ones, and the inherited key for ISA subclasses."],
-    ["Report in two parts", "Part 1 – Entities (Section 5) and Part 2 – Relationships (Section 6)."],
-  ]),
-];
-
-const notation = [
-  heading("3. Notation", HeadingLevel.HEADING_1),
-  para("The diagrams use the notation of the course slides (Ramakrishnan & Gehrke, Chapter 2). Entity sets are rectangles and their attributes are ovals; "
-    + "the key attribute is underlined. Relationship sets are diamonds, and descriptive attributes of a relationship hang from its diamond. "
-    + "Foreign keys are not drawn as attributes: a reference to another entity is a relationship, and the foreign key only appears when the design is mapped to tables."),
-  ...figure("legend", "Symbols used in all diagrams.", BODY_W, 6200),
-  para("Part 2 states the constraints of every relationship in words. The words correspond to the symbols as follows:"),
-  tableCaption("Constraint wording used in Part 2."),
-  table([2200, 4238, 3200], ["Wording", "Meaning for each entity of that set", "Symbol"], [
-    ["exactly one", "takes part in exactly one relationship (key constraint and total participation)", "bold arrow into the diamond"],
-    ["at most one", "takes part in zero or one relationship (key constraint)", "thin arrow into the diamond"],
-    ["at least one", "takes part in one or more relationships (total participation)", "bold line"],
-    ["any number", "no constraint", "thin line"],
-  ]),
-];
-
-const owner = (e) => entities.find((x) => x.name === e.owner);
-const constructs = [
-  heading("4. Required ER constructs", HeadingLevel.HEADING_1),
-  heading("4.1 Weak entities", HeadingLevel.HEADING_2),
-  para("A weak entity has no key of its own. It is identified by its owner's key together with a partial key, and it exists only as part of its owner. "
-    + "Following the slides, each weak entity set takes part in its identifying relationship with a key constraint and total participation (bold arrow), and the owner can have many weak entities."),
-  ...weak.map((e) => bullet([run(`${e.name}: `, { bold: true }), run(`owner ${e.owner}, partial key `), partialKey(e.partial.join(", ")),
-    run(`, full key (${owner(e).key.join(", ")}, ${e.partial.join(", ")}). `), run(e.text)])),
-  ...figure("concept-weak", "Two of the weak entity sets with their identifying relationships.", BODY_W, 5200),
-  heading("4.2 ISA hierarchy", HeadingLevel.HEADING_2),
-  para(`${M.isa.parent} is specialised into ${M.isa.children.join(", ")}. The subclasses inherit the attributes of an account and its key, and each adds its own attributes `
-    + "and its own relationships: only customers place orders, only staff members work in departments, and only couriers drive vehicles and attempt deliveries."),
-  bullet([run("Overlap: not allowed. ", { bold: true }), run("An account has exactly one role, and a subclass entity must match the role recorded on its account.")]),
-  bullet([run("Covering: yes. ", { bold: true }), run("The role is mandatory, so every account belongs to one of the three subclasses.")]),
-  ...figure("concept-isa", "ISA hierarchy of accounts.", BODY_W, 4600),
-  heading("4.3 Ternary relationship", HeadingLevel.HEADING_2),
-  para(`${stocks.name} relates Seller_Organizations, Variants and Warehouses and carries the available quantity and the reorder point. `
-    + "The quantity belongs to the combination of all three. Three binary relationships (seller sells variant, seller uses warehouse, warehouse holds variant) "
-    + "would not say how many units of a particular seller's variant lie in a particular warehouse, which is the same argument the slides make with the Contracts example."),
-  heading("4.4 Aggregation", HeadingLevel.HEADING_2),
-  para("Stocks is enclosed together with its three entity sets in a dashed box, so that the relationship can itself take part in other relationships. Two relationships connect to the box:"),
-  ...aggUsers.map((r) => bullet([run(`${r.name}: `, { bold: true }), run(r.text)])),
-  para("We chose aggregation over a larger n-ary relationship because a reservation or a batch must refer to a stock position that already exists, because Reserves has its own attribute (quantity), "
-    + "and because the constraints differ: a batch belongs to exactly one stock position, whereas an order line may be served from several."),
-  ...figure("concept-aggregation", "Stocks as a ternary relationship, aggregated and used by Batch_Of and Reserves.", BODY_W, 5600),
+const intro = [
+  para("MarketLab is an online marketplace on which many independent sellers offer goods side by side. Products are described once in a shared catalogue, "
+    + "and each seller publishes its own priced listing for a specific variant. Sellers keep stock in shared warehouses, so one customer order can involve several "
+    + "sellers and warehouses: stock is reserved from the exact seller–variant–warehouse position, and the order is split into one fulfilment per seller and warehouse, "
+    + "which is shipped with a carrier service and delivered by a courier. Delivered items can be returned and refunded."),
+  para(`The design has ${nEnt} entity sets and ${nRel} relationship sets, plus one ISA hierarchy, all connected in a single ER diagram (submitted as ${DIAGRAM_FILE}). `
+    + "It includes weak entities, an ISA hierarchy, a ternary relationship and an aggregation. Part 1 defines every entity set and Part 2 every relationship set."),
 ];
 
 // Part 1
 let e_no = 0;
 const part1 = [
-  new Paragraph({ children: [new PageBreak()] }),
-  heading("5. Part 1 – Entities", HeadingLevel.HEADING_1),
-  para("The entity sets are grouped by business area. For each one we give its meaning, its key and its own attributes. "
-    + "Attributes that refer to another entity are left out on purpose; those links are the relationships of Part 2. Optional attributes may be empty, and unique attributes are alternative keys."),
+  heading("Part 1 – Entities", HeadingLevel.HEADING_1),
+  para("Entity sets are grouped by business area. For each one we give its meaning, its key and its own attributes. The key is underlined. "
+    + "A weak entity is identified by its partial key (dashed underline) together with the key of its owner, and the subclasses of Accounts inherit the Accounts key. "
+    + "Attributes that point to another entity are not listed, because such links are relationships (Part 2)."),
 ];
 let sec = 0;
 for (const [area, label] of Object.entries(M.areas)) {
   sec += 1;
   const list = byArea(entities, area);
-  part1.push(heading(`5.${sec} ${label}`, HeadingLevel.HEADING_2));
-  part1.push(tableCaption(`${label}: ${list.length} entity sets.`));
+  part1.push(heading(`1.${sec} ${label}`, HeadingLevel.HEADING_2));
   part1.push(table([520, 1900, 3318, 1700, 2200], ["#", "Entity set", "Meaning", "Key", "Attributes"],
     list.map((e) => {
       e_no += 1;
-      e.no = e_no;
       const nameCell = [[run(e.name, { bold: true, size: 18 })]];
       if (e.owner) nameCell.push([run(`weak, owner ${e.owner}`, { italics: true, size: 16, color: MUTED })]);
       if (e.inherited) nameCell.push([run(`subclass of ${M.isa.parent}`, { italics: true, size: 16, color: MUTED })]);
-      return [`E${e_no}`, nameCell, e.text, [keyRuns(e).map((r) => r)], [attrRuns(e)]];
+      return [`E${e_no}`, nameCell, e.why ? [[run(e.text, { size: 18 })], [run(e.why, { size: 16, italics: true, color: MUTED })]] : e.text,
+        [keyRuns(e)], [attrRuns(e)]];
     })));
-  const notes = list.filter((e) => e.why);
-  if (notes.length) {
-    part1.push(para([run("Why these are entity sets and not attributes", { bold: true, size: 20 })], { spacing: { before: 160, after: 60 } }));
-    notes.forEach((e) => part1.push(bullet([run(`${e.name}: `, { bold: true }), run(e.why)])));
-  }
 }
 
 // Part 2
 let r_no = 0;
 const part2 = [
   new Paragraph({ children: [new PageBreak()] }),
-  heading("6. Part 2 – Relationships", HeadingLevel.HEADING_1),
-  para("Each relationship set is listed under the business area it belongs to. The participants column gives, for every participating entity set, "
-    + "how many relationships of this set each of its entities takes part in, using the wording of Table 2. Role names are given where one entity set appears twice."),
-  heading("6.0 ISA", HeadingLevel.HEADING_2),
-  para(`${M.isa.parent} ISA ${M.isa.children.join(", ")}. The subclasses inherit the attributes of an account and its key, account_id, and each takes part in its own relationships. `
+  heading("Part 2 – Relationships", HeadingLevel.HEADING_1),
+  para("Relationship sets are grouped by the same business areas. For each participating entity set we state in how many relationships of the set each of its entities "
+    + "takes part: exactly one (key constraint and total participation), at most one (key constraint), at least one (total participation) or any number. "
+    + "Identifying relationships of weak entities, the ternary relationship and the relationships that use the aggregation are marked under the relationship name."),
+  heading("2.0 ISA hierarchy", HeadingLevel.HEADING_2),
+  para(`${M.isa.parent} ISA ${M.isa.children.join(", ")}. The subclasses inherit the attributes of an account and its key, account_id, and each takes part in its own relationships: `
+    + "only customers place orders, only staff members work in departments, and only couriers drive vehicles and attempt deliveries. "
     + "Overlap is not allowed, because every account has exactly one role; covering holds, because the role is mandatory."),
 ];
 sec = 0;
@@ -273,8 +170,7 @@ for (const [area, label] of Object.entries(M.areas)) {
   const list = byArea(rels, area);
   if (!list.length) continue;
   sec += 1;
-  part2.push(heading(`6.${sec} ${label}`, HeadingLevel.HEADING_2));
-  part2.push(tableCaption(`${label}: ${list.length} relationship sets.`));
+  part2.push(heading(`2.${sec} ${label}`, HeadingLevel.HEADING_2));
   part2.push(table([560, 1900, 2600, 4578], ["#", "Relationship", "Participants", "Meaning"],
     list.map((r) => {
       r_no += 1;
@@ -284,32 +180,6 @@ for (const [area, label] of Object.entries(M.areas)) {
       if (r.attrs.length) meaning.push([run("Attributes: ", { size: 18, bold: true }), run(r.attrs.map((a) => a.name).join(", "), { size: 18 })]);
       return [`R${r_no}`, nameCell, partCell, meaning];
     })));
-}
-
-const decisions = [
-  new Paragraph({ children: [new PageBreak()] }),
-  heading("7. Design decisions", HeadingLevel.HEADING_1),
-  bullet([run("Entity or attribute. ", { bold: true }), run("Whenever one entity can have several values of something (images, price changes, status changes, tracking scans, messages), "
-    + "that thing is an entity set, because an attribute holds a single value. Cities and countries are entity sets because addresses, warehouses, zones, pickup points and tax rates all depend on them and we search by them.")]),
-  bullet([run("No redundant links. ", { bold: true }), run("A coupon redemption and a return request do not point to the customer again; the customer follows from the order. Storing it twice would allow the two to disagree.")]),
-  bullet([run("Listing between seller and variant. ", { bold: true }), run("The catalogue (products, variants) is shared, while price and availability belong to a seller's listing. Two sellers can therefore offer the same variant at different prices.")]),
-  bullet([run("Price kept on the order line. ", { bold: true }), run("Order_Lines stores the unit price at checkout, so later price changes, which are recorded in Price_History, do not alter past orders or refunds.")]),
-  bullet([run("Total participation on the \"one\" side. ", { bold: true }), run("Some owners must always have at least one related entity. These are business rules of the marketplace:")]),
-  ...M.total_participation.map((t) => new Paragraph({ numbering: { reference: "bullets", level: 1 }, spacing: { after: 40 },
-    children: [run(`${t.entity} in ${t.relationship}: ${t.reason}.`)] })),
-];
-
-const areaFigures = [
-  heading("Appendix A – ER diagrams", HeadingLevel.HEADING_1),
-  para("Figure A1 is the complete diagram; it is large and best viewed zoomed in. Figures A2 and A3 enlarge the two central areas, where orders meet stock: "
-    + "they contain the weak entity Order_Lines, the ternary relationship Stocks and its aggregation. Grey dashed boxes stand for entity sets of another area, drawn without attributes."),
-];
-let appendixNo = 0;
-const figA = (name, caption) => figure(name, caption, LAND_W, LAND_H - 900, `Figure A${++appendixNo}. `);
-areaFigures.push(...figA("full", `Complete ER diagram: ${nEnt} entity sets and ${nRel} relationship sets in one connected component.`));
-for (const area of ["orders", "inventory"]) {
-  areaFigures.push(new Paragraph({ children: [new PageBreak()] }));
-  areaFigures.push(...figA(`area-${area}`, `${M.areas[area]}.`));
 }
 
 // ------------------------------------------------------------------ document
@@ -335,10 +205,7 @@ const doc = new Document({
     { level: 1, format: LevelFormat.BULLET, text: "–", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 800, hanging: 260 } } } },
   ] }] },
   sections: [
-    { properties: portrait, footers: { default: footer },
-      children: [...titleBlock, ...overview, ...checklist, ...notation, ...constructs, ...part1, ...part2, ...decisions] },
-    { properties: { page: { size: { ...PAGE, orientation: PageOrientation.LANDSCAPE }, margin: MARGIN } }, footers: { default: footer },
-      children: areaFigures },
+    { properties: portrait, footers: { default: footer }, children: [...titleBlock, ...intro, ...part1, ...part2] },
   ],
 });
 

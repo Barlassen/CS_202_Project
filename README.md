@@ -31,7 +31,7 @@ Entity sets that could look like attributes (images, price history, status event
 
 **ISA decided and enforced:** overlap not allowed, covering holds. Triggers reject a `customers`/`staff`/`couriers` row whose account has a different role.
 
-**Submission document** ([`docs/MarketLab_Project_Description.docx`](docs/MarketLab_Project_Description.docx)): the Word version of the design for the first deliverable, generated from the same model.
+**Submission files:** [`docs/MarketLab_Project_Description.docx`](docs/MarketLab_Project_Description.docx) (introduction, Part 1, Part 2, generated from the same model) and [`docs/MarketLab_ER_Diagram.pdf`](docs/MarketLab_ER_Diagram.pdf) (the complete diagram).
 
 **Report rewritten** ([`docs/REPORT.md`](docs/REPORT.md)): guideline checklist, the four required concepts, design choices, Part 1 with every entity (key, attributes with domains, justification) and Part 2 with every relationship (participants, key constraint, participation, attributes, SQL implementation).
 
@@ -76,7 +76,8 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 | `static/style.css` | Responsive interface styling |
 | `tools/er_model.py` | The conceptual ER model: which table is an entity or a relationship, names, explanations, weak entities, ISA, aggregation |
 | `tools/build_er.py` | Checks the model against `schema.sql` and the guidelines, then generates the diagrams and the report |
-| `docs/MarketLab_Project_Description.docx` | Generated submission document (Word): overview, guideline checklist, notation, the four constructs with figures, Part 1, Part 2, design decisions, diagrams in Appendix A. Fill in the names and student IDs before submitting. |
+| `docs/MarketLab_Project_Description.docx` | Generated submission report (Word), as item 5 of the guidelines asks: a short introduction, Part 1 (every entity) and Part 2 (every relationship). Fill in the names and student IDs before submitting. |
+| `docs/MarketLab_ER_Diagram.pdf` | The complete ER diagram as a one-page vector PDF, submitted next to the report (made from `docs/er/full.svg`; printing the SVG to PDF from a browser gives the same result). |
 | `docs/REPORT.md` | Generated report: guideline checklist, the four concepts, Part 1 entities, Part 2 relationships |
 | `docs/er/full.svg` | Generated complete ER diagram (large; zoom in) |
 | `docs/er/area-*.svg`, `concept-*.svg` | Generated ER diagram per business area, and one small figure per required construct (PNG copies are used in the Word document) |
