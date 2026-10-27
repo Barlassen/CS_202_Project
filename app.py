@@ -319,7 +319,19 @@ def deliver(db: sqlite3.Connection, order_id: int) -> None:
         shipments = db.execute("""SELECT sh.shipment_id FROM shipments sh
           JOIN packages p ON p.package_id=sh.package_id JOIN fulfillments f ON f.fulfillment_id=p.fulfillment_id
           WHERE f.order_id=?""", (order_id,)).fetchall()
+        # The courier is one who serves a delivery zone in the order's city; the customer receives the parcel.
+        courier = db.execute("""SELECT cz.courier_id FROM orders o
+          JOIN addresses a ON a.address_id=o.address_id
+          JOIN delivery_zones dz ON dz.city_id=a.city_id
+          JOIN courier_zones cz ON cz.delivery_zone_id=dz.delivery_zone_id
+          WHERE o.order_id=? ORDER BY cz.courier_id LIMIT 1""", (order_id,)).fetchone()
+        if not courier:
+            raise ValueError("No courier serves the order's city.")
+        recipient = db.execute("""SELECT ac.full_name FROM orders o JOIN accounts ac ON ac.account_id=o.customer_id
+          WHERE o.order_id=?""", (order_id,)).fetchone()[0]
         for shipment in shipments:
+            db.execute("""INSERT INTO delivery_attempts(shipment_id,courier_id,outcome,recipient_name)
+              VALUES(?,?,'delivered',?)""", (shipment[0], courier[0], recipient))
             db.execute("UPDATE shipments SET status='delivered',delivered_at=CURRENT_TIMESTAMP WHERE shipment_id=?", (shipment[0],))
             db.execute("INSERT INTO tracking_events(shipment_id,status,location) VALUES(?,'delivered','Customer address')", (shipment[0],))
         db.execute("UPDATE orders SET status='delivered' WHERE order_id=?", (order_id,))

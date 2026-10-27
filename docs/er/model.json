@@ -2209,7 +2209,7 @@
    "name": "Delivery_Attempts",
    "table": "delivery_attempts",
    "area": "delivery",
-   "text": "One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts.",
+   "text": "One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts. A shipment can fail several times but is delivered at most once.",
    "why": null,
    "key": [
     "attempt_id"
@@ -2257,7 +2257,8 @@
     }
    ],
    "checks": [
-    "(outcome = 'delivered') = (recipient_name IS NOT NULL)"
+    "(outcome = 'delivered') = (recipient_name IS NOT NULL)",
+    "outcome = 'delivered' OR evidence_url IS NULL"
    ]
   },
   {

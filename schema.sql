@@ -429,8 +429,12 @@ CREATE TABLE delivery_attempts (
   outcome TEXT NOT NULL CHECK(outcome IN ('delivered','failed')),
   recipient_name TEXT, evidence_url TEXT,
   notes TEXT,
-  CHECK((outcome = 'delivered') = (recipient_name IS NOT NULL))
+  CHECK((outcome = 'delivered') = (recipient_name IS NOT NULL)),
+  CHECK(outcome = 'delivered' OR evidence_url IS NULL)
 );
+-- A shipment is delivered at most once; failed attempts may repeat.
+CREATE UNIQUE INDEX one_delivered_attempt_per_shipment
+  ON delivery_attempts(shipment_id) WHERE outcome = 'delivered';
 
 -- After-sales and support
 CREATE TABLE return_requests (

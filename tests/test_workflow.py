@@ -34,6 +34,10 @@ class MarketplaceWorkflowTest(unittest.TestCase):
             app.fulfill(db, order_id)
             self.assertEqual(db.execute("SELECT COUNT(*) FROM fulfillments WHERE order_id=?", (order_id,)).fetchone()[0], 2)
             app.deliver(db, order_id)
+            self.assertEqual(db.execute("""SELECT COUNT(*) FROM delivery_attempts da
+              JOIN shipments sh ON sh.shipment_id=da.shipment_id JOIN packages p ON p.package_id=sh.package_id
+              JOIN fulfillments f ON f.fulfillment_id=p.fulfillment_id
+              WHERE f.order_id=? AND da.outcome='delivered' AND da.recipient_name IS NOT NULL""", (order_id,)).fetchone()[0], 2)
             app.request_return(db, order_id, 1, 1, "Damaged")
             return_id = db.execute("SELECT return_id FROM return_requests").fetchone()[0]
             app.approve_return(db, return_id)

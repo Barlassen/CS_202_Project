@@ -1,6 +1,7 @@
 """Create a local demo database. No external services or packages are required."""
 from pathlib import Path
 import os
+import re
 import sqlite3
 
 ROOT = Path(__file__).resolve().parent
@@ -18,8 +19,9 @@ def initialize(path: Path | None = None) -> Path:
         exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='accounts'").fetchone()
         if exists:
             count = db.execute("SELECT COUNT(*) FROM sqlite_master WHERE type='table' AND name NOT LIKE 'sqlite_%'").fetchone()[0]
-            if count != 83:
-                raise RuntimeError(f"Existing database has {count} tables; expected 83. Back it up and recreate it.")
+            expected = len(re.findall(r"^CREATE TABLE ", (ROOT / "schema.sql").read_text(encoding="utf-8"), re.M))
+            if count != expected:
+                raise RuntimeError(f"Existing database has {count} tables; expected {expected}. Back it up and recreate it.")
             return path
         db.executescript((ROOT / "schema.sql").read_text())
         db.executescript("""

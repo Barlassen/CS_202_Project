@@ -113,8 +113,8 @@ const titleBlock = [
   new Paragraph({ spacing: { after: 240 }, border: { bottom: { style: BorderStyle.SINGLE, size: 8, color: ACCENT, space: 6 } },
     children: [run("Project Description · Entity–Relationship Design · CS 202 Database Systems, Fall 2026–27", { size: 20, color: MUTED })] }),
   table([2600, 4038, 3000], ["Team member", "Full name", "Student ID"], [
-    ["Student 1", [run("[ENTER FULL NAME]", { size: 18, highlight: "yellow" })], [run("[ENTER STUDENT ID]", { size: 18, highlight: "yellow" })]],
-    ["Student 2", [run("[ENTER FULL NAME]", { size: 18, highlight: "yellow" })], [run("[ENTER STUDENT ID]", { size: 18, highlight: "yellow" })]],
+    ["Student 1", [run("Barlas Şen", { size: 18 })], [run("S033303", { size: 18 })]],
+    ["Student 2", [run("Uygar Ege Kocakır", { size: 18 })], [run("S045910", { size: 18 })]],
   ]),
   para("", { spacing: { after: 120 } }),
 ];
@@ -188,8 +188,8 @@ const footer = new Footer({ children: [new Paragraph({ alignment: AlignmentType.
 const portrait = { page: { size: PAGE, margin: MARGIN } };
 
 const doc = new Document({
-  creator: "Meriç Şen",
-  lastModifiedBy: "Meriç Şen",
+  creator: "Barlas Şen, Uygar Ege Kocakır",
+  lastModifiedBy: "Barlas Şen, Uygar Ege Kocakır",
   title: "MarketLab Project Description",
   description: "",
   styles: {

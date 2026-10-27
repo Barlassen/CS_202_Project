@@ -37,7 +37,8 @@ def read_schema():
             fks[r[0]]["ref"].append(r[4])
         uniques = []
         for idx in db.execute(f"PRAGMA index_list({name})"):
-            if idx[2]:
+            # A partial unique index (idx[4]) holds only for some rows, so it is no key constraint.
+            if idx[2] and not idx[4]:
                 uniques.append({r[2] for r in db.execute(f"PRAGMA index_info({idx[1]})")})
         pk = [c["name"] for c in sorted(cols, key=lambda c: c["pk"]) if c["pk"]]
         if pk:

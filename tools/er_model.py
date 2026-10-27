@@ -96,7 +96,7 @@ ENTITIES = {
     "carrier_services": ("delivery", "A delivery service offered by a carrier (Standard, Express) with its maximum delivery time. The service code is only unique within its carrier."),
     "shipments": ("delivery", "The transport of one package with one carrier service, identified by a tracking code."),
     "tracking_events": ("delivery", "One scan of a shipment along its route: status, location and time."),
-    "delivery_attempts": ("delivery", "One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts."),
+    "delivery_attempts": ("delivery", "One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts. A shipment can fail several times but is delivered at most once."),
     # After-sales and support
     "return_requests": ("aftersales", "A customer's request to send back items of a delivered order, with the reason and its status."),
     "return_inspections": ("aftersales", "The check of returned goods by a staff member before they may be restocked."),

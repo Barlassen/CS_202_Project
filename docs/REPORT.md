@@ -1014,7 +1014,7 @@ One scan of a shipment along its route: status, location and time.
 
 #### E63. Delivery_Attempts
 
-One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts.
+One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts. A shipment can fail several times but is delivered at most once.
 
 **Key:** `attempt_id`.
 
@@ -1028,6 +1028,8 @@ One try by a courier to hand over a shipment, with its outcome. A successful att
 | `notes` | TEXT | optional |
 
 Constraint: `(outcome = 'delivered') = (recipient_name IS NOT NULL)`.
+
+Constraint: `outcome = 'delivered' OR evidence_url IS NULL`.
 
 **Takes part in:** Attempts, Makes_Attempt.
 

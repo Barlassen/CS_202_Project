@@ -37,7 +37,7 @@ This branch reworks the ER design against `Guidelines.pdf` and the instructor's 
 | Orders and payment | Payment_Methods |
 | Delivery | Carrier_Services (a second weak entity: the service code is unique only within its carrier) |
 
-Entity sets that could look like attributes (images, price history, status events, ...) now carry an explicit *entity vs. attribute* justification in the report. Even if all 13 of them were rejected, 58 entities would remain.
+Entity sets that could look like attributes (images, price history, status events, ...) now carry an explicit *entity vs. attribute* justification in the report. Even if all 12 of them were rejected, 55 entities would remain.
 
 **Diagrams in course notation** ([`docs/er/`](docs/er/)): attributes as ovals with the key underlined; arrows for key constraints, bold lines for total participation; weak entities and identifying relationships drawn bold with a dashed partial key; ISA triangle with its overlap and covering decisions; aggregation as a dashed box. There is one complete diagram (`full.svg`), one per business area (`area-*.svg`) and a legend.
 
@@ -60,7 +60,7 @@ Entity sets that could look like attributes (images, price history, status event
 
 **Removed** (superseded, still in git history): `docs/CONCEPTUAL_ER.md`, `ENTITIES.md`, `RELATIONSHIPS.md`, `FOREIGN_KEYS.md`, `GUIDELINE_STATUS.md`, the old `er_*.svg/dot/png` files and the two old generator scripts.
 
-**If you ran `main` before:** delete your old `marketplace.db`. The schema changed from 70 to 83 tables, and the app refuses to open the old database.
+**If you ran `main` before:** delete your old `marketplace.db`. The schema changed from 70 to 79 tables, and the app refuses to open the old database.
 
 ## Run
 
@@ -86,7 +86,7 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 
 | File | Purpose |
 | --- | --- |
-| `schema.sql` | All 83 tables, keys, constraints, foreign keys and ISA triggers |
+| `schema.sql` | All 79 tables, keys, constraints, foreign keys and ISA triggers |
 | `seed.py` | Repeatable initial sample data |
 | `app.py` | HTTP routes, SQL queries, and transaction logic |
 | `static/style.css` | Responsive interface styling |
