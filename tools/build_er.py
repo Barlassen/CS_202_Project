@@ -113,7 +113,9 @@ def build_model(tables):
             spec = M.FK_RELATIONSHIPS[key]
             roles = spec[2] if len(spec) > 2 else (None, None)
             notnull = all(next(c for c in tables[table]["cols"] if c["name"] == col)["notnull"] for col in fk["cols"])
-            one_to_one = set(fk["cols"]) in tables[table]["uniques"]
+            # The foreign key is unique when some unique column set lies inside it, e.g.
+            # payments(order_id, customer_id) is unique because order_id alone is.
+            one_to_one = any(u <= set(fk["cols"]) for u in tables[table]["uniques"])
             parent = AGG if fk["parent"] == M.AGGREGATED else fk["parent"]
             name = spec[0]
             rels.append(dict(
@@ -591,8 +593,8 @@ def cross_rules(rel_name):
     out = []
     for rels_, rule, _ in M.CROSS_RULES:
         if rel_name in rels_:
-            other = next(x for x in rels_ if x != rel_name)
-            out.append(f"{rule[0].upper() + rule[1:]} (together with {other}); the schema enforces it with a composite foreign key")
+            others = " and ".join(x for x in rels_ if x != rel_name)
+            out.append(f"{rule[0].upper() + rule[1:]} (together with {others}); the schema enforces it with a composite foreign key")
     return out
 
 

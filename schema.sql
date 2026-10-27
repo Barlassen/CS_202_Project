@@ -95,7 +95,8 @@ CREATE TABLE seller_staff (
 CREATE TABLE addresses (
   address_id INTEGER PRIMARY KEY, account_id INTEGER NOT NULL REFERENCES accounts(account_id),
   city_id INTEGER NOT NULL REFERENCES cities(city_id),
-  label TEXT NOT NULL, street TEXT NOT NULL, postal_code TEXT NOT NULL
+  label TEXT NOT NULL, street TEXT NOT NULL, postal_code TEXT NOT NULL,
+  UNIQUE(address_id, account_id)
 );
 CREATE TABLE seller_verifications (
   verification_id INTEGER PRIMARY KEY, seller_id INTEGER NOT NULL REFERENCES seller_organizations(seller_id),
@@ -306,11 +307,16 @@ CREATE TABLE warehouse_inspections (
 -- Orders and payment
 CREATE TABLE orders (
   order_id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(account_id),
-  address_id INTEGER NOT NULL REFERENCES addresses(address_id),
-  pickup_point_id INTEGER REFERENCES pickup_points(pickup_point_id),
+  address_id INTEGER NOT NULL,
+  pickup_point_id INTEGER,
   placed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   status TEXT NOT NULL CHECK(status IN ('placed','shipped','delivered','cancelled')),
-  total_cents INTEGER NOT NULL CHECK(total_cents >= 0)
+  total_cents INTEGER NOT NULL CHECK(total_cents >= 0),
+  UNIQUE(order_id, customer_id),
+  -- The billing address must be one the ordering customer saved.
+  FOREIGN KEY(address_id, customer_id) REFERENCES addresses(address_id, account_id),
+  -- Declared after the address so build_er.py keeps the relationship numbering.
+  FOREIGN KEY(pickup_point_id) REFERENCES pickup_points(pickup_point_id)
 );
 -- Weak entity: line_no only identifies an order line within its parent order.
 CREATE TABLE order_lines (
@@ -327,13 +333,19 @@ CREATE TABLE order_status_events (
 CREATE TABLE payment_methods (
   payment_method_id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(account_id),
   method_type TEXT NOT NULL CHECK(method_type IN ('card','wallet','bank_transfer')),
-  masked_number TEXT NOT NULL, expires_on TEXT
+  masked_number TEXT NOT NULL, expires_on TEXT,
+  UNIQUE(payment_method_id, customer_id)
 );
 CREATE TABLE payments (
-  payment_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL UNIQUE REFERENCES orders(order_id),
-  payment_method_id INTEGER NOT NULL REFERENCES payment_methods(payment_method_id),
+  payment_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL UNIQUE,
+  payment_method_id INTEGER NOT NULL,
+  -- customer_id adds no information of its own: it ties both foreign keys below to one
+  -- customer, so an order is paid with a method its own customer saved.
+  customer_id INTEGER NOT NULL,
   status TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0),
-  UNIQUE(payment_id, order_id)
+  UNIQUE(payment_id, order_id),
+  FOREIGN KEY(order_id, customer_id) REFERENCES orders(order_id, customer_id),
+  FOREIGN KEY(payment_method_id, customer_id) REFERENCES payment_methods(payment_method_id, customer_id)
 );
 CREATE TABLE payment_transactions (
   transaction_id INTEGER PRIMARY KEY, payment_id INTEGER NOT NULL,
@@ -349,14 +361,18 @@ CREATE TABLE payment_transactions (
 );
 CREATE TABLE invoices (
   invoice_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL UNIQUE REFERENCES orders(order_id),
-  issued_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, total_cents INTEGER NOT NULL CHECK(total_cents >= 0)
+  issued_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP, total_cents INTEGER NOT NULL CHECK(total_cents >= 0),
+  UNIQUE(invoice_id, order_id)
 );
 CREATE TABLE invoice_lines (
-  invoice_id INTEGER NOT NULL REFERENCES invoices(invoice_id), line_no INTEGER NOT NULL,
+  invoice_id INTEGER NOT NULL, line_no INTEGER NOT NULL,
   order_id INTEGER NOT NULL, order_line_no INTEGER NOT NULL,
   amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0),
-  tax_rate_id INTEGER REFERENCES tax_rates(tax_rate_id),
+  tax_rate_id INTEGER,
   PRIMARY KEY(invoice_id, line_no),
+  -- The billed line must belong to the invoice's own order.
+  FOREIGN KEY(invoice_id, order_id) REFERENCES invoices(invoice_id, order_id),
+  FOREIGN KEY(tax_rate_id) REFERENCES tax_rates(tax_rate_id),
   FOREIGN KEY(order_id, order_line_no) REFERENCES order_lines(order_id, line_no)
 );
 -- The customer of a redemption is the customer of the order, so it is not stored again.
@@ -389,13 +405,16 @@ CREATE TABLE fulfillments (
   fulfillment_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL REFERENCES orders(order_id),
   seller_id INTEGER NOT NULL REFERENCES seller_organizations(seller_id),
   warehouse_id INTEGER NOT NULL REFERENCES warehouses(warehouse_id),
-  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(fulfillment_id, order_id)
 );
 CREATE TABLE fulfillment_lines (
-  fulfillment_id INTEGER NOT NULL REFERENCES fulfillments(fulfillment_id),
+  fulfillment_id INTEGER NOT NULL,
   order_id INTEGER NOT NULL, line_no INTEGER NOT NULL,
   quantity INTEGER NOT NULL CHECK(quantity > 0),
   PRIMARY KEY(fulfillment_id, order_id, line_no),
+  -- The shipped line must belong to the fulfilment's own order.
+  FOREIGN KEY(fulfillment_id, order_id) REFERENCES fulfillments(fulfillment_id, order_id),
   FOREIGN KEY(order_id, line_no) REFERENCES order_lines(order_id, line_no)
 );
 CREATE TABLE packages (
@@ -454,9 +473,11 @@ CREATE TABLE return_lines (
 );
 CREATE TABLE support_tickets (
   ticket_id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(account_id),
-  order_id INTEGER REFERENCES orders(order_id),
+  order_id INTEGER,
   subject TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('open','closed')),
-  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  -- A ticket can only be about an order of the customer who opened it.
+  FOREIGN KEY(order_id, customer_id) REFERENCES orders(order_id, customer_id)
 );
 CREATE TABLE ticket_messages (
   message_id INTEGER PRIMARY KEY, ticket_id INTEGER NOT NULL REFERENCES support_tickets(ticket_id),

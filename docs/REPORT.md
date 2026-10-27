@@ -93,6 +93,11 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
   - A goods receipt only receives lines of its own purchase order (Receipt_For + Receives): `goods_receipt_lines(receipt_id, purchase_order_id)` references `goods_receipts(receipt_id, purchase_order_id)`, and `(purchase_order_id, line_no)` references the purchase-order line, so both must name the same purchase order.
   - A return request only returns lines of its own order (Return_Of + Returns): `return_lines(return_id, order_id)` references `return_requests(return_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
   - A refund is paid back from the payment of the order that was returned (Transaction_Of + Refund_For): `payment_transactions` carries `order_id` only for this: `(payment_id, order_id)` references `payments` and `(return_id, order_id)` references `return_requests`, so the payment and the return belong to the same order.
+  - An order is billed to an address that its own customer saved (Places + Billed_To + Saves_Address): `orders(address_id, customer_id)` references `addresses(address_id, account_id)`.
+  - An order is paid with a payment method that its own customer saved (Paid_By + Uses_Method + Saves_Method): `payments` carries `customer_id` only for this: `(order_id, customer_id)` references `orders` and `(payment_method_id, customer_id)` references `payment_methods`, so the order and the method belong to the same customer.
+  - An invoice only bills lines of its own order (Invoiced_As + Invoice_Has_Line + Bills): `invoice_lines(invoice_id, order_id)` references `invoices(invoice_id, order_id)`, and `(order_id, order_line_no)` references the order line, so both must name the same order.
+  - A fulfilment only includes lines of its own order (Fulfills + Includes): `fulfillment_lines(fulfillment_id, order_id)` references `fulfillments(fulfillment_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
+  - A support ticket can only be about an order of the customer who opened it (Opens + About_Order + Places): `support_tickets(order_id, customer_id)` references `orders(order_id, customer_id)`.
   - A stock batch is stored in a bin of its own warehouse (Batch_Of + Stored_In): `stock_batches(bin_id, warehouse_id)` references `storage_bins(bin_id, warehouse_id)`, and `warehouse_id` is also part of the batch's stock position.
 
 ---
@@ -1319,6 +1324,8 @@ Each address is saved by exactly one account; an account can save many addresses
 
 Implemented as foreign key `addresses(account_id)` → `accounts`.
 
+**Consistency:** An order is billed to an address that its own customer saved (together with Places and Billed_To); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 #### R17. Zone_Of
 
 *binary, many-to-one*
@@ -1998,7 +2005,9 @@ Every order has exactly one billing address, and the VAT rate comes from its cou
 | Orders | — | yes: at most one | total |
 | Addresses | — | no | partial |
 
-Implemented as foreign key `orders(address_id)` → `addresses`.
+Implemented as foreign key `orders(address_id, customer_id)` → `addresses`.
+
+**Consistency:** An order is billed to an address that its own customer saved (together with Places and Saves_Address); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R67. Places
 
@@ -2012,6 +2021,10 @@ Every order is placed by exactly one customer.
 | Customers | — | no | partial |
 
 Implemented as foreign key `orders(customer_id)` → `customers`.
+
+**Consistency:** An order is billed to an address that its own customer saved (together with Billed_To and Saves_Address); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
+**Consistency:** A support ticket can only be about an order of the customer who opened it (together with Opens and About_Order); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R68. Buys
 
@@ -2065,6 +2078,8 @@ Each payment method is saved by exactly one customer.
 
 Implemented as foreign key `payment_methods(customer_id)` → `customers`.
 
+**Consistency:** An order is paid with a payment method that its own customer saved (together with Paid_By and Uses_Method); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 #### R72. Uses_Method
 
 *binary, many-to-one*
@@ -2076,7 +2091,9 @@ Every payment uses exactly one saved payment method.
 | Payments | — | yes: at most one | total |
 | Payment_Methods | — | no | partial |
 
-Implemented as foreign key `payments(payment_method_id)` → `payment_methods`.
+Implemented as foreign key `payments(payment_method_id, customer_id)` → `payment_methods`.
+
+**Consistency:** An order is paid with a payment method that its own customer saved (together with Paid_By and Saves_Method); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R73. Paid_By
 
@@ -2089,7 +2106,9 @@ One-to-one: every payment is for exactly one order and an order has at most one 
 | Payments | — | yes: at most one | total |
 | Orders | — | yes: at most one | partial |
 
-Implemented as foreign key `payments(order_id)` → `orders`.
+Implemented as foreign key `payments(order_id, customer_id)` → `orders`.
+
+**Consistency:** An order is paid with a payment method that its own customer saved (together with Uses_Method and Saves_Method); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R74. Refund_For
 
@@ -2134,6 +2153,8 @@ One-to-one: every invoice is for exactly one order and an order has at most one 
 
 Implemented as foreign key `invoices(order_id)` → `orders`.
 
+**Consistency:** An invoice only bills lines of its own order (together with Invoice_Has_Line and Bills); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 #### R77. Bills
 
 *binary, many-to-one*
@@ -2146,6 +2167,8 @@ Each invoice line bills exactly one order line.
 | Order_Lines | — | no | partial |
 
 Implemented as foreign key `invoice_lines(order_id, order_line_no)` → `order_lines`.
+
+**Consistency:** An invoice only bills lines of its own order (together with Invoiced_As and Invoice_Has_Line); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R78. Taxed_At
 
@@ -2171,7 +2194,9 @@ An invoice line exists only inside its invoice and is numbered within it.
 | Invoice_Lines | — | yes: at most one | total |
 | Invoices | — | no | total |
 
-Implemented as foreign key `invoice_lines(invoice_id)` → `invoices`.
+Implemented as foreign key `invoice_lines(invoice_id, order_id)` → `invoices`.
+
+**Consistency:** An invoice only bills lines of its own order (together with Invoiced_As and Bills); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R80. Reserves
 
@@ -2228,6 +2253,8 @@ Each fulfilment fulfils exactly one order.
 | Orders | — | no | partial |
 
 Implemented as foreign key `fulfillments(order_id)` → `orders`.
+
+**Consistency:** A fulfilment only includes lines of its own order (together with Includes); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R84. Packed_For
 
@@ -2335,6 +2362,8 @@ Descriptive attributes: `quantity` (INTEGER; CHECK quantity > 0).
 
 Implemented as table `fulfillment_lines` (primary key fulfillment_id, order_id, line_no).
 
+**Consistency:** A fulfilment only includes lines of its own order (together with Fulfills); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 ### After-sales and support
 
 #### R92. Return_Of
@@ -2389,7 +2418,9 @@ A ticket may be about one order.
 | Support_Tickets | — | yes: at most one | partial |
 | Orders | — | no | partial |
 
-Implemented as foreign key `support_tickets(order_id)` → `orders`.
+Implemented as foreign key `support_tickets(order_id, customer_id)` → `orders`.
+
+**Consistency:** A support ticket can only be about an order of the customer who opened it (together with Opens and Places); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R96. Opens
 
@@ -2403,6 +2434,8 @@ Each ticket is opened by exactly one customer.
 | Customers | — | no | partial |
 
 Implemented as foreign key `support_tickets(customer_id)` → `customers`.
+
+**Consistency:** A support ticket can only be about an order of the customer who opened it (together with About_Order and Places); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R97. Writes_Message
 

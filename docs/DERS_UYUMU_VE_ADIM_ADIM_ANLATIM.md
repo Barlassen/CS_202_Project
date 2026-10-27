@@ -125,7 +125,7 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 2. E-sheet ve ders ana sayfasındaki **tam SQL sorgusu/teslim listesi** elimizde yok.
 3. ER diyagramı ve rapor artık ders gösterimiyle üretiliyor. Yine de ikinizin de her entity'yi ve her ilişkiyi açıklayabilmesi gerekir; yönergedeki AI kuralının şartı bu.
 4. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok.
-5. Bazı bütünlük kuralları şemada zorlanmıyor: sipariş adresinin aynı müşteriye ait olması, stok batch bin'inin aynı depoda olması gibi. `accounts.role` ile alt tür eşleşmesi artık trigger'la zorlanıyor.
+5. İki ilişkinin aynı kayda varmasını gerektiren kurallar (sipariş adresinin ve ödeme yönteminin siparişi veren müşteriye ait olması, iade/fatura/fulfillment/mal kabul kalemlerinin kendi siparişine ait olması, stok batch'inin kendi deposundaki rafta durması gibi) artık şemada composite foreign key ile zorlanıyor; tam listesi `REPORT.md` içinde *Consistency across relationships* başlığında. `accounts.role` ile alt tür eşleşmesi trigger'la zorlanıyor. İlişki tablolarındaki total participation (ör. boş fulfillment olmaması) SQL'de değil, uygulamada sağlanıyor.
 6. Normalizasyon/FD incelemesi ve hocanın isteyebileceği özgül SQL örnekleri henüz tamamlanmadı.
 
 Bu maddeler projeyi değersiz kılmaz; mevcut durumun **çalışan, açıklanabilir bir taslak** olduğunu gösterir. İki kişi olarak her değişikliği anlayıp doğruladıktan ve ders sayfasındaki eksikleri tamamladıktan sonra nihai teslim değerlendirmesi yapmalısınız.

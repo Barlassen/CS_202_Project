@@ -187,8 +187,8 @@ def checkout(db: sqlite3.Connection) -> int:
                             (CUSTOMER_ID,)).fetchone()
         if not method:
             raise ValueError("No saved payment method.")
-        payment_id = db.execute("""INSERT INTO payments(order_id,payment_method_id,status,amount_cents)
-          VALUES(?,?,'paid',?)""", (order_id, method[0], total)).lastrowid
+        payment_id = db.execute("""INSERT INTO payments(order_id,payment_method_id,customer_id,status,amount_cents)
+          VALUES(?,?,?,'paid',?)""", (order_id, method[0], CUSTOMER_ID, total)).lastrowid
         db.execute("""INSERT INTO payment_transactions(payment_id,order_id,kind,status,amount_cents)
           VALUES(?,?,'capture','approved',?)""", (payment_id, order_id, total))
         invoice_id = db.execute("INSERT INTO invoices(order_id,total_cents) VALUES(?,?)", (order_id, total)).lastrowid

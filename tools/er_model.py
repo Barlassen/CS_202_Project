@@ -286,6 +286,24 @@ CROSS_RULES = [
      "a refund is paid back from the payment of the order that was returned",
      "`payment_transactions` carries `order_id` only for this: `(payment_id, order_id)` references `payments` "
      "and `(return_id, order_id)` references `return_requests`, so the payment and the return belong to the same order"),
+    (("Places", "Billed_To", "Saves_Address"),
+     "an order is billed to an address that its own customer saved",
+     "`orders(address_id, customer_id)` references `addresses(address_id, account_id)`"),
+    (("Paid_By", "Uses_Method", "Saves_Method"),
+     "an order is paid with a payment method that its own customer saved",
+     "`payments` carries `customer_id` only for this: `(order_id, customer_id)` references `orders` "
+     "and `(payment_method_id, customer_id)` references `payment_methods`, so the order and the method belong to the same customer"),
+    (("Invoiced_As", "Invoice_Has_Line", "Bills"),
+     "an invoice only bills lines of its own order",
+     "`invoice_lines(invoice_id, order_id)` references `invoices(invoice_id, order_id)`, "
+     "and `(order_id, order_line_no)` references the order line, so both must name the same order"),
+    (("Fulfills", "Includes"),
+     "a fulfilment only includes lines of its own order",
+     "`fulfillment_lines(fulfillment_id, order_id)` references `fulfillments(fulfillment_id, order_id)`, "
+     "and `(order_id, line_no)` references the order line, so both must name the same order"),
+    (("Opens", "About_Order", "Places"),
+     "a support ticket can only be about an order of the customer who opened it",
+     "`support_tickets(order_id, customer_id)` references `orders(order_id, customer_id)`"),
     (("Batch_Of", "Stored_In"),
      "a stock batch is stored in a bin of its own warehouse",
      "`stock_batches(bin_id, warehouse_id)` references `storage_bins(bin_id, warehouse_id)`, "

@@ -3,3 +3,6 @@ __pycache__/
 *.db
 .DS_Store
 node_modules/
+
+# Word lock files
+~$*
