@@ -5157,6 +5157,84 @@
    "reason": "a return request is created together with the order lines it returns"
   }
  ],
+ "cross_rules": [
+  {
+   "relationships": [
+    "Receipt_For",
+    "Receives"
+   ],
+   "rule": "a goods receipt only receives lines of its own purchase order",
+   "how": "goods_receipt_lines(receipt_id, purchase_order_id) references goods_receipts(receipt_id, purchase_order_id), and (purchase_order_id, line_no) references the purchase-order line, so both must name the same purchase order"
+  },
+  {
+   "relationships": [
+    "Return_Of",
+    "Returns"
+   ],
+   "rule": "a return request only returns lines of its own order",
+   "how": "return_lines(return_id, order_id) references return_requests(return_id, order_id), and (order_id, line_no) references the order line, so both must name the same order"
+  },
+  {
+   "relationships": [
+    "Transaction_Of",
+    "Refund_For"
+   ],
+   "rule": "a refund is paid back from the payment of the order that was returned",
+   "how": "payment_transactions carries order_id only for this: (payment_id, order_id) references payments and (return_id, order_id) references return_requests, so the payment and the return belong to the same order"
+  },
+  {
+   "relationships": [
+    "Places",
+    "Billed_To",
+    "Saves_Address"
+   ],
+   "rule": "an order is billed to an address that its own customer saved",
+   "how": "orders(address_id, customer_id) references addresses(address_id, account_id)"
+  },
+  {
+   "relationships": [
+    "Paid_By",
+    "Uses_Method",
+    "Saves_Method"
+   ],
+   "rule": "an order is paid with a payment method that its own customer saved",
+   "how": "payments carries customer_id only for this: (order_id, customer_id) references orders and (payment_method_id, customer_id) references payment_methods, so the order and the method belong to the same customer"
+  },
+  {
+   "relationships": [
+    "Invoiced_As",
+    "Invoice_Has_Line",
+    "Bills"
+   ],
+   "rule": "an invoice only bills lines of its own order",
+   "how": "invoice_lines(invoice_id, order_id) references invoices(invoice_id, order_id), and (order_id, order_line_no) references the order line, so both must name the same order"
+  },
+  {
+   "relationships": [
+    "Fulfills",
+    "Includes"
+   ],
+   "rule": "a fulfilment only includes lines of its own order",
+   "how": "fulfillment_lines(fulfillment_id, order_id) references fulfillments(fulfillment_id, order_id), and (order_id, line_no) references the order line, so both must name the same order"
+  },
+  {
+   "relationships": [
+    "Opens",
+    "About_Order",
+    "Places"
+   ],
+   "rule": "a support ticket can only be about an order of the customer who opened it",
+   "how": "support_tickets(order_id, customer_id) references orders(order_id, customer_id)"
+  },
+  {
+   "relationships": [
+    "Batch_Of",
+    "Stored_In"
+   ],
+   "rule": "a stock batch is stored in a bin of its own warehouse",
+   "how": "stock_batches(bin_id, warehouse_id) references storage_bins(bin_id, warehouse_id), and warehouse_id is also part of the batch's stock position"
+  }
+ ],
  "checks": [
   {
    "requirement": "1. At least 50 entities (two-person project)",

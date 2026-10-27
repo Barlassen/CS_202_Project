@@ -125,7 +125,8 @@ const intro = [
     + "sellers and warehouses: stock is reserved from the exact seller–variant–warehouse position, and the order is split into one fulfilment per seller and warehouse, "
     + "which is shipped with a carrier service and delivered by a courier. Delivered items can be returned and refunded."),
   para(`The design has ${nEnt} entity sets and ${nRel} relationship sets, plus one ISA hierarchy, all connected in a single ER diagram (submitted as ${DIAGRAM_FILE}). `
-    + "It includes weak entities, an ISA hierarchy, a ternary relationship and an aggregation. Part 1 defines every entity set and Part 2 every relationship set."),
+    + "It includes weak entities, an ISA hierarchy, a ternary relationship and an aggregation. Part 1 defines every entity set and Part 2 every relationship set; "
+    + "a short final section explains the main design choices."),
 ];
 
 // Part 1
@@ -183,6 +184,32 @@ for (const [area, label] of Object.entries(M.areas)) {
     })));
 }
 
+// Design choices: a short closing section, so the reasons behind the model are graded with it.
+const whyNames = M.entities.filter((e) => e.why).map((e) => e.name);
+const bold = (t) => run(t, { bold: true });
+const design = [
+  heading("Design choices", HeadingLevel.HEADING_1),
+  para([bold("Entity vs. attribute. "), run("An attribute holds one value, so a concept that an entity can have several of, or whose structure matters, is an entity set: "
+    + `${whyNames.join(", ")}. The reason for each is given under it in Part 1.`)]),
+  para([bold("Ternary relationship and aggregation. "), run("The available quantity belongs to a seller, a variant and a warehouse together: the three binary "
+    + "relationships between them cannot tell how many units of one seller's variant are in one warehouse, so Stocks is ternary. Order lines reserve stock from, "
+    + "and stock batches belong to, one such stock position, so Stocks is aggregated and Reserves and Batch_Of connect to the aggregation.")]),
+  para([bold("Avoiding redundancy. "), run("A fact is stored once. A return request or a coupon redemption does not store the customer again, because the order "
+    + "already determines it. After the instructor's review, four entity sets that repeated information were merged: Inventory_Adjustments into Stock_Movements, "
+    + "Refunds into Payment_Transactions, Proof_Of_Delivery into Delivery_Attempts and Storage_Zones into Storage_Bins.")]),
+  para([bold("Total participation that a foreign key cannot express. "), run("When the \"one\" side of a relationship must take part at least once, "
+    + "a foreign key cannot require it; the application creates the rows together:")], { keepNext: true }),
+  table([3300, 6338], ["Entity set in relationship", "Guaranteed because"],
+    M.total_participation.map((t) => [`${t.entity} in ${t.relationship}`, t.reason[0].toUpperCase() + t.reason.slice(1) + "."])),
+  para("", { spacing: { after: 120 } }),
+  para([bold("Consistency across relationships. "), run("Some rules need two relationships to reach the same entity. For example, a return request belongs to "
+    + "one order (Return_Of), and each returned line is an order line (Returns); both must name the same order. An ER diagram draws every relationship on its own, "
+    + "so it cannot show such a rule. The schema enforces each one with a composite foreign key through the shared column, e.g. return_lines(return_id, order_id) "
+    + "references return_requests(return_id, order_id). These rules are also noted under each relationship in Part 2.")], { keepNext: true }),
+  table([6338, 3300], ["Rule", "Relationships"],
+    M.cross_rules.map((r) => [r.rule[0].toUpperCase() + r.rule.slice(1) + ".", r.relationships.join(", ")])),
+];
+
 // ------------------------------------------------------------------ document
 const footer = new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER, children: [new TextRun({ children: [PageNumber.CURRENT], font: FONT, size: 18, color: MUTED })] })] });
 const portrait = { page: { size: PAGE, margin: MARGIN } };
@@ -206,7 +233,7 @@ const doc = new Document({
     { level: 1, format: LevelFormat.BULLET, text: "–", alignment: AlignmentType.LEFT, style: { paragraph: { indent: { left: 800, hanging: 260 } } } },
   ] }] },
   sections: [
-    { properties: portrait, footers: { default: footer }, children: [...titleBlock, ...intro, ...part1, ...part2] },
+    { properties: portrait, footers: { default: footer }, children: [...titleBlock, ...intro, ...part1, ...part2, ...design] },
   ],
 });
 

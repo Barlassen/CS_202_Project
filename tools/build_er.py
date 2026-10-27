@@ -632,6 +632,7 @@ def export_json(ent, rels, tables, checks):
         isa=dict(parent=name_of(M.ISA["parent"]), children=[name_of(c) for c in M.ISA["children"]],
                  overlap=M.ISA["overlap"], covering=M.ISA["covering"], text=M.ISA["explanation"]),
         total_participation=[dict(relationship=r, entity=name_of(t), reason=why) for (r, t), why in M.TOTAL_PARTICIPATION.items()],
+        cross_rules=[dict(relationships=list(r), rule=rule, how=how.replace("`", "")) for r, rule, how in M.CROSS_RULES],
         checks=[dict(requirement=a, ok=b, evidence=c) for a, b, c in checks],
         tables=len(tables), relationship_tables=len(M.RELATIONSHIP_TABLES))
     (ER_DIR / "model.json").write_text(json.dumps(data, indent=1, ensure_ascii=False))
