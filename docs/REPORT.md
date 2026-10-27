@@ -8,7 +8,7 @@
 
 Independent sellers list variants of catalogue products on one marketplace. A customer can buy from several sellers in one order. Each seller keeps stock in shared warehouses, so checkout reserves stock from the right seller in the right warehouse, and the order is split into one fulfilment per seller and warehouse. Packages are shipped with a carrier service and delivered by couriers. After delivery, the customer can return items and receive a refund.
 
-The design has **71 entity sets** and **103 relationship sets**, plus one ISA hierarchy. They form one connected ER diagram.
+The design has **67 entity sets** and **99 relationship sets**, plus one ISA hierarchy. They form one connected ER diagram.
 
 | Diagram | Content |
 | --- | --- |
@@ -46,8 +46,8 @@ Foreign-key columns are not drawn as attributes. In the ER model a reference to 
 
 | Requirement | Met | Evidence |
 | --- | --- | --- |
-| 1. At least 50 entities (two-person project) | yes | 71 entity sets |
-| 2. One connected ER design | yes | 71 entity sets, 103 relationship sets and the ISA hierarchy form one connected component |
+| 1. At least 50 entities (two-person project) | yes | 67 entity sets |
+| 2. One connected ER design | yes | 67 entity sets, 99 relationship sets and the ISA hierarchy form one connected component |
 | 3a. Weak entity | yes | Order_Lines (owner Orders), Purchase_Order_Lines (owner Purchase_Orders), Invoice_Lines (owner Invoices), Carrier_Services (owner Carriers); each has a partial key and total participation with a key constraint in its identifying relationship |
 | 3b. ISA hierarchy | yes | Accounts ISA Customers, Staff, Couriers (overlap: not allowed, covering: yes) |
 | 3c. Ternary relationship | yes | Stocks |
@@ -676,35 +676,23 @@ A fulfilment centre in a city where sellers keep stock.
 | `warehouse_id` | INTEGER | **key**, required |
 | `name` | TEXT | required |
 
-**Takes part in:** Delivered_To, Divided_Into, Inspects, Picked_From, Sited_In, Stocks, inside the Stocks aggregation.
+**Takes part in:** Delivered_To, Inspects, Located_In, Picked_From, Sited_In, Stocks, inside the Stocks aggregation.
 
-#### E41. Storage_Zones
+#### E41. Storage_Bins
 
-An area of a warehouse (for example zone A), identified by a code within the warehouse.
-
-**Key:** `zone_id`.
-
-| Attribute | Domain | Notes |
-| --- | --- | --- |
-| `zone_id` | INTEGER | **key**, required |
-| `code` | TEXT | required |
-
-**Takes part in:** Divided_Into, Holds_Bin.
-
-#### E42. Storage_Bins
-
-A shelf location inside a storage zone where stock batches are placed.
+A shelf location in a warehouse where stock batches are placed. Its address is a zone code and a shelf code (for example zone A, shelf A-01), unique within the warehouse.
 
 **Key:** `bin_id`.
 
 | Attribute | Domain | Notes |
 | --- | --- | --- |
 | `bin_id` | INTEGER | **key**, required |
+| `zone_code` | TEXT | required |
 | `code` | TEXT | required |
 
-**Takes part in:** Holds_Bin, Stored_In.
+**Takes part in:** Located_In, Stored_In.
 
-#### E43. Stock_Batches
+#### E42. Stock_Batches
 
 A physical quantity of one stock position received at one time and stored in one bin. Batches let the system issue the oldest stock first.
 
@@ -716,11 +704,11 @@ A physical quantity of one stock position received at one time and stored in one
 | `received_at` | TEXT | required |
 | `quantity` | INTEGER; CHECK quantity >= 0 | required |
 
-**Takes part in:** Adjusts, Batch_Of, Moves, Stored_In.
+**Takes part in:** Batch_Of, Moves, Stored_In.
 
-#### E44. Stock_Movements
+#### E43. Stock_Movements
 
-A signed change of a batch's quantity with its reason (reservation, damage, count).
+A signed change of a batch's quantity with its reason: made by the system (an order reservation) or entered by hand after a count or damage, then authorised by a staff member.
 
 **Key:** `movement_id`.
 
@@ -733,9 +721,9 @@ A signed change of a batch's quantity with its reason (reservation, damage, coun
 | `reason` | TEXT | required |
 | `moved_at` | TEXT | required |
 
-**Takes part in:** Moves.
+**Takes part in:** Authorizes, Moves.
 
-#### E45. Suppliers
+#### E44. Suppliers
 
 A wholesaler from which a seller buys goods.
 
@@ -749,7 +737,7 @@ A wholesaler from which a seller buys goods.
 
 **Takes part in:** Ordered_From, Uses_Supplier.
 
-#### E46. Purchase_Orders
+#### E45. Purchase_Orders
 
 An order a seller places with a supplier for delivery to one warehouse.
 
@@ -763,7 +751,7 @@ An order a seller places with a supplier for delivery to one warehouse.
 
 **Takes part in:** Delivered_To, Ordered_From, PO_Has_Line, Receipt_For.
 
-#### E47. Purchase_Order_Lines (weak entity)
+#### E46. Purchase_Order_Lines (weak entity)
 
 One line of a purchase order: which variant, how many and at what unit cost. Numbered within its purchase order.
 
@@ -777,7 +765,7 @@ One line of a purchase order: which variant, how many and at what unit cost. Num
 
 **Takes part in:** Orders_Variant, PO_Has_Line, Receives.
 
-#### E48. Goods_Receipts
+#### E47. Goods_Receipts
 
 The record of a delivery arriving at the warehouse against a purchase order. One purchase order may arrive in several deliveries.
 
@@ -790,7 +778,7 @@ The record of a delivery arriving at the warehouse against a purchase order. One
 
 **Takes part in:** Receipt_For, Receives.
 
-#### E49. Warehouse_Inspections
+#### E48. Warehouse_Inspections
 
 A safety or quality inspection of a warehouse performed by a staff member, with its result.
 
@@ -804,24 +792,9 @@ A safety or quality inspection of a warehouse performed by a staff member, with 
 
 **Takes part in:** Conducts, Inspects.
 
-#### E50. Inventory_Adjustments
-
-A manual correction of a batch's quantity (after a count or damage), authorised by a staff member.
-
-**Key:** `adjustment_id`.
-
-| Attribute | Domain | Notes |
-| --- | --- | --- |
-| `adjustment_id` | INTEGER | **key**, required |
-| `quantity_delta` | INTEGER; CHECK quantity_delta <> 0 | required |
-| `reason` | TEXT | required |
-| `adjusted_at` | TEXT | required |
-
-**Takes part in:** Adjusts, Authorizes.
-
 ### Orders and payment
 
-#### E51. Orders
+#### E49. Orders
 
 A customer's purchase of one or more listings, delivered to an address or a pickup point, with its status and total.
 
@@ -836,7 +809,7 @@ A customer's purchase of one or more listings, delivered to an address or a pick
 
 **Takes part in:** About_Order, Collect_At, Contains, Fulfills, Invoiced_As, Paid_By, Pays_With, Places, Redeems, Return_Of, Ships_To, Status_Of.
 
-#### E52. Order_Lines (weak entity)
+#### E50. Order_Lines (weak entity)
 
 One line of an order: which listing, how many and the unit price at checkout. Numbered within its order.
 
@@ -850,7 +823,7 @@ One line of an order: which listing, how many and the unit price at checkout. Nu
 
 **Takes part in:** Bills, Buys, Contains, Includes, Reserves, Returns.
 
-#### E53. Order_Status_Events
+#### E51. Order_Status_Events
 
 One step in an order's history (placed, shipped, delivered) with its time.
 
@@ -866,7 +839,7 @@ One step in an order's history (placed, shipped, delivered) with its time.
 
 **Takes part in:** Status_Of.
 
-#### E54. Payment_Methods
+#### E52. Payment_Methods
 
 A card, wallet or bank account a customer has saved for paying (stored masked).
 
@@ -881,7 +854,7 @@ A card, wallet or bank account a customer has saved for paying (stored masked).
 
 **Takes part in:** Saves_Method, Uses_Method.
 
-#### E55. Payments
+#### E53. Payments
 
 The payment of one order, made with one payment method, with its amount and status.
 
@@ -893,11 +866,11 @@ The payment of one order, made with one payment method, with its amount and stat
 | `status` | TEXT | required |
 | `amount_cents` | INTEGER; CHECK amount_cents >= 0 | required |
 
-**Takes part in:** Paid_By, Refunded_From, Transaction_Of, Uses_Method.
+**Takes part in:** Paid_By, Transaction_Of, Uses_Method.
 
-#### E56. Payment_Transactions
+#### E54. Payment_Transactions
 
-One money movement of a payment, such as the capture or a refund.
+One money movement of a payment: the capture, or a refund paid back for an approved return request.
 
 **Key:** `transaction_id`.
 
@@ -906,14 +879,16 @@ One money movement of a payment, such as the capture or a refund.
 | Attribute | Domain | Notes |
 | --- | --- | --- |
 | `transaction_id` | INTEGER | **key**, required |
-| `kind` | TEXT | required |
+| `kind` | TEXT; CHECK kind IN ('capture','refund') | required |
 | `status` | TEXT | required |
 | `amount_cents` | INTEGER; CHECK amount_cents >= 0 | required |
 | `created_at` | TEXT | required |
 
-**Takes part in:** Transaction_Of.
+Constraint: `(kind = 'refund') = (return_id IS NOT NULL)`.
 
-#### E57. Invoices
+**Takes part in:** Refund_For, Transaction_Of.
+
+#### E55. Invoices
 
 The legal invoice issued for an order.
 
@@ -927,7 +902,7 @@ The legal invoice issued for an order.
 
 **Takes part in:** Invoice_Has_Line, Invoiced_As.
 
-#### E58. Invoice_Lines (weak entity)
+#### E56. Invoice_Lines (weak entity)
 
 One line of an invoice: the billed amount for one order line and the tax rate applied. Numbered within its invoice.
 
@@ -942,7 +917,7 @@ One line of an invoice: the billed amount for one order line and the tax rate ap
 
 ### Fulfilment and delivery
 
-#### E59. Fulfillments
+#### E57. Fulfillments
 
 The part of an order that one seller prepares from one warehouse. A multi-seller order is split into several fulfilments.
 
@@ -955,7 +930,7 @@ The part of an order that one seller prepares from one warehouse. A multi-seller
 
 **Takes part in:** Fulfills, Handled_By, Includes, Packed_For, Picked_From.
 
-#### E60. Packages
+#### E58. Packages
 
 A physical parcel packed for a fulfilment, with its weight.
 
@@ -968,7 +943,7 @@ A physical parcel packed for a fulfilment, with its weight.
 
 **Takes part in:** Packed_For, Ships.
 
-#### E61. Carriers
+#### E59. Carriers
 
 A shipping company that transports packages.
 
@@ -981,7 +956,7 @@ A shipping company that transports packages.
 
 **Takes part in:** Offers_Service.
 
-#### E62. Carrier_Services (weak entity)
+#### E60. Carrier_Services (weak entity)
 
 A delivery service offered by a carrier (Standard, Express) with its maximum delivery time. The service code is only unique within its carrier.
 
@@ -995,7 +970,7 @@ A delivery service offered by a carrier (Standard, Express) with its maximum del
 
 **Takes part in:** Offers_Service, Ships_Via.
 
-#### E63. Shipments
+#### E61. Shipments
 
 The transport of one package with one carrier service, identified by a tracking code.
 
@@ -1011,7 +986,7 @@ The transport of one package with one carrier service, identified by a tracking 
 
 **Takes part in:** Attempts, Ships, Ships_Via, Tracks.
 
-#### E64. Tracking_Events
+#### E62. Tracking_Events
 
 One scan of a shipment along its route: status, location and time.
 
@@ -1028,9 +1003,9 @@ One scan of a shipment along its route: status, location and time.
 
 **Takes part in:** Tracks.
 
-#### E65. Delivery_Attempts
+#### E63. Delivery_Attempts
 
-One try by a courier to hand over a shipment, with its outcome.
+One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts.
 
 **Key:** `attempt_id`.
 
@@ -1039,30 +1014,17 @@ One try by a courier to hand over a shipment, with its outcome.
 | `attempt_id` | INTEGER | **key**, required |
 | `attempted_at` | TEXT | required |
 | `outcome` | TEXT; CHECK outcome IN ('delivered','failed') | required |
+| `recipient_name` | TEXT | optional |
+| `evidence_url` | TEXT | optional |
 | `notes` | TEXT | optional |
 
-**Takes part in:** Attempts, Makes_Attempt, Proves.
+Constraint: `(outcome = 'delivered') = (recipient_name IS NOT NULL)`.
 
-#### E66. Proof_Of_Delivery
-
-The evidence recorded for a successful delivery attempt: who received the parcel and a photo or signature link.
-
-**Key:** `proof_id`.
-
-**Why an entity set:** The evidence is recorded only for successful attempts and has its own attributes; keeping it separate avoids empty attribute values on failed attempts.
-
-| Attribute | Domain | Notes |
-| --- | --- | --- |
-| `proof_id` | INTEGER | **key**, required |
-| `recipient_name` | TEXT | required |
-| `evidence_url` | TEXT | optional |
-| `recorded_at` | TEXT | required |
-
-**Takes part in:** Proves.
+**Takes part in:** Attempts, Makes_Attempt.
 
 ### After-sales and support
 
-#### E67. Return_Requests
+#### E64. Return_Requests
 
 A customer's request to send back items of a delivered order, with the reason and its status.
 
@@ -1077,21 +1039,7 @@ A customer's request to send back items of a delivered order, with the reason an
 
 **Takes part in:** Inspection_Of, Refund_For, Return_Of, Returns.
 
-#### E68. Refunds
-
-Money paid back for an approved return, charged against the order's payment.
-
-**Key:** `refund_id`.
-
-| Attribute | Domain | Notes |
-| --- | --- | --- |
-| `refund_id` | INTEGER | **key**, required |
-| `amount_cents` | INTEGER; CHECK amount_cents > 0 | required |
-| `status` | TEXT; CHECK status IN ('pending','completed','rejected') | required |
-
-**Takes part in:** Refund_For, Refunded_From.
-
-#### E69. Return_Inspections
+#### E65. Return_Inspections
 
 The check of returned goods by a staff member before they may be restocked.
 
@@ -1105,7 +1053,7 @@ The check of returned goods by a staff member before they may be restocked.
 
 **Takes part in:** Inspection_Of, Inspects_Return.
 
-#### E70. Support_Tickets
+#### E66. Support_Tickets
 
 A help request opened by a customer, optionally about a specific order.
 
@@ -1120,7 +1068,7 @@ A help request opened by a customer, optionally about a specific order.
 
 **Takes part in:** About_Order, Message_In, Opens.
 
-#### E71. Ticket_Messages
+#### E67. Ticket_Messages
 
 One message in a support ticket's conversation, written by an account.
 
@@ -1805,31 +1753,31 @@ Each warehouse is sited in exactly one city.
 
 Implemented as foreign key `warehouses(city_id)` → `cities`.
 
-#### R50. Divided_Into
+#### R50. Located_In
 
 *binary, many-to-one*
 
-Each storage zone belongs to exactly one warehouse; a warehouse is divided into many zones.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Storage_Zones | — | yes: at most one | total |
-| Warehouses | — | no | partial |
-
-Implemented as foreign key `storage_zones(warehouse_id)` → `warehouses`.
-
-#### R51. Holds_Bin
-
-*binary, many-to-one*
-
-Each bin is inside exactly one storage zone.
+Each bin is in exactly one warehouse; a warehouse has many bins.
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
 | Storage_Bins | — | yes: at most one | total |
-| Storage_Zones | — | no | partial |
+| Warehouses | — | no | partial |
 
-Implemented as foreign key `storage_bins(zone_id)` → `storage_zones`.
+Implemented as foreign key `storage_bins(warehouse_id)` → `warehouses`.
+
+#### R51. Stored_In
+
+*binary, many-to-one*
+
+Each batch is stored in exactly one bin, and the bin must be in the batch's own warehouse.
+
+| Participant | Role | Key constraint | Participation |
+| --- | --- | --- | --- |
+| Stock_Batches | — | yes: at most one | total |
+| Storage_Bins | — | no | partial |
+
+Implemented as foreign key `stock_batches(bin_id, warehouse_id)` → `storage_bins`.
 
 #### R52. Batch_Of
 
@@ -1844,18 +1792,18 @@ Each batch belongs to exactly one stock position, that is, to one Stocks relatio
 
 Implemented as foreign key `stock_batches(seller_id, variant_id, warehouse_id)` → `stock_positions`.
 
-#### R53. Stored_In
+#### R53. Authorizes
 
 *binary, many-to-one*
 
-Each batch is stored in exactly one bin.
+A manual movement (a count correction or damage) is authorised by one staff member; movements made by the system, such as order reservations, have none.
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
-| Stock_Batches | — | yes: at most one | total |
-| Storage_Bins | — | no | partial |
+| Stock_Movements | — | yes: at most one | partial |
+| Staff | — | no | partial |
 
-Implemented as foreign key `stock_batches(bin_id)` → `storage_bins`.
+Implemented as foreign key `stock_movements(staff_id)` → `staff`.
 
 #### R54. Moves
 
@@ -1974,33 +1922,7 @@ Each inspection is of exactly one warehouse.
 
 Implemented as foreign key `warehouse_inspections(warehouse_id)` → `warehouses`.
 
-#### R63. Authorizes
-
-*binary, many-to-one*
-
-Each adjustment is authorised by exactly one staff member.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Inventory_Adjustments | — | yes: at most one | total |
-| Staff | — | no | partial |
-
-Implemented as foreign key `inventory_adjustments(staff_id)` → `staff`.
-
-#### R64. Adjusts
-
-*binary, many-to-one*
-
-Each adjustment corrects exactly one batch.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Inventory_Adjustments | — | yes: at most one | total |
-| Stock_Batches | — | no | partial |
-
-Implemented as foreign key `inventory_adjustments(batch_id)` → `stock_batches`.
-
-#### R65. Stocks
+#### R63. Stocks
 
 *3-ary (ternary) relationship*
 
@@ -2016,7 +1938,7 @@ Descriptive attributes: `available_qty` (INTEGER; CHECK available_qty >= 0), `re
 
 Implemented as table `stock_positions` (primary key seller_id, variant_id, warehouse_id).
 
-#### R66. Receives
+#### R64. Receives
 
 *binary, many-to-many*
 
@@ -2033,7 +1955,7 @@ Implemented as table `goods_receipt_lines` (primary key receipt_id, purchase_ord
 
 ### Orders and payment
 
-#### R67. Collect_At
+#### R65. Collect_At
 
 *binary, many-to-one*
 
@@ -2046,7 +1968,7 @@ An order may be collected at one pickup point instead of being delivered home.
 
 Implemented as foreign key `orders(pickup_point_id)` → `pickup_points`.
 
-#### R68. Ships_To
+#### R66. Ships_To
 
 *binary, many-to-one*
 
@@ -2059,7 +1981,7 @@ Every order has exactly one delivery or billing address.
 
 Implemented as foreign key `orders(address_id)` → `addresses`.
 
-#### R69. Places
+#### R67. Places
 
 *binary, many-to-one*
 
@@ -2072,7 +1994,7 @@ Every order is placed by exactly one customer.
 
 Implemented as foreign key `orders(customer_id)` → `customers`.
 
-#### R70. Buys
+#### R68. Buys
 
 *binary, many-to-one*
 
@@ -2085,7 +2007,7 @@ Each order line buys exactly one listing.
 
 Implemented as foreign key `order_lines(listing_id)` → `listings`.
 
-#### R71. Contains
+#### R69. Contains
 
 *identifying relationship of a weak entity (one owner, many weak entities)*
 
@@ -2098,7 +2020,7 @@ An order line exists only inside its order and is numbered within it. Every orde
 
 Implemented as foreign key `order_lines(order_id)` → `orders`.
 
-#### R72. Status_Of
+#### R70. Status_Of
 
 *binary, many-to-one*
 
@@ -2111,7 +2033,7 @@ Each status event belongs to exactly one order.
 
 Implemented as foreign key `order_status_events(order_id)` → `orders`.
 
-#### R73. Saves_Method
+#### R71. Saves_Method
 
 *binary, many-to-one*
 
@@ -2124,7 +2046,7 @@ Each payment method is saved by exactly one customer.
 
 Implemented as foreign key `payment_methods(customer_id)` → `customers`.
 
-#### R74. Uses_Method
+#### R72. Uses_Method
 
 *binary, many-to-one*
 
@@ -2137,7 +2059,7 @@ Every payment uses exactly one saved payment method.
 
 Implemented as foreign key `payments(payment_method_id)` → `payment_methods`.
 
-#### R75. Paid_By
+#### R73. Paid_By
 
 *binary, one-to-one*
 
@@ -2150,7 +2072,20 @@ One-to-one: every payment is for exactly one order and an order has at most one 
 
 Implemented as foreign key `payments(order_id)` → `orders`.
 
-#### R76. Transaction_Of
+#### R74. Refund_For
+
+*binary, many-to-one*
+
+A refund transaction pays back exactly one return request; capture transactions belong to no return.
+
+| Participant | Role | Key constraint | Participation |
+| --- | --- | --- | --- |
+| Payment_Transactions | — | yes: at most one | partial |
+| Return_Requests | — | no | partial |
+
+Implemented as foreign key `payment_transactions(return_id)` → `return_requests`.
+
+#### R75. Transaction_Of
 
 *binary, many-to-one*
 
@@ -2163,7 +2098,7 @@ Each transaction belongs to exactly one payment.
 
 Implemented as foreign key `payment_transactions(payment_id)` → `payments`.
 
-#### R77. Invoiced_As
+#### R76. Invoiced_As
 
 *binary, one-to-one*
 
@@ -2176,7 +2111,7 @@ One-to-one: every invoice is for exactly one order and an order has at most one 
 
 Implemented as foreign key `invoices(order_id)` → `orders`.
 
-#### R78. Bills
+#### R77. Bills
 
 *binary, many-to-one*
 
@@ -2189,7 +2124,7 @@ Each invoice line bills exactly one order line.
 
 Implemented as foreign key `invoice_lines(order_id, order_line_no)` → `order_lines`.
 
-#### R79. Taxed_At
+#### R78. Taxed_At
 
 *binary, many-to-one*
 
@@ -2202,7 +2137,7 @@ An invoice line is taxed at most at one tax rate (none for tax-exempt lines).
 
 Implemented as foreign key `invoice_lines(tax_rate_id)` → `tax_rates`.
 
-#### R80. Invoice_Has_Line
+#### R79. Invoice_Has_Line
 
 *identifying relationship of a weak entity (one owner, many weak entities)*
 
@@ -2215,7 +2150,7 @@ An invoice line exists only inside its invoice and is numbered within it.
 
 Implemented as foreign key `invoice_lines(invoice_id)` → `invoices`.
 
-#### R81. Reserves
+#### R80. Reserves
 
 *relationship with an aggregation*
 
@@ -2232,7 +2167,7 @@ Implemented as table `stock_reservations` (primary key order_id, line_no, seller
 
 ### Fulfilment and delivery
 
-#### R82. Picked_From
+#### R81. Picked_From
 
 *binary, many-to-one*
 
@@ -2245,7 +2180,7 @@ Each fulfilment is picked from exactly one warehouse.
 
 Implemented as foreign key `fulfillments(warehouse_id)` → `warehouses`.
 
-#### R83. Handled_By
+#### R82. Handled_By
 
 *binary, many-to-one*
 
@@ -2258,7 +2193,7 @@ Each fulfilment is handled by exactly one seller.
 
 Implemented as foreign key `fulfillments(seller_id)` → `seller_organizations`.
 
-#### R84. Fulfills
+#### R83. Fulfills
 
 *binary, many-to-one*
 
@@ -2271,7 +2206,7 @@ Each fulfilment fulfils exactly one order.
 
 Implemented as foreign key `fulfillments(order_id)` → `orders`.
 
-#### R85. Packed_For
+#### R84. Packed_For
 
 *binary, many-to-one*
 
@@ -2284,7 +2219,7 @@ Each package is packed for exactly one fulfilment.
 
 Implemented as foreign key `packages(fulfillment_id)` → `fulfillments`.
 
-#### R86. Offers_Service
+#### R85. Offers_Service
 
 *identifying relationship of a weak entity (one owner, many weak entities)*
 
@@ -2297,7 +2232,7 @@ A carrier service exists only for its carrier; the service code (STD, EXP) is un
 
 Implemented as foreign key `carrier_services(carrier_id)` → `carriers`.
 
-#### R87. Ships_Via
+#### R86. Ships_Via
 
 *binary, many-to-one*
 
@@ -2310,7 +2245,7 @@ Every shipment travels with exactly one carrier service.
 
 Implemented as foreign key `shipments(carrier_id, service_code)` → `carrier_services`.
 
-#### R88. Ships
+#### R87. Ships
 
 *binary, one-to-one*
 
@@ -2323,7 +2258,7 @@ One-to-one: every shipment carries exactly one package and a package is shipped 
 
 Implemented as foreign key `shipments(package_id)` → `packages`.
 
-#### R89. Tracks
+#### R88. Tracks
 
 *binary, many-to-one*
 
@@ -2336,7 +2271,7 @@ Each tracking event is for exactly one shipment.
 
 Implemented as foreign key `tracking_events(shipment_id)` → `shipments`.
 
-#### R90. Makes_Attempt
+#### R89. Makes_Attempt
 
 *binary, many-to-one*
 
@@ -2349,7 +2284,7 @@ Each delivery attempt is made by exactly one courier.
 
 Implemented as foreign key `delivery_attempts(courier_id)` → `couriers`.
 
-#### R91. Attempts
+#### R90. Attempts
 
 *binary, many-to-one*
 
@@ -2362,20 +2297,7 @@ Each delivery attempt is for exactly one shipment.
 
 Implemented as foreign key `delivery_attempts(shipment_id)` → `shipments`.
 
-#### R92. Proves
-
-*binary, one-to-one*
-
-One-to-one: a proof belongs to exactly one attempt and an attempt has at most one proof.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Proof_Of_Delivery | — | yes: at most one | total |
-| Delivery_Attempts | — | yes: at most one | partial |
-
-Implemented as foreign key `proof_of_delivery(attempt_id)` → `delivery_attempts`.
-
-#### R93. Includes
+#### R91. Includes
 
 *binary, many-to-many*
 
@@ -2392,7 +2314,7 @@ Implemented as table `fulfillment_lines` (primary key fulfillment_id, order_id, 
 
 ### After-sales and support
 
-#### R94. Return_Of
+#### R92. Return_Of
 
 *binary, many-to-one*
 
@@ -2405,33 +2327,7 @@ Each return request is for exactly one order. The customer is reached through th
 
 Implemented as foreign key `return_requests(order_id)` → `orders`.
 
-#### R95. Refunded_From
-
-*binary, many-to-one*
-
-Each refund is paid back against exactly one payment.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Refunds | — | yes: at most one | total |
-| Payments | — | no | partial |
-
-Implemented as foreign key `refunds(payment_id)` → `payments`.
-
-#### R96. Refund_For
-
-*binary, many-to-one*
-
-Each refund is for exactly one return request.
-
-| Participant | Role | Key constraint | Participation |
-| --- | --- | --- | --- |
-| Refunds | — | yes: at most one | total |
-| Return_Requests | — | no | partial |
-
-Implemented as foreign key `refunds(return_id)` → `return_requests`.
-
-#### R97. Inspects_Return
+#### R93. Inspects_Return
 
 *binary, many-to-one*
 
@@ -2444,7 +2340,7 @@ Each return inspection is done by exactly one staff member.
 
 Implemented as foreign key `return_inspections(staff_id)` → `staff`.
 
-#### R98. Inspection_Of
+#### R94. Inspection_Of
 
 *binary, many-to-one*
 
@@ -2457,7 +2353,7 @@ Each inspection checks exactly one return request.
 
 Implemented as foreign key `return_inspections(return_id)` → `return_requests`.
 
-#### R99. About_Order
+#### R95. About_Order
 
 *binary, many-to-one*
 
@@ -2470,7 +2366,7 @@ A ticket may be about one order.
 
 Implemented as foreign key `support_tickets(order_id)` → `orders`.
 
-#### R100. Opens
+#### R96. Opens
 
 *binary, many-to-one*
 
@@ -2483,7 +2379,7 @@ Each ticket is opened by exactly one customer.
 
 Implemented as foreign key `support_tickets(customer_id)` → `customers`.
 
-#### R101. Writes_Message
+#### R97. Writes_Message
 
 *binary, many-to-one*
 
@@ -2496,7 +2392,7 @@ Each message is written by exactly one account (customer or staff).
 
 Implemented as foreign key `ticket_messages(author_account_id)` → `accounts`.
 
-#### R102. Message_In
+#### R98. Message_In
 
 *binary, many-to-one*
 
@@ -2509,7 +2405,7 @@ Each message belongs to exactly one ticket.
 
 Implemented as foreign key `ticket_messages(ticket_id)` → `support_tickets`.
 
-#### R103. Returns
+#### R99. Returns
 
 *binary, many-to-many*
 

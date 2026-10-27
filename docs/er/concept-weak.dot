@@ -30,10 +30,10 @@ A__orders__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, la
 A__orders__status -> E_orders [dir=none];
 A__orders__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="total_cents"];
 A__orders__total_cents -> E_orders [dir=none];
-R61 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Contains"];
-E_order_lines -> R61 [dir=forward, arrowhead=normal, penwidth=3];
-R61 -> E_orders [dir=none, penwidth=3];
-R75 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Offers_Service"];
-E_carrier_services -> R75 [dir=forward, arrowhead=normal, penwidth=3];
-R75 -> E_carriers [dir=none, penwidth=3];
+R59 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Contains"];
+E_order_lines -> R59 [dir=forward, arrowhead=normal, penwidth=3];
+R59 -> E_orders [dir=none, penwidth=3];
+R74 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Offers_Service"];
+E_carrier_services -> R74 [dir=forward, arrowhead=normal, penwidth=3];
+R74 -> E_carriers [dir=none, penwidth=3];
 }

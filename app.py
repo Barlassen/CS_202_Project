@@ -363,10 +363,8 @@ def approve_return(db: sqlite3.Connection, return_id: int) -> None:
         payment = db.execute("SELECT payment_id FROM payments WHERE order_id=?", (request["order_id"],)).fetchone()
         if not amount or not payment:
             raise ValueError("Return has no refundable payment line.")
-        db.execute("INSERT INTO refunds(return_id,payment_id,amount_cents,status) VALUES(?,?,?,'completed')",
-                   (return_id, payment["payment_id"], amount))
-        db.execute("""INSERT INTO payment_transactions(payment_id,kind,status,amount_cents)
-          VALUES(?,'refund','approved',?)""", (payment["payment_id"], amount))
+        db.execute("""INSERT INTO payment_transactions(payment_id,return_id,kind,status,amount_cents)
+          VALUES(?,?,'refund','approved',?)""", (payment["payment_id"], return_id, amount))
         db.execute("UPDATE return_requests SET status='approved' WHERE return_id=?", (return_id,))
         db.commit()
     except Exception:

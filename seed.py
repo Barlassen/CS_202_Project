@@ -77,8 +77,7 @@ def initialize(path: Path | None = None) -> Path:
         INSERT INTO wishlists(customer_id,name) VALUES (1,'Favorites');
         INSERT INTO warehouses VALUES (1,'Istanbul Fulfillment Center',1),
                                       (2,'Ankara Fulfillment Center',2);
-        INSERT INTO storage_zones VALUES (1,1,'A'),(2,2,'A');
-        INSERT INTO storage_bins VALUES (1,1,'A-01'),(2,2,'A-01');
+        INSERT INTO storage_bins VALUES (1,1,'A','A-01'),(2,2,'A','A-01');
         INSERT INTO stock_positions VALUES
           (1,1,1,8,3),(1,2,1,12,4),
           (2,3,2,20,5),(2,4,2,6,3),

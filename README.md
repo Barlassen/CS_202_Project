@@ -2,13 +2,25 @@
 
 **Proposed e-sheet title:** Multi-Vendor Marketplace and Order Fulfillment Management System
 
-MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **71 entity sets and 103 relationship sets** in one connected diagram, implemented as an **83-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The application uses Python's standard library only; there is no package installation, external API, or GitHub dependency. Only re-rendering the ER diagrams needs Node.js (see below).
+MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **67 entity sets and 99 relationship sets** in one connected diagram, implemented as an **79-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The application uses Python's standard library only; there is no package installation, external API, or GitHub dependency. Only re-rendering the ER diagrams needs Node.js (see below).
 
 **Course-fit status:** This is a working draft. Read [`docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md`](docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md) before treating it as a submission. The team confirmed that the project-specific AI allowance applies to two-person projects; all generated work must still be checked and understood. PostgreSQL and the exact required SQL queries still need confirmation.
 
 **ER design (Part 1 deliverable):** [`docs/REPORT.md`](docs/REPORT.md) starts with the guideline checklist and the four required concepts, followed by Part 1 (every entity) and Part 2 (every relationship). The diagrams in [`docs/er/`](docs/er/) use the notation of the course slides.
 
 ## Changes in the `project_changes` branch
+
+**After the instructor's feedback (27 October 2026): 71 → 67 entities, 103 → 99 relationships.** Four entity sets that repeated information were merged:
+
+| Removed | Merged into | Why |
+| --- | --- | --- |
+| Inventory_Adjustments | Stock_Movements (optional `staff_id`, relationship *Authorizes*) | Both stored a signed quantity change of a batch with its reason and time. |
+| Refunds | Payment_Transactions (`return_id`, relationship *Refund_For*) | A refund was stored twice: as a Refunds row and as a transaction of kind `refund`. |
+| Proof_Of_Delivery | Delivery_Attempts (`recipient_name`, `evidence_url`) | One-to-one with a successful attempt, with no relationships of its own. |
+| Storage_Zones | Storage_Bins (`zone_code`, relationship *Located_In* to Warehouses) | A zone had only a code. Bins now reference their warehouse directly, and a composite foreign key keeps each batch's bin in the batch's own warehouse. |
+
+Numbers in the report changed; [`docs/NUMBERING_OLD_NEW.md`](docs/NUMBERING_OLD_NEW.md) maps the old E/R numbers used in the feedback to the new ones.
+
 
 This branch reworks the ER design against `Guidelines.pdf` and the instructor's Chapter 2 slides. Compared with `main`:
 

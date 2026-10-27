@@ -77,18 +77,18 @@
 <g id="node7" class="node">
 <title>E_carts</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="723.58,-889.2 581,-889.2 581,-853.2 723.58,-853.2 723.58,-889.2"/>
-<text xml:space="preserve" text-anchor="middle" x="652.29" y="-874.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Carts</text>
+<text xml:space="preserve" text-anchor="middle" x="652.29" y="-874.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Carts&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="652.29" y="-861.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Shopping and marketing)</text>
 </g>
-<!-- R94 -->
+<!-- R90 -->
 <g id="node81" class="node">
-<title>R94</title>
+<title>R90</title>
 <polygon fill="none" stroke="#222222" points="622.29,-822.2 591.5,-804.2 622.29,-786.2 653.07,-804.2 622.29,-822.2"/>
 <text xml:space="preserve" text-anchor="middle" x="622.29" y="-800.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">In_Cart</text>
 </g>
-<!-- E_carts&#45;&gt;R94 -->
+<!-- E_carts&#45;&gt;R90 -->
 <g id="edge82" class="edge">
-<title>E_carts&#45;&gt;R94</title>
+<title>E_carts&#45;&gt;R90</title>
 <path fill="none" stroke="#333333" d="M644.25,-852.78C639.32,-842.1 633.1,-828.63 628.54,-818.75"/>
 </g>
 <!-- E_categories -->
@@ -137,7 +137,7 @@
 <g id="node11" class="node">
 <title>E_customers</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="865.32,-556.8 739.25,-556.8 739.25,-520.8 865.32,-520.8 865.32,-556.8"/>
-<text xml:space="preserve" text-anchor="middle" x="802.29" y="-542.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Customers</text>
+<text xml:space="preserve" text-anchor="middle" x="802.29" y="-542.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Customers&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="802.29" y="-528.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(People and accounts)</text>
 </g>
 <!-- E_listings -->
@@ -208,18 +208,18 @@
 <g id="node16" class="node">
 <title>E_order_lines</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-width="3" stroke-dasharray="5,2" points="565.09,-889.2 441.49,-889.2 441.49,-853.2 565.09,-853.2 565.09,-889.2"/>
-<text xml:space="preserve" text-anchor="middle" x="503.29" y="-874.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Order_Lines</text>
+<text xml:space="preserve" text-anchor="middle" x="503.29" y="-874.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Order_Lines&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="503.29" y="-861.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Orders and payment)</text>
 </g>
-<!-- R60 -->
+<!-- R58 -->
 <g id="node78" class="node">
-<title>R60</title>
+<title>R58</title>
 <polygon fill="none" stroke="#222222" points="533.29,-822.2 506.29,-804.2 533.29,-786.2 560.29,-804.2 533.29,-822.2"/>
 <text xml:space="preserve" text-anchor="middle" x="533.29" y="-800.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Buys</text>
 </g>
-<!-- E_order_lines&#45;&gt;R60 -->
+<!-- E_order_lines&#45;&gt;R58 -->
 <g id="edge76" class="edge">
-<title>E_order_lines&#45;&gt;R60</title>
+<title>E_order_lines&#45;&gt;R58</title>
 <path fill="none" stroke="#333333" stroke-width="3" d="M511.8,-851.75C514.99,-844.84 518.67,-836.87 522.07,-829.51"/>
 <polygon fill="#333333" stroke="#333333" stroke-width="3" points="524.51,-830.89 525.33,-822.45 519.43,-828.54 524.51,-830.89"/>
 </g>
@@ -597,7 +597,7 @@
 <g id="node43" class="node">
 <title>E_purchase_order_lines</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-width="3" stroke-dasharray="5,2" points="1035.68,-556.8 880.89,-556.8 880.89,-520.8 1035.68,-520.8 1035.68,-556.8"/>
-<text xml:space="preserve" text-anchor="middle" x="958.29" y="-542.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Purchase_Order_Lines</text>
+<text xml:space="preserve" text-anchor="middle" x="958.29" y="-542.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Purchase_Order_Lines&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="958.29" y="-528.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Inventory and procurement)</text>
 </g>
 <!-- R50 -->
@@ -616,7 +616,7 @@
 <g id="node44" class="node">
 <title>E_reviews</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="1483.58,-387.8 1341,-387.8 1341,-351.8 1483.58,-351.8 1483.58,-387.8"/>
-<text xml:space="preserve" text-anchor="middle" x="1412.29" y="-373.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Reviews</text>
+<text xml:space="preserve" text-anchor="middle" x="1412.29" y="-373.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Reviews&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="1412.29" y="-359.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Shopping and marketing)</text>
 </g>
 <!-- R38 -->
@@ -710,43 +710,43 @@
 <g id="node50" class="node">
 <title>E_staff</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="1450.32,-755.2 1324.25,-755.2 1324.25,-719.2 1450.32,-719.2 1450.32,-755.2"/>
-<text xml:space="preserve" text-anchor="middle" x="1387.29" y="-740.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Staff</text>
+<text xml:space="preserve" text-anchor="middle" x="1387.29" y="-740.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Staff&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="1387.29" y="-727.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(People and accounts)</text>
 </g>
 <!-- E_wishlists -->
 <g id="node51" class="node">
 <title>E_wishlists</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="142.58,-889.2 0,-889.2 0,-853.2 142.58,-853.2 142.58,-889.2"/>
-<text xml:space="preserve" text-anchor="middle" x="71.29" y="-874.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Wishlists</text>
+<text xml:space="preserve" text-anchor="middle" x="71.29" y="-874.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Wishlists&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="71.29" y="-861.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Shopping and marketing)</text>
 </g>
-<!-- R95 -->
+<!-- R91 -->
 <g id="node83" class="node">
-<title>R95</title>
+<title>R91</title>
 <polygon fill="none" stroke="#222222" points="71.29,-822.2 32.28,-804.2 71.29,-786.2 110.3,-804.2 71.29,-822.2"/>
 <text xml:space="preserve" text-anchor="middle" x="71.29" y="-800.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Saved_In</text>
 </g>
-<!-- E_wishlists&#45;&gt;R95 -->
+<!-- E_wishlists&#45;&gt;R91 -->
 <g id="edge84" class="edge">
-<title>E_wishlists&#45;&gt;R95</title>
+<title>E_wishlists&#45;&gt;R91</title>
 <path fill="none" stroke="#333333" d="M71.29,-852.78C71.29,-843.46 71.29,-832 71.29,-822.67"/>
 </g>
 <!-- E_seller_organizations -->
 <g id="node52" class="node">
 <title>E_seller_organizations</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="516.34,-556.8 398.23,-556.8 398.23,-520.8 516.34,-520.8 516.34,-556.8"/>
-<text xml:space="preserve" text-anchor="middle" x="457.29" y="-542.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations</text>
+<text xml:space="preserve" text-anchor="middle" x="457.29" y="-542.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="457.29" y="-528.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Sellers)</text>
 </g>
-<!-- R98 -->
+<!-- R94 -->
 <g id="node58" class="node">
-<title>R98</title>
+<title>R94</title>
 <polygon fill="none" stroke="#222222" points="434.29,-454.8 405.92,-436.8 434.29,-418.8 462.65,-436.8 434.29,-454.8"/>
 <text xml:space="preserve" text-anchor="middle" x="434.29" y="-433.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Stocks</text>
 </g>
-<!-- E_seller_organizations&#45;&gt;R98 -->
+<!-- E_seller_organizations&#45;&gt;R94 -->
 <g id="edge39" class="edge">
-<title>E_seller_organizations&#45;&gt;R98</title>
+<title>E_seller_organizations&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M453.28,-520.38C448.91,-501.36 441.97,-471.18 437.8,-453.06"/>
 </g>
 <!-- E_variants -->
@@ -767,15 +767,15 @@
 <path fill="none" stroke="#333333" stroke-width="3" d="M625.59,-366.27C688.19,-360.3 842.83,-343.59 969.29,-313.8 975.16,-312.42 981.32,-310.67 987.27,-308.83"/>
 <polygon fill="#333333" stroke="#333333" stroke-width="3" points="987.95,-311.56 994.68,-306.41 986.21,-306.23 987.95,-311.56"/>
 </g>
-<!-- R93 -->
+<!-- R89 -->
 <g id="node79" class="node">
-<title>R93</title>
+<title>R89</title>
 <polygon fill="none" stroke="#222222" points="407.29,-313.8 362.48,-295.8 407.29,-277.8 452.09,-295.8 407.29,-313.8"/>
 <text xml:space="preserve" text-anchor="middle" x="407.29" y="-292.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Has_Value</text>
 </g>
-<!-- E_variants&#45;&gt;R93 -->
+<!-- E_variants&#45;&gt;R89 -->
 <g id="edge79" class="edge">
-<title>E_variants&#45;&gt;R93</title>
+<title>E_variants&#45;&gt;R89</title>
 <path fill="none" stroke="#333333" d="M579.61,-351.31C573.83,-346.36 567.13,-341.36 560.29,-337.8 521.37,-317.56 471.56,-306.63 439.53,-301.26"/>
 </g>
 <!-- A__variants__variant_id -->
@@ -816,39 +816,39 @@
 <g id="node57" class="node">
 <title>E_warehouses</title>
 <polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="552.68,-387.8 397.89,-387.8 397.89,-351.8 552.68,-351.8 552.68,-387.8"/>
-<text xml:space="preserve" text-anchor="middle" x="475.29" y="-373.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Warehouses</text>
+<text xml:space="preserve" text-anchor="middle" x="475.29" y="-373.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Warehouses&#13;</text>
 <text xml:space="preserve" text-anchor="middle" x="475.29" y="-359.9" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(Inventory and procurement)</text>
 </g>
-<!-- R98&#45;&gt;E_variants -->
+<!-- R94&#45;&gt;E_variants -->
 <g id="edge40" class="edge">
-<title>R98&#45;&gt;E_variants</title>
+<title>R94&#45;&gt;E_variants</title>
 <path fill="none" stroke="#333333" d="M449.54,-428.15C455.89,-425.08 463.37,-421.61 470.29,-418.8 509.47,-402.85 521.02,-403.54 560.29,-387.8 563.04,-386.7 565.89,-385.5 568.73,-384.26"/>
 </g>
-<!-- R98&#45;&gt;E_warehouses -->
+<!-- R94&#45;&gt;E_warehouses -->
 <g id="edge41" class="edge">
-<title>R98&#45;&gt;E_warehouses</title>
+<title>R94&#45;&gt;E_warehouses</title>
 <path fill="none" stroke="#333333" d="M442.19,-423.27C448.52,-413.23 457.47,-399.05 464.46,-387.96"/>
 </g>
-<!-- RA98__available_qty -->
+<!-- RA94__available_qty -->
 <g id="node59" class="node">
-<title>RA98__available_qty</title>
+<title>RA94__available_qty</title>
 <ellipse fill="none" stroke="#222222" cx="570.29" cy="-538.8" rx="37.67" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="570.29" y="-536.1" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">available_qty</text>
 </g>
-<!-- RA98__available_qty&#45;&gt;R98 -->
+<!-- RA94__available_qty&#45;&gt;R94 -->
 <g id="edge37" class="edge">
-<title>RA98__available_qty&#45;&gt;R98</title>
+<title>RA94__available_qty&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M557.25,-528.21C531.19,-509.05 472.95,-466.23 447.09,-447.21"/>
 </g>
-<!-- RA98__reorder_point -->
+<!-- RA94__reorder_point -->
 <g id="node60" class="node">
-<title>RA98__reorder_point</title>
+<title>RA94__reorder_point</title>
 <ellipse fill="none" stroke="#222222" cx="662.29" cy="-538.8" rx="38.31" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="662.29" y="-536.1" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">reorder_point</text>
 </g>
-<!-- RA98__reorder_point&#45;&gt;R98 -->
+<!-- RA94__reorder_point&#45;&gt;R94 -->
 <g id="edge38" class="edge">
-<title>RA98__reorder_point&#45;&gt;R98</title>
+<title>RA94__reorder_point&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M642.79,-529.03C613.48,-515.91 556.29,-490.48 507.29,-469.8 490.94,-462.9 486.54,-461.92 470.29,-454.8 463.45,-451.8 455.98,-448.31 449.62,-445.27"/>
 </g>
 <!-- R18&#45;&gt;E_categories -->
@@ -937,46 +937,46 @@
 <title>R50&#45;&gt;E_variants</title>
 <path fill="none" stroke="#333333" d="M761.78,-426.49C725.59,-414.24 662.31,-392.81 625.68,-380.41"/>
 </g>
-<!-- R60&#45;&gt;E_listings -->
+<!-- R58&#45;&gt;E_listings -->
 <g id="edge77" class="edge">
-<title>R60&#45;&gt;E_listings</title>
+<title>R58&#45;&gt;E_listings</title>
 <path fill="none" stroke="#333333" d="M518.43,-795.64C512.26,-792.58 504.98,-789.1 498.29,-786.2 465.02,-771.76 425.88,-757.1 400.38,-747.84"/>
 </g>
-<!-- R93&#45;&gt;E_attributes -->
+<!-- R89&#45;&gt;E_attributes -->
 <g id="edge80" class="edge">
-<title>R93&#45;&gt;E_attributes</title>
+<title>R89&#45;&gt;E_attributes</title>
 <path fill="none" stroke="#333333" d="M391.96,-283.48C378.37,-273.44 358.31,-258.63 342.71,-247.1"/>
 </g>
-<!-- RA93__value -->
+<!-- RA89__value -->
 <g id="node80" class="node">
-<title>RA93__value</title>
+<title>RA89__value</title>
 <ellipse fill="none" stroke="#222222" cx="343.29" cy="-369.8" rx="27" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="343.29" y="-367.1" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">value</text>
 </g>
-<!-- RA93__value&#45;&gt;R93 -->
+<!-- RA89__value&#45;&gt;R89 -->
 <g id="edge78" class="edge">
-<title>RA93__value&#45;&gt;R93</title>
+<title>RA89__value&#45;&gt;R89</title>
 <path fill="none" stroke="#333333" d="M351.92,-359.09C363.31,-346.27 383.4,-323.67 396,-309.5"/>
 </g>
-<!-- R94&#45;&gt;E_listings -->
+<!-- R90&#45;&gt;E_listings -->
 <g id="edge83" class="edge">
-<title>R94&#45;&gt;E_listings</title>
+<title>R90&#45;&gt;E_listings</title>
 <path fill="none" stroke="#333333" d="M603.13,-796.84C592.85,-793.51 579.93,-789.46 568.29,-786.2 508.87,-769.55 438.39,-752.98 400.56,-744.34"/>
 </g>
-<!-- RA94__quantity -->
+<!-- RA90__quantity -->
 <g id="node82" class="node">
-<title>RA94__quantity</title>
+<title>RA90__quantity</title>
 <ellipse fill="none" stroke="#222222" cx="766.29" cy="-871.2" rx="27" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="766.29" y="-868.5" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">quantity</text>
 </g>
-<!-- RA94__quantity&#45;&gt;R94 -->
+<!-- RA90__quantity&#45;&gt;R90 -->
 <g id="edge81" class="edge">
-<title>RA94__quantity&#45;&gt;R94</title>
+<title>RA90__quantity&#45;&gt;R90</title>
 <path fill="none" stroke="#333333" d="M749.97,-862.12C744.1,-859.25 737.42,-856.04 731.29,-853.2 714.02,-845.21 665.27,-823.91 639.21,-812.56"/>
 </g>
-<!-- R95&#45;&gt;E_listings -->
+<!-- R91&#45;&gt;E_listings -->
 <g id="edge85" class="edge">
-<title>R95&#45;&gt;E_listings</title>
+<title>R91&#45;&gt;E_listings</title>
 <path fill="none" stroke="#333333" d="M91.19,-795.2C99.47,-792.08 109.25,-788.67 118.29,-786.2 199.77,-763.95 298.69,-748.54 345.79,-741.89"/>
 </g>
 </g>

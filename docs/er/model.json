@@ -1408,39 +1408,10 @@
    "checks": []
   },
   {
-   "name": "Storage_Zones",
-   "table": "storage_zones",
-   "area": "inventory",
-   "text": "An area of a warehouse (for example zone A), identified by a code within the warehouse.",
-   "why": null,
-   "key": [
-    "zone_id"
-   ],
-   "partial": [],
-   "inherited": false,
-   "owner": null,
-   "owner_key": null,
-   "attrs": [
-    {
-     "name": "zone_id",
-     "domain": "INTEGER",
-     "required": true,
-     "unique": false
-    },
-    {
-     "name": "code",
-     "domain": "TEXT",
-     "required": true,
-     "unique": false
-    }
-   ],
-   "checks": []
-  },
-  {
    "name": "Storage_Bins",
    "table": "storage_bins",
    "area": "inventory",
-   "text": "A shelf location inside a storage zone where stock batches are placed.",
+   "text": "A shelf location in a warehouse where stock batches are placed. Its address is a zone code and a shelf code (for example zone A, shelf A-01), unique within the warehouse.",
    "why": null,
    "key": [
     "bin_id"
@@ -1453,6 +1424,12 @@
     {
      "name": "bin_id",
      "domain": "INTEGER",
+     "required": true,
+     "unique": false
+    },
+    {
+     "name": "zone_code",
+     "domain": "TEXT",
      "required": true,
      "unique": false
     },
@@ -1504,7 +1481,7 @@
    "name": "Stock_Movements",
    "table": "stock_movements",
    "area": "inventory",
-   "text": "A signed change of a batch's quantity with its reason (reservation, damage, count).",
+   "text": "A signed change of a batch's quantity with its reason: made by the system (an order reservation) or entered by hand after a count or damage, then authorised by a staff member.",
    "why": "A batch changes many times and each change must be auditable with its reason and time.",
    "key": [
     "movement_id"
@@ -1713,47 +1690,6 @@
    "checks": []
   },
   {
-   "name": "Inventory_Adjustments",
-   "table": "inventory_adjustments",
-   "area": "inventory",
-   "text": "A manual correction of a batch's quantity (after a count or damage), authorised by a staff member.",
-   "why": null,
-   "key": [
-    "adjustment_id"
-   ],
-   "partial": [],
-   "inherited": false,
-   "owner": null,
-   "owner_key": null,
-   "attrs": [
-    {
-     "name": "adjustment_id",
-     "domain": "INTEGER",
-     "required": true,
-     "unique": false
-    },
-    {
-     "name": "quantity_delta",
-     "domain": "INTEGER; CHECK quantity_delta <> 0",
-     "required": true,
-     "unique": false
-    },
-    {
-     "name": "reason",
-     "domain": "TEXT",
-     "required": true,
-     "unique": false
-    },
-    {
-     "name": "adjusted_at",
-     "domain": "TEXT",
-     "required": true,
-     "unique": false
-    }
-   ],
-   "checks": []
-  },
-  {
    "name": "Orders",
    "table": "orders",
    "area": "orders",
@@ -1946,7 +1882,7 @@
    "name": "Payment_Transactions",
    "table": "payment_transactions",
    "area": "orders",
-   "text": "One money movement of a payment, such as the capture or a refund.",
+   "text": "One money movement of a payment: the capture, or a refund paid back for an approved return request.",
    "why": "One payment produces several money movements over time (capture, later refunds).",
    "key": [
     "transaction_id"
@@ -1964,7 +1900,7 @@
     },
     {
      "name": "kind",
-     "domain": "TEXT",
+     "domain": "TEXT; CHECK kind IN ('capture','refund')",
      "required": true,
      "unique": false
     },
@@ -1987,7 +1923,9 @@
      "unique": false
     }
    ],
-   "checks": []
+   "checks": [
+    "(kind = 'refund') = (return_id IS NOT NULL)"
+   ]
   },
   {
    "name": "Invoices",
@@ -2271,7 +2209,7 @@
    "name": "Delivery_Attempts",
    "table": "delivery_attempts",
    "area": "delivery",
-   "text": "One try by a courier to hand over a shipment, with its outcome.",
+   "text": "One try by a courier to hand over a shipment, with its outcome. A successful attempt also records the proof of delivery: who received the parcel and, optionally, a photo or signature link; these attributes stay empty on failed attempts.",
    "why": null,
    "key": [
     "attempt_id"
@@ -2300,38 +2238,9 @@
      "unique": false
     },
     {
-     "name": "notes",
-     "domain": "TEXT",
-     "required": false,
-     "unique": false
-    }
-   ],
-   "checks": []
-  },
-  {
-   "name": "Proof_Of_Delivery",
-   "table": "proof_of_delivery",
-   "area": "delivery",
-   "text": "The evidence recorded for a successful delivery attempt: who received the parcel and a photo or signature link.",
-   "why": "The evidence is recorded only for successful attempts and has its own attributes; keeping it separate avoids empty attribute values on failed attempts.",
-   "key": [
-    "proof_id"
-   ],
-   "partial": [],
-   "inherited": false,
-   "owner": null,
-   "owner_key": null,
-   "attrs": [
-    {
-     "name": "proof_id",
-     "domain": "INTEGER",
-     "required": true,
-     "unique": false
-    },
-    {
      "name": "recipient_name",
      "domain": "TEXT",
-     "required": true,
+     "required": false,
      "unique": false
     },
     {
@@ -2341,13 +2250,15 @@
      "unique": false
     },
     {
-     "name": "recorded_at",
+     "name": "notes",
      "domain": "TEXT",
-     "required": true,
+     "required": false,
      "unique": false
     }
    ],
-   "checks": []
+   "checks": [
+    "(outcome = 'delivered') = (recipient_name IS NOT NULL)"
+   ]
   },
   {
    "name": "Return_Requests",
@@ -2384,41 +2295,6 @@
     {
      "name": "requested_at",
      "domain": "TEXT",
-     "required": true,
-     "unique": false
-    }
-   ],
-   "checks": []
-  },
-  {
-   "name": "Refunds",
-   "table": "refunds",
-   "area": "aftersales",
-   "text": "Money paid back for an approved return, charged against the order's payment.",
-   "why": null,
-   "key": [
-    "refund_id"
-   ],
-   "partial": [],
-   "inherited": false,
-   "owner": null,
-   "owner_key": null,
-   "attrs": [
-    {
-     "name": "refund_id",
-     "domain": "INTEGER",
-     "required": true,
-     "unique": false
-    },
-    {
-     "name": "amount_cents",
-     "domain": "INTEGER; CHECK amount_cents > 0",
-     "required": true,
-     "unique": false
-    },
-    {
-     "name": "status",
-     "domain": "TEXT; CHECK status IN ('pending','completed','rejected')",
      "required": true,
      "unique": false
     }
@@ -3589,16 +3465,16 @@
    ]
   },
   {
-   "name": "Divided_Into",
+   "name": "Located_In",
    "area": "inventory",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "Each storage zone belongs to exactly one warehouse; a warehouse is divided into many zones.",
-   "sql": "foreign key storage_zones(warehouse_id) → warehouses",
+   "text": "Each bin is in exactly one warehouse; a warehouse has many bins.",
+   "sql": "foreign key storage_bins(warehouse_id) → warehouses",
    "attrs": [],
    "parts": [
     {
-     "target": "Storage_Zones",
+     "target": "Storage_Bins",
      "aggregation": false,
      "key": true,
      "total": true,
@@ -3614,23 +3490,23 @@
    ]
   },
   {
-   "name": "Holds_Bin",
+   "name": "Stored_In",
    "area": "inventory",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "Each bin is inside exactly one storage zone.",
-   "sql": "foreign key storage_bins(zone_id) → storage_zones",
+   "text": "Each batch is stored in exactly one bin, and the bin must be in the batch's own warehouse.",
+   "sql": "foreign key stock_batches(bin_id, warehouse_id) → storage_bins",
    "attrs": [],
    "parts": [
     {
-     "target": "Storage_Bins",
+     "target": "Stock_Batches",
      "aggregation": false,
      "key": true,
      "total": true,
      "role": null
     },
     {
-     "target": "Storage_Zones",
+     "target": "Storage_Bins",
      "aggregation": false,
      "key": false,
      "total": false,
@@ -3664,23 +3540,23 @@
    ]
   },
   {
-   "name": "Stored_In",
+   "name": "Authorizes",
    "area": "inventory",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "Each batch is stored in exactly one bin.",
-   "sql": "foreign key stock_batches(bin_id) → storage_bins",
+   "text": "A manual movement (a count correction or damage) is authorised by one staff member; movements made by the system, such as order reservations, have none.",
+   "sql": "foreign key stock_movements(staff_id) → staff",
    "attrs": [],
    "parts": [
     {
-     "target": "Stock_Batches",
+     "target": "Stock_Movements",
      "aggregation": false,
      "key": true,
-     "total": true,
+     "total": false,
      "role": null
     },
     {
-     "target": "Storage_Bins",
+     "target": "Staff",
      "aggregation": false,
      "key": false,
      "total": false,
@@ -3914,56 +3790,6 @@
    ]
   },
   {
-   "name": "Authorizes",
-   "area": "inventory",
-   "kind": "binary, many-to-one",
-   "identifying": false,
-   "text": "Each adjustment is authorised by exactly one staff member.",
-   "sql": "foreign key inventory_adjustments(staff_id) → staff",
-   "attrs": [],
-   "parts": [
-    {
-     "target": "Inventory_Adjustments",
-     "aggregation": false,
-     "key": true,
-     "total": true,
-     "role": null
-    },
-    {
-     "target": "Staff",
-     "aggregation": false,
-     "key": false,
-     "total": false,
-     "role": null
-    }
-   ]
-  },
-  {
-   "name": "Adjusts",
-   "area": "inventory",
-   "kind": "binary, many-to-one",
-   "identifying": false,
-   "text": "Each adjustment corrects exactly one batch.",
-   "sql": "foreign key inventory_adjustments(batch_id) → stock_batches",
-   "attrs": [],
-   "parts": [
-    {
-     "target": "Inventory_Adjustments",
-     "aggregation": false,
-     "key": true,
-     "total": true,
-     "role": null
-    },
-    {
-     "target": "Stock_Batches",
-     "aggregation": false,
-     "key": false,
-     "total": false,
-     "role": null
-    }
-   ]
-  },
-  {
    "name": "Collect_At",
    "area": "orders",
    "kind": "binary, many-to-one",
@@ -4183,6 +4009,31 @@
      "target": "Orders",
      "aggregation": false,
      "key": true,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
+   "name": "Refund_For",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A refund transaction pays back exactly one return request; capture transactions belong to no return.",
+   "sql": "foreign key payment_transactions(return_id) → return_requests",
+   "attrs": [],
+   "parts": [
+    {
+     "target": "Payment_Transactions",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Return_Requests",
+     "aggregation": false,
+     "key": false,
      "total": false,
      "role": null
     }
@@ -4564,31 +4415,6 @@
    ]
   },
   {
-   "name": "Proves",
-   "area": "delivery",
-   "kind": "binary, one-to-one",
-   "identifying": false,
-   "text": "One-to-one: a proof belongs to exactly one attempt and an attempt has at most one proof.",
-   "sql": "foreign key proof_of_delivery(attempt_id) → delivery_attempts",
-   "attrs": [],
-   "parts": [
-    {
-     "target": "Proof_Of_Delivery",
-     "aggregation": false,
-     "key": true,
-     "total": true,
-     "role": null
-    },
-    {
-     "target": "Delivery_Attempts",
-     "aggregation": false,
-     "key": true,
-     "total": false,
-     "role": null
-    }
-   ]
-  },
-  {
    "name": "Return_Of",
    "area": "aftersales",
    "kind": "binary, many-to-one",
@@ -4606,56 +4432,6 @@
     },
     {
      "target": "Orders",
-     "aggregation": false,
-     "key": false,
-     "total": false,
-     "role": null
-    }
-   ]
-  },
-  {
-   "name": "Refunded_From",
-   "area": "aftersales",
-   "kind": "binary, many-to-one",
-   "identifying": false,
-   "text": "Each refund is paid back against exactly one payment.",
-   "sql": "foreign key refunds(payment_id) → payments",
-   "attrs": [],
-   "parts": [
-    {
-     "target": "Refunds",
-     "aggregation": false,
-     "key": true,
-     "total": true,
-     "role": null
-    },
-    {
-     "target": "Payments",
-     "aggregation": false,
-     "key": false,
-     "total": false,
-     "role": null
-    }
-   ]
-  },
-  {
-   "name": "Refund_For",
-   "area": "aftersales",
-   "kind": "binary, many-to-one",
-   "identifying": false,
-   "text": "Each refund is for exactly one return request.",
-   "sql": "foreign key refunds(return_id) → return_requests",
-   "attrs": [],
-   "parts": [
-    {
-     "target": "Refunds",
-     "aggregation": false,
-     "key": true,
-     "total": true,
-     "role": null
-    },
-    {
-     "target": "Return_Requests",
      "aggregation": false,
      "key": false,
      "total": false,
@@ -5222,12 +4998,12 @@
   {
    "requirement": "1. At least 50 entities (two-person project)",
    "ok": true,
-   "evidence": "71 entity sets"
+   "evidence": "67 entity sets"
   },
   {
    "requirement": "2. One connected ER design",
    "ok": true,
-   "evidence": "71 entity sets, 103 relationship sets and the ISA hierarchy form one connected component"
+   "evidence": "67 entity sets, 99 relationship sets and the ISA hierarchy form one connected component"
   },
   {
    "requirement": "3a. Weak entity",
@@ -5255,6 +5031,6 @@
    "evidence": "own key underlined for strong entity sets, partial key (dashed) + owner key for weak ones, key inherited from Accounts for subclasses"
   }
  ],
- "tables": 83,
+ "tables": 79,
  "relationship_tables": 12
 }

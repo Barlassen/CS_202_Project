@@ -42,7 +42,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 
 **Teknik yapı:** `app.py` Python standart kütüphanesindeki HTTP sunucusuyla yerel web uygulamasını çalıştırır. `sqlite3` üzerinden `marketplace.db` dosyasına bağlanır. `schema.sql` tablo ve kısıtları tanımlar. `seed.py` ilk açılışta iki satıcı, bir demo müşteri, altı ürün, iki depo ve stokları ekler. Gerçek kullanıcı girişi, ödeme kuruluşu veya kargo servisi bağlantısı yoktur.
 
-**Kapsam:** Kavramsal modelde **71 entity kümesi** ve **103 ilişki kümesi** var. Bunlara bir ISA hiyerarşisi de ekleniyor. SQL şemasında 83 tablo bulunuyor: 71'i entity, 12'si ilişki tablosu (`seller_staff`, `courier_zones`, `variant_values`, `cart_lines`, `wishlist_items`, `coupon_redemptions`, `gift_card_uses`, `stock_positions`, `goods_receipt_lines`, `stock_reservations`, `fulfillment_lines`, `return_lines`). Diğer ilişkiler bir entity tablosundaki yabancı anahtarla uygulanıyor.
+**Kapsam:** Kavramsal modelde **67 entity kümesi** ve **99 ilişki kümesi** var. Bunlara bir ISA hiyerarşisi de ekleniyor. SQL şemasında 79 tablo bulunuyor: 67'si entity, 12'si ilişki tablosu (`seller_staff`, `courier_zones`, `variant_values`, `cart_lines`, `wishlist_items`, `coupon_redemptions`, `gift_card_uses`, `stock_positions`, `goods_receipt_lines`, `stock_reservations`, `fulfillment_lines`, `return_lines`). Diğer ilişkiler bir entity tablosundaki yabancı anahtarla uygulanıyor.
 
 Model `tools/er_model.py` dosyasında yazılı. `python3 tools/build_er.py` bu modeli `schema.sql` ile karşılaştırıyor ve yönergenin 1–4. maddelerini otomatik denetliyor: entity sayısı, tek bağlı bileşen, dört zorunlu kavram, her entity'nin anahtarı. Ardından diyagramları ve raporu üretiyor. Hocanın şüpheyle bakabileceği yaklaşık 13 entity için (resimler, durum geçmişi gibi) raporda "neden entity" gerekçesi yazıyor. Bu gerekçe slayttaki *Entity vs. Attribute* kuralına dayanıyor: bir varlığın birden çok değeri olabiliyorsa o şey attribute olamaz. Bu 13'ün hepsi kabul edilmese bile sayı 50'nin üstünde kalıyor.
 
@@ -92,7 +92,7 @@ Model `tools/er_model.py` dosyasında yazılı. `python3 tools/build_er.py` bu m
 7. **Commit:** Sepet temizlenir ve bütün işlem birlikte kaydedilir. Hata varsa `ROLLBACK` ile sipariş, ödeme ve stok değişiklikleri birlikte geri alınır. Para kuruş cinsinden tamsayıdır.
 8. **Fulfillment:** Satıcı paneli rezervasyonları satıcı ve depoya göre gruplar. Örnekte iki `fulfillments`, iki `packages`, iki `shipments` oluşur; kargo takip olayları yazılır.
 9. **Delivery:** Gönderiler teslim edildiye çekilir ve `order_status_events` geçmişine eklenir.
-10. **Return:** Müşteri teslim edilen kalem için iade ister. Daha önce istenen adetler hesaba katılarak satın alınan miktarı aşması engellenir. Satıcı onaylarsa `refunds` ve yeni ödeme işlem kaydı yazılır. İade edilen ürün fiziksel inceleme olmadan stoğa dönmez.
+10. **Return:** Müşteri teslim edilen kalem için iade ister. Daha önce istenen adetler hesaba katılarak satın alınan miktarı aşması engellenir. Satıcı onaylarsa iade talebine bağlı (`return_id`) bir `refund` ödeme işlemi kaydı yazılır. İade edilen ürün fiziksel inceleme olmadan stoğa dönmez.
 
 Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdisi SQL metnine yapıştırılmaz. HTML'de değişken metinler `html.escape` ile gösterilir. Bu, giriş verisini anlamak ve temel enjeksiyon hatalarını önlemek içindir; uygulama henüz üretim güvenliği seviyesinde değildir.
 
@@ -100,8 +100,8 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 
 | Ders konusu | Kaynak | Projedeki karşılığı | Durum |
 | --- | --- | --- | --- |
-| ER tasarım, weak, ISA, ternary, aggregation | `Ch2_ER.pdf` | 71 entity, 103 ilişki; slayt gösterimiyle çizilmiş tam ve alan diyagramları; dört kavramın her biri var | Otomatik kontrolden geçti; ekip tarafından gözden geçirilmeli. |
-| ER → ilişkisel model, PK/FK | `Ch3_Rel_Model.pdf` | `schema.sql`, 83 tablo; weak entity'ler bileşik anahtarla, M:N ilişkiler kendi tablosuyla | Uygulandı; tarafların zorunlu katılımı (total participation) SQL'de değil, uygulamada sağlanıyor. |
+| ER tasarım, weak, ISA, ternary, aggregation | `Ch2_ER.pdf` | 67 entity, 99 ilişki; slayt gösterimiyle çizilmiş tam ve alan diyagramları; dört kavramın her biri var | Otomatik kontrolden geçti; ekip tarafından gözden geçirilmeli. |
+| ER → ilişkisel model, PK/FK | `Ch3_Rel_Model.pdf` | `schema.sql`, 79 tablo; weak entity'ler bileşik anahtarla, M:N ilişkiler kendi tablosuyla | Uygulandı; tarafların zorunlu katılımı (total participation) SQL'de değil, uygulamada sağlanıyor. |
 | İlişkisel cebir | `Ch4_Algebra.pdf` | SQL sorgularının arkasındaki select/project/join/group mantığı | Ayrı cebir gösterimi henüz yazılmadı. |
 | SQL, JOIN, alt sorgu, kısıtlar | `Ch5_SQL.pdf` | Katalog, rapor, stok ve iade sorguları | Temel sorgular var; hocanın “required SQL queries” listesi bilinmiyor. |
 | DB uygulaması | `Ch6_DBApp.pdf` | Python `sqlite3` ile SQL çalıştıran web arayüzü | Çekirdek akış çalışıyor; slaytların Java/JDBC örnekleriyle aynı dil/araç değil. |

@@ -37,7 +37,7 @@ class MarketplaceWorkflowTest(unittest.TestCase):
             app.request_return(db, order_id, 1, 1, "Damaged")
             return_id = db.execute("SELECT return_id FROM return_requests").fetchone()[0]
             app.approve_return(db, return_id)
-            self.assertEqual(db.execute("SELECT amount_cents FROM refunds WHERE return_id=?", (return_id,)).fetchone()[0], 249900)
+            self.assertEqual(db.execute("SELECT amount_cents FROM payment_transactions WHERE return_id=? AND kind='refund'", (return_id,)).fetchone()[0], 249900)
             self.assertEqual(db.execute("SELECT status FROM orders WHERE order_id=?", (order_id,)).fetchone()[0], "delivered")
             self.assertEqual(db.execute("PRAGMA foreign_key_check").fetchall(), [])
 

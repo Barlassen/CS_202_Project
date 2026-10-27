@@ -58,7 +58,7 @@ Para `float` yerine kuruş cinsinden tamsayı tutulur. Örneğin `249900` kuruş
 
 Seller panelindeki **Fulfill & ship**, bir siparişi satıcı/depo grubuna ayırır. Her grup için `fulfillments`, `fulfillment_lines`, `packages`, `shipments` ve `tracking_events` kayıtları oluşur. **Mark delivered**, gönderileri ve siparişi teslim edildi durumuna geçirir, durum geçmişi ekler.
 
-Teslim edilen siparişin bir kalemi için müşteri iade açabilir. Sistem daha önce reddedilmemiş iadelerin miktarını toplar ve sipariş edilen miktarı aşmasına izin vermez. Seller panelindeki **Approve & refund**, gerçek para transferi yapmadan `refunds` ve `payment_transactions` kayıtlarını oluşturur. İade edilen ürün hemen satılabilir stoğa eklenmez; önce fiziksel inceleme gerekir. `return_inspections` bunun için şemada vardır, ancak arayüz akışı henüz uygulanmamıştır.
+Teslim edilen siparişin bir kalemi için müşteri iade açabilir. Sistem daha önce reddedilmemiş iadelerin miktarını toplar ve sipariş edilen miktarı aşmasına izin vermez. Seller panelindeki **Approve & refund**, gerçek para transferi yapmadan `payment_transactions` tablosuna iade talebine bağlı (`return_id`) bir `refund` kaydı yazar. İade edilen ürün hemen satılabilir stoğa eklenmez; önce fiziksel inceleme gerekir. `return_inspections` bunun için şemada vardır, ancak arayüz akışı henüz uygulanmamıştır.
 
 ## 6. SQL raporları
 
@@ -70,7 +70,7 @@ Teslim edilen siparişin bir kalemi için müşteri iade açabilir. Sistem daha 
 
 ## 7. Kaç entity var, nasıl sayıyoruz?
 
-Yönerge iki kişilik proje için en az 50 **entity** istiyor. Kavramsal modelde 71 entity kümesi ve 103 ilişki kümesi var. Şemada 83 tablo bulunuyor, ama bunların 12'si ilişki tablosu (`seller_staff`, `stock_reservations` gibi) ve entity olarak sayılmıyor.
+Yönerge iki kişilik proje için en az 50 **entity** istiyor. Kavramsal modelde 67 entity kümesi ve 99 ilişki kümesi var. Şemada 79 tablo bulunuyor, ama bunların 12'si ilişki tablosu (`seller_staff`, `stock_reservations` gibi) ve entity olarak sayılmıyor.
 
 Sonradan eklenen 12 entity şunlar: Countries, Cities, Delivery_Zones, Pickup_Points, Tax_Rates, Departments, Loyalty_Tiers, Vehicles, Commission_Plans, Seller_Payouts, Payment_Methods, Carrier_Services. Her birinin kendi attribute'ları ve en az bir ilişkisi var. Carrier_Services ikinci bir weak entity örneği: servis kodu (STD, EXP) yalnızca kendi kargo şirketi içinde benzersiz.
 

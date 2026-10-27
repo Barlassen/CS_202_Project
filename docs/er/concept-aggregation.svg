@@ -21,15 +21,15 @@
 <polygon fill="none" stroke="#222222" stroke-width="3" points="799.27,-256 722.73,-256 722.73,-220 799.27,-220 799.27,-256"/>
 <text xml:space="preserve" text-anchor="middle" x="761" y="-234.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Order_Lines</text>
 </g>
-<!-- R100 -->
+<!-- R96 -->
 <g id="node23" class="node">
-<title>R100</title>
+<title>R96</title>
 <polygon fill="none" stroke="#222222" points="656,-190 617.01,-172 656,-154 694.99,-172 656,-190"/>
 <text xml:space="preserve" text-anchor="middle" x="656" y="-168.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Reserves</text>
 </g>
-<!-- E_order_lines&#45;&gt;R100 -->
+<!-- E_order_lines&#45;&gt;R96 -->
 <g id="edge22" class="edge">
-<title>E_order_lines&#45;&gt;R100</title>
+<title>E_order_lines&#45;&gt;R96</title>
 <path fill="none" stroke="#333333" d="M730.91,-218.66C711.76,-206.99 687.71,-192.33 672.11,-182.82"/>
 </g>
 <!-- P__order_lines__line_no -->
@@ -124,15 +124,15 @@
 <polygon fill="none" stroke="#222222" points="234.05,-190 115.95,-190 115.95,-154 234.05,-154 234.05,-190"/>
 <text xml:space="preserve" text-anchor="middle" x="175" y="-168.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations</text>
 </g>
-<!-- R98 -->
+<!-- R94 -->
 <g id="node19" class="node">
-<title>R98</title>
+<title>R94</title>
 <polygon fill="none" stroke="#222222" points="288,-124 259.63,-106 288,-88 316.37,-106 288,-124"/>
 <text xml:space="preserve" text-anchor="middle" x="288" y="-102.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Stocks</text>
 </g>
-<!-- E_seller_organizations&#45;&gt;R98 -->
+<!-- E_seller_organizations&#45;&gt;R94 -->
 <g id="edge16" class="edge">
-<title>E_seller_organizations&#45;&gt;R98</title>
+<title>E_seller_organizations&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M205.88,-153.51C227.96,-141 256.68,-124.74 273.65,-115.13"/>
 </g>
 <!-- A__seller_organizations__seller_id -->
@@ -227,57 +227,57 @@
 <title>A__warehouses__name&#45;&gt;E_warehouses</title>
 <path fill="none" stroke="#333333" d="M443.11,-95.83C430.47,-86.08 410.18,-70.44 394.5,-58.35"/>
 </g>
-<!-- R98&#45;&gt;E_variants -->
+<!-- R94&#45;&gt;E_variants -->
 <g id="edge17" class="edge">
-<title>R98&#45;&gt;E_variants</title>
+<title>R94&#45;&gt;E_variants</title>
 <path fill="none" stroke="#333333" d="M272.8,-97.15C252.88,-86.87 217.55,-68.64 192.56,-55.74"/>
 </g>
-<!-- R98&#45;&gt;E_warehouses -->
+<!-- R94&#45;&gt;E_warehouses -->
 <g id="edge18" class="edge">
-<title>R98&#45;&gt;E_warehouses</title>
+<title>R94&#45;&gt;E_warehouses</title>
 <path fill="none" stroke="#333333" d="M300.39,-95.56C313.17,-85.82 333.39,-70.42 349.09,-58.46"/>
 </g>
-<!-- RA98__available_qty -->
+<!-- RA94__available_qty -->
 <g id="node20" class="node">
-<title>RA98__available_qty</title>
+<title>RA94__available_qty</title>
 <ellipse fill="none" stroke="#222222" cx="288" cy="-172" rx="37.67" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="288" y="-169.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">available_qty</text>
 </g>
-<!-- RA98__available_qty&#45;&gt;R98 -->
+<!-- RA94__available_qty&#45;&gt;R94 -->
 <g id="edge14" class="edge">
-<title>RA98__available_qty&#45;&gt;R98</title>
+<title>RA94__available_qty&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M288,-160.72C288,-150.96 288,-136.12 288,-124.5"/>
 </g>
-<!-- RA98__reorder_point -->
+<!-- RA94__reorder_point -->
 <g id="node21" class="node">
-<title>RA98__reorder_point</title>
+<title>RA94__reorder_point</title>
 <ellipse fill="none" stroke="#222222" cx="380" cy="-172" rx="38.31" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="380" y="-169.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">reorder_point</text>
 </g>
-<!-- RA98__reorder_point&#45;&gt;R98 -->
+<!-- RA94__reorder_point&#45;&gt;R94 -->
 <g id="edge15" class="edge">
-<title>RA98__reorder_point&#45;&gt;R98</title>
+<title>RA94__reorder_point&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M366.43,-161.56C348.83,-149.32 318.36,-128.12 301.03,-116.07"/>
 </g>
-<!-- R44&#45;&gt;R98 -->
+<!-- R44&#45;&gt;R94 -->
 <g id="edge20" class="edge">
-<title>R44&#45;&gt;R98</title>
+<title>R44&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M530.95,-163.34C521.57,-160.13 510.33,-156.55 500,-154 498.65,-153.67 497.32,-153.34 496,-153.03"/>
 </g>
-<!-- R100&#45;&gt;R98 -->
+<!-- R96&#45;&gt;R94 -->
 <g id="edge23" class="edge">
-<title>R100&#45;&gt;R98</title>
+<title>R96&#45;&gt;R94</title>
 <path fill="none" stroke="#333333" d="M634.31,-163.52C623.77,-160.15 610.84,-156.39 599,-154 556.66,-145.45 524.73,-143.32 496,-142.72"/>
 </g>
-<!-- RA100__quantity -->
+<!-- RA96__quantity -->
 <g id="node24" class="node">
-<title>RA100__quantity</title>
+<title>RA96__quantity</title>
 <ellipse fill="none" stroke="#222222" cx="656" cy="-238" rx="27" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="656" y="-235.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">quantity</text>
 </g>
-<!-- RA100__quantity&#45;&gt;R100 -->
+<!-- RA96__quantity&#45;&gt;R96 -->
 <g id="edge21" class="edge">
-<title>RA100__quantity&#45;&gt;R100</title>
+<title>RA96__quantity&#45;&gt;R96</title>
 <path fill="none" stroke="#333333" d="M656,-226.72C656,-216.96 656,-202.12 656,-190.5"/>
 </g>
 </g>

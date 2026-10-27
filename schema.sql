@@ -234,13 +234,10 @@ CREATE TABLE warehouses (
   warehouse_id INTEGER PRIMARY KEY, name TEXT NOT NULL,
   city_id INTEGER NOT NULL REFERENCES cities(city_id)
 );
-CREATE TABLE storage_zones (
-  zone_id INTEGER PRIMARY KEY, warehouse_id INTEGER NOT NULL REFERENCES warehouses(warehouse_id),
-  code TEXT NOT NULL, UNIQUE(warehouse_id, code)
-);
 CREATE TABLE storage_bins (
-  bin_id INTEGER PRIMARY KEY, zone_id INTEGER NOT NULL REFERENCES storage_zones(zone_id),
-  code TEXT NOT NULL, UNIQUE(zone_id, code)
+  bin_id INTEGER PRIMARY KEY, warehouse_id INTEGER NOT NULL REFERENCES warehouses(warehouse_id),
+  zone_code TEXT NOT NULL, code TEXT NOT NULL,
+  UNIQUE(warehouse_id, zone_code, code), UNIQUE(bin_id, warehouse_id)
 );
 -- This is the ternary Seller × Variant × Warehouse stock relationship.
 CREATE TABLE stock_positions (
@@ -254,14 +251,17 @@ CREATE TABLE stock_positions (
 CREATE TABLE stock_batches (
   batch_id INTEGER PRIMARY KEY,
   seller_id INTEGER NOT NULL, variant_id INTEGER NOT NULL, warehouse_id INTEGER NOT NULL,
-  bin_id INTEGER NOT NULL REFERENCES storage_bins(bin_id),
+  bin_id INTEGER NOT NULL,
   received_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   quantity INTEGER NOT NULL CHECK(quantity >= 0),
   FOREIGN KEY(seller_id, variant_id, warehouse_id)
-    REFERENCES stock_positions(seller_id, variant_id, warehouse_id)
+    REFERENCES stock_positions(seller_id, variant_id, warehouse_id),
+  -- The bin must be in the batch's own warehouse.
+  FOREIGN KEY(bin_id, warehouse_id) REFERENCES storage_bins(bin_id, warehouse_id)
 );
 CREATE TABLE stock_movements (
   movement_id INTEGER PRIMARY KEY, batch_id INTEGER NOT NULL REFERENCES stock_batches(batch_id),
+  staff_id INTEGER REFERENCES staff(account_id),
   quantity_delta INTEGER NOT NULL CHECK(quantity_delta <> 0), reason TEXT NOT NULL,
   moved_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
@@ -298,12 +298,6 @@ CREATE TABLE warehouse_inspections (
   staff_id INTEGER NOT NULL REFERENCES staff(account_id),
   result TEXT NOT NULL, inspected_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE inventory_adjustments (
-  adjustment_id INTEGER PRIMARY KEY, batch_id INTEGER NOT NULL REFERENCES stock_batches(batch_id),
-  staff_id INTEGER NOT NULL REFERENCES staff(account_id),
-  quantity_delta INTEGER NOT NULL CHECK(quantity_delta <> 0),
-  reason TEXT NOT NULL, adjusted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
-);
 
 -- Orders and payment
 CREATE TABLE orders (
@@ -338,8 +332,11 @@ CREATE TABLE payments (
 );
 CREATE TABLE payment_transactions (
   transaction_id INTEGER PRIMARY KEY, payment_id INTEGER NOT NULL REFERENCES payments(payment_id),
-  kind TEXT NOT NULL, status TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0),
-  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  return_id INTEGER REFERENCES return_requests(return_id),
+  kind TEXT NOT NULL CHECK(kind IN ('capture','refund')),
+  status TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0),
+  created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  CHECK((kind = 'refund') = (return_id IS NOT NULL))
 );
 CREATE TABLE invoices (
   invoice_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL UNIQUE REFERENCES orders(order_id),
@@ -421,11 +418,9 @@ CREATE TABLE delivery_attempts (
   courier_id INTEGER NOT NULL REFERENCES couriers(account_id),
   attempted_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   outcome TEXT NOT NULL CHECK(outcome IN ('delivered','failed')),
-  notes TEXT
-);
-CREATE TABLE proof_of_delivery (
-  proof_id INTEGER PRIMARY KEY, attempt_id INTEGER NOT NULL UNIQUE REFERENCES delivery_attempts(attempt_id),
-  recipient_name TEXT NOT NULL, evidence_url TEXT, recorded_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  recipient_name TEXT, evidence_url TEXT,
+  notes TEXT,
+  CHECK((outcome = 'delivered') = (recipient_name IS NOT NULL))
 );
 
 -- After-sales and support
@@ -440,12 +435,6 @@ CREATE TABLE return_lines (
   quantity INTEGER NOT NULL CHECK(quantity > 0),
   PRIMARY KEY(return_id, order_id, line_no),
   FOREIGN KEY(order_id, line_no) REFERENCES order_lines(order_id, line_no)
-);
-CREATE TABLE refunds (
-  refund_id INTEGER PRIMARY KEY, return_id INTEGER NOT NULL REFERENCES return_requests(return_id),
-  payment_id INTEGER NOT NULL REFERENCES payments(payment_id),
-  amount_cents INTEGER NOT NULL CHECK(amount_cents > 0),
-  status TEXT NOT NULL CHECK(status IN ('pending','completed','rejected'))
 );
 CREATE TABLE support_tickets (
   ticket_id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(account_id),
