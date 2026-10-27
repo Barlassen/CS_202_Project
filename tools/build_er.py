@@ -499,6 +499,11 @@ def write_report(ent, rels, tables, checks):
     w("- **Participation that SQL cannot enforce.** Total participation of the \"one\" side is guaranteed by the application, not by a foreign key:")
     for (rel, table), reason in M.TOTAL_PARTICIPATION.items():
         w(f"  - {name_of(table)} in {rel}: {reason}.")
+    w("- **Consistency across relationships.** Some rules involve two relationships at once, for example that a returned line "
+      "belongs to the returned order. The ER diagram cannot show such a rule, because every relationship is drawn on its own. "
+      "The schema enforces each one with a composite foreign key through a shared column:")
+    for rels_, rule, how in M.CROSS_RULES:
+        w(f"  - {rule[0].upper() + rule[1:]} ({' + '.join(rels_)}): {how}.")
     w("")
 
     w("---")
@@ -574,7 +579,20 @@ def write_report(ent, rels, tables, checks):
                 w("")
             w(f"Implemented as {r['sql']}.")
             w("")
+            for rule in cross_rules(r["name"]):
+                w(f"**Consistency:** {rule}. The ER diagram cannot show this; see *Consistency across relationships* above.")
+                w("")
     (DOCS / "REPORT.md").write_text("\n".join(out))
+
+
+def cross_rules(rel_name):
+    """The cross-relationship rules a relationship takes part in, with the other relationship named."""
+    out = []
+    for rels_, rule, _ in M.CROSS_RULES:
+        if rel_name in rels_:
+            other = next(x for x in rels_ if x != rel_name)
+            out.append(f"{rule[0].upper() + rule[1:]} (together with {other}); the schema enforces it with a composite foreign key")
+    return out
 
 
 def export_json(ent, rels, tables, checks):
@@ -601,7 +619,7 @@ def export_json(ent, rels, tables, checks):
         for tag in ("TERNARY. ", "AGGREGATION. ", "IDENTIFYING. "):
             text = text.replace(tag, "")
         return dict(name=r["name"], area=r["area"], kind=kind(r), identifying=r["identifying"], text=text,
-                    sql=r["sql"].replace("`", ""), attrs=attrs,
+                    sql=r["sql"].replace("`", ""), attrs=attrs, rules=cross_rules(r["name"]),
                     parts=[dict(target="Stocks (aggregation)" if p["target"] == AGG else ent[p["target"]]["name"],
                                 aggregation=p["target"] == AGG, key=p["key"], total=p["total"], role=p["role"])
                            for p in r["parts"]])

@@ -178,6 +178,7 @@ for (const [area, label] of Object.entries(M.areas)) {
       const partCell = r.parts.map((p) => [run(p.target, { size: 18 }), run(`${p.role ? ` (${p.role})` : ""}: ${phrase(p)}`, { size: 18, color: MUTED })]);
       const meaning = [[run(r.text, { size: 18 })]];
       if (r.attrs.length) meaning.push([run("Attributes: ", { size: 18, bold: true }), run(r.attrs.map((a) => a.name).join(", "), { size: 18 })]);
+      for (const rule of r.rules ?? []) meaning.push([run("Consistency: ", { size: 18, bold: true }), run(`${rule}.`, { size: 18 })]);
       return [`R${r_no}`, nameCell, partCell, meaning];
     })));
 }

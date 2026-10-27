@@ -264,3 +264,26 @@ TOTAL_PARTICIPATION = {
     ("Variant_Of", "products"): "a product is only published with at least one variant",
     ("Offers_Service", "carriers"): "a carrier is only usable with at least one service",
 }
+
+# Rules that span two relationships. An ER diagram draws each relationship on its own,
+# so it cannot say that two paths must reach the same entity. The schema enforces each
+# rule with a composite foreign key through the shared column.
+# (relationships, rule, how the schema enforces it)
+CROSS_RULES = [
+    (("Receipt_For", "Receives"),
+     "a goods receipt only receives lines of its own purchase order",
+     "`goods_receipt_lines(receipt_id, purchase_order_id)` references `goods_receipts(receipt_id, purchase_order_id)`, "
+     "and `(purchase_order_id, line_no)` references the purchase-order line, so both must name the same purchase order"),
+    (("Return_Of", "Returns"),
+     "a return request only returns lines of its own order",
+     "`return_lines(return_id, order_id)` references `return_requests(return_id, order_id)`, "
+     "and `(order_id, line_no)` references the order line, so both must name the same order"),
+    (("Transaction_Of", "Refund_For"),
+     "a refund is paid back from the payment of the order that was returned",
+     "`payment_transactions` carries `order_id` only for this: `(payment_id, order_id)` references `payments` "
+     "and `(return_id, order_id)` references `return_requests`, so the payment and the return belong to the same order"),
+    (("Batch_Of", "Stored_In"),
+     "a stock batch is stored in a bin of its own warehouse",
+     "`stock_batches(bin_id, warehouse_id)` references `storage_bins(bin_id, warehouse_id)`, "
+     "and `warehouse_id` is also part of the batch's stock position"),
+]

@@ -283,13 +283,17 @@ CREATE TABLE purchase_order_lines (
 CREATE TABLE goods_receipts (
   receipt_id INTEGER PRIMARY KEY,
   purchase_order_id INTEGER NOT NULL REFERENCES purchase_orders(purchase_order_id),
-  received_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  received_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(receipt_id, purchase_order_id)
 );
 CREATE TABLE goods_receipt_lines (
-  receipt_id INTEGER NOT NULL REFERENCES goods_receipts(receipt_id),
+  receipt_id INTEGER NOT NULL,
   purchase_order_id INTEGER NOT NULL, line_no INTEGER NOT NULL,
   received_qty INTEGER NOT NULL CHECK(received_qty > 0),
   PRIMARY KEY(receipt_id, purchase_order_id, line_no),
+  -- The received line must belong to the receipt's own purchase order.
+  FOREIGN KEY(receipt_id, purchase_order_id)
+    REFERENCES goods_receipts(receipt_id, purchase_order_id),
   FOREIGN KEY(purchase_order_id, line_no)
     REFERENCES purchase_order_lines(purchase_order_id, line_no)
 );
@@ -328,15 +332,20 @@ CREATE TABLE payment_methods (
 CREATE TABLE payments (
   payment_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL UNIQUE REFERENCES orders(order_id),
   payment_method_id INTEGER NOT NULL REFERENCES payment_methods(payment_method_id),
-  status TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0)
+  status TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0),
+  UNIQUE(payment_id, order_id)
 );
 CREATE TABLE payment_transactions (
-  transaction_id INTEGER PRIMARY KEY, payment_id INTEGER NOT NULL REFERENCES payments(payment_id),
-  return_id INTEGER REFERENCES return_requests(return_id),
+  transaction_id INTEGER PRIMARY KEY, payment_id INTEGER NOT NULL,
+  -- order_id adds no information of its own: it ties both foreign keys below to one order,
+  -- so a refund is paid back from the payment of the order that was returned.
+  order_id INTEGER NOT NULL, return_id INTEGER,
   kind TEXT NOT NULL CHECK(kind IN ('capture','refund')),
   status TEXT NOT NULL, amount_cents INTEGER NOT NULL CHECK(amount_cents >= 0),
   created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  CHECK((kind = 'refund') = (return_id IS NOT NULL))
+  CHECK((kind = 'refund') = (return_id IS NOT NULL)),
+  FOREIGN KEY(payment_id, order_id) REFERENCES payments(payment_id, order_id),
+  FOREIGN KEY(return_id, order_id) REFERENCES return_requests(return_id, order_id)
 );
 CREATE TABLE invoices (
   invoice_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL UNIQUE REFERENCES orders(order_id),
@@ -427,13 +436,16 @@ CREATE TABLE delivery_attempts (
 CREATE TABLE return_requests (
   return_id INTEGER PRIMARY KEY, order_id INTEGER NOT NULL REFERENCES orders(order_id),
   reason TEXT NOT NULL, status TEXT NOT NULL CHECK(status IN ('requested','approved','rejected')),
-  requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP
+  requested_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE(return_id, order_id)
 );
 CREATE TABLE return_lines (
-  return_id INTEGER NOT NULL REFERENCES return_requests(return_id),
+  return_id INTEGER NOT NULL,
   order_id INTEGER NOT NULL, line_no INTEGER NOT NULL,
   quantity INTEGER NOT NULL CHECK(quantity > 0),
   PRIMARY KEY(return_id, order_id, line_no),
+  -- The returned line must belong to the return request's own order.
+  FOREIGN KEY(return_id, order_id) REFERENCES return_requests(return_id, order_id),
   FOREIGN KEY(order_id, line_no) REFERENCES order_lines(order_id, line_no)
 );
 CREATE TABLE support_tickets (

@@ -85,6 +85,11 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
   - Invoices in Invoice_Has_Line: an invoice is issued with one line per order line.
   - Products in Variant_Of: a product is only published with at least one variant.
   - Carriers in Offers_Service: a carrier is only usable with at least one service.
+- **Consistency across relationships.** Some rules involve two relationships at once, for example that a returned line belongs to the returned order. The ER diagram cannot show such a rule, because every relationship is drawn on its own. The schema enforces each one with a composite foreign key through a shared column:
+  - A goods receipt only receives lines of its own purchase order (Receipt_For + Receives): `goods_receipt_lines(receipt_id, purchase_order_id)` references `goods_receipts(receipt_id, purchase_order_id)`, and `(purchase_order_id, line_no)` references the purchase-order line, so both must name the same purchase order.
+  - A return request only returns lines of its own order (Return_Of + Returns): `return_lines(return_id, order_id)` references `return_requests(return_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
+  - A refund is paid back from the payment of the order that was returned (Transaction_Of + Refund_For): `payment_transactions` carries `order_id` only for this: `(payment_id, order_id)` references `payments` and `(return_id, order_id)` references `return_requests`, so the payment and the return belong to the same order.
+  - A stock batch is stored in a bin of its own warehouse (Batch_Of + Stored_In): `stock_batches(bin_id, warehouse_id)` references `storage_bins(bin_id, warehouse_id)`, and `warehouse_id` is also part of the batch's stock position.
 
 ---
 
@@ -1779,6 +1784,8 @@ Each batch is stored in exactly one bin, and the bin must be in the batch's own 
 
 Implemented as foreign key `stock_batches(bin_id, warehouse_id)` → `storage_bins`.
 
+**Consistency:** A stock batch is stored in a bin of its own warehouse (together with Batch_Of); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 #### R52. Batch_Of
 
 *relationship with an aggregation*
@@ -1791,6 +1798,8 @@ Each batch belongs to exactly one stock position, that is, to one Stocks relatio
 | Stocks (aggregation of Seller_Organizations, Variants, Warehouses) | — | no | partial |
 
 Implemented as foreign key `stock_batches(seller_id, variant_id, warehouse_id)` → `stock_positions`.
+
+**Consistency:** A stock batch is stored in a bin of its own warehouse (together with Stored_In); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R53. Authorizes
 
@@ -1896,6 +1905,8 @@ Each goods receipt is for exactly one purchase order.
 
 Implemented as foreign key `goods_receipts(purchase_order_id)` → `purchase_orders`.
 
+**Consistency:** A goods receipt only receives lines of its own purchase order (together with Receives); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 #### R61. Conducts
 
 *binary, many-to-one*
@@ -1952,6 +1963,8 @@ A goods receipt receives some quantity of purchase-order lines. A line can arriv
 Descriptive attributes: `received_qty` (INTEGER; CHECK received_qty > 0).
 
 Implemented as table `goods_receipt_lines` (primary key receipt_id, purchase_order_id, line_no).
+
+**Consistency:** A goods receipt only receives lines of its own purchase order (together with Receipt_For); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 ### Orders and payment
 
@@ -2083,7 +2096,9 @@ A refund transaction pays back exactly one return request; capture transactions 
 | Payment_Transactions | — | yes: at most one | partial |
 | Return_Requests | — | no | partial |
 
-Implemented as foreign key `payment_transactions(return_id)` → `return_requests`.
+Implemented as foreign key `payment_transactions(return_id, order_id)` → `return_requests`.
+
+**Consistency:** A refund is paid back from the payment of the order that was returned (together with Transaction_Of); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R75. Transaction_Of
 
@@ -2096,7 +2111,9 @@ Each transaction belongs to exactly one payment.
 | Payment_Transactions | — | yes: at most one | total |
 | Payments | — | no | partial |
 
-Implemented as foreign key `payment_transactions(payment_id)` → `payments`.
+Implemented as foreign key `payment_transactions(payment_id, order_id)` → `payments`.
+
+**Consistency:** A refund is paid back from the payment of the order that was returned (together with Refund_For); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R76. Invoiced_As
 
@@ -2327,6 +2344,8 @@ Each return request is for exactly one order. The customer is reached through th
 
 Implemented as foreign key `return_requests(order_id)` → `orders`.
 
+**Consistency:** A return request only returns lines of its own order (together with Returns); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 #### R93. Inspects_Return
 
 *binary, many-to-one*
@@ -2419,3 +2438,5 @@ A return request returns some quantity of order lines.
 Descriptive attributes: `quantity` (INTEGER; CHECK quantity > 0).
 
 Implemented as table `return_lines` (primary key return_id, order_id, line_no).
+
+**Consistency:** A return request only returns lines of its own order (together with Return_Of); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.

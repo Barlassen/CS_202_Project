@@ -19,6 +19,8 @@ MarketLab is a local, database-backed web demo for a multi-vendor marketplace. I
 | Proof_Of_Delivery | Delivery_Attempts (`recipient_name`, `evidence_url`) | One-to-one with a successful attempt, with no relationships of its own. |
 | Storage_Zones | Storage_Bins (`zone_code`, relationship *Located_In* to Warehouses) | A zone had only a code. Bins now reference their warehouse directly, and a composite foreign key keeps each batch's bin in the batch's own warehouse. |
 
+The three major consistency issues in the feedback (a goods receipt receiving another purchase order's lines, a return covering another order's lines, a refund charged to another order's payment) are now prevented in the schema with composite foreign keys. The report lists these rules under *Design choices → Consistency across relationships* and under each relationship involved.
+
 Numbers in the report changed; [`docs/NUMBERING_OLD_NEW.md`](docs/NUMBERING_OLD_NEW.md) maps the old E/R numbers used in the feedback to the new ones.
 
 

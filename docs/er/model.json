@@ -2422,6 +2422,7 @@
    "text": "A customer belongs to at most one loyalty tier (none before the first purchase); a tier has many customers.",
    "sql": "foreign key customers(tier_id) → loyalty_tiers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Customers",
@@ -2447,6 +2448,7 @@
    "text": "Every staff member works in exactly one department; a department has many staff.",
    "sql": "foreign key staff(department_id) → departments",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Staff",
@@ -2472,6 +2474,7 @@
    "text": "One-to-one: a courier drives at most one vehicle and a vehicle is assigned to at most one courier. Both sides are optional.",
    "sql": "foreign key couriers(vehicle_id) → vehicles",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Couriers",
@@ -2497,6 +2500,7 @@
    "text": "A department is managed by at most one staff member (the same Manages example as the Key Constraints slide). Not every department needs a manager, so participation is partial.",
    "sql": "foreign key departments(manager_id) → staff",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Departments",
@@ -2522,6 +2526,7 @@
    "text": "Every seller is on exactly one commission plan; a plan has many sellers.",
    "sql": "foreign key seller_organizations(plan_id) → commission_plans",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Organizations",
@@ -2547,6 +2552,7 @@
    "text": "Every seller is owned by exactly one account; one person may own several sellers.",
    "sql": "foreign key seller_organizations(owner_account_id) → accounts",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Organizations",
@@ -2572,6 +2578,7 @@
    "text": "A staff member checks verifications. A verification that is still pending has no checker yet, so the Verification side is partial.",
    "sql": "foreign key seller_verifications(checked_by) → staff",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Verifications",
@@ -2597,6 +2604,7 @@
    "text": "Each verification is about exactly one seller; a seller can be verified several times.",
    "sql": "foreign key seller_verifications(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Verifications",
@@ -2622,6 +2630,7 @@
    "text": "Each policy is published by exactly one seller.",
    "sql": "foreign key seller_policies(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Policies",
@@ -2647,6 +2656,7 @@
    "text": "Each payout account belongs to exactly one seller; a seller may register several.",
    "sql": "foreign key seller_payout_accounts(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Payout_Accounts",
@@ -2672,6 +2682,7 @@
    "text": "Each payout is transferred to exactly one payout account.",
    "sql": "foreign key seller_payouts(payout_account_id) → seller_payout_accounts",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Payouts",
@@ -2697,6 +2708,7 @@
    "text": "Each notification is sent to exactly one customer.",
    "sql": "foreign key customer_notifications(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Customer_Notifications",
@@ -2722,6 +2734,7 @@
    "text": "Each city is part of exactly one country; a country has many cities.",
    "sql": "foreign key cities(country_code) → countries",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Cities",
@@ -2747,6 +2760,7 @@
    "text": "Each address lies in exactly one city.",
    "sql": "foreign key addresses(city_id) → cities",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Addresses",
@@ -2772,6 +2786,7 @@
    "text": "Each address is saved by exactly one account; an account can save many addresses.",
    "sql": "foreign key addresses(account_id) → accounts",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Addresses",
@@ -2797,6 +2812,7 @@
    "text": "Each delivery zone lies in exactly one city; a city may be divided into several zones.",
    "sql": "foreign key delivery_zones(city_id) → cities",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Delivery_Zones",
@@ -2822,6 +2838,7 @@
    "text": "Each pickup point is in exactly one city.",
    "sql": "foreign key pickup_points(city_id) → cities",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Pickup_Points",
@@ -2847,6 +2864,7 @@
    "text": "Each tax rate is defined by exactly one country; a country defines several rates.",
    "sql": "foreign key tax_rates(country_code) → countries",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Tax_Rates",
@@ -2872,6 +2890,7 @@
    "text": "A category may have one parent category; a parent has many subcategories. The same entity set appears in two roles, as in the Reports_To example.",
    "sql": "foreign key categories(parent_id) → categories",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Categories",
@@ -2897,6 +2916,7 @@
    "text": "Every product is made by exactly one brand.",
    "sql": "foreign key products(brand_id) → brands",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Products",
@@ -2922,6 +2942,7 @@
    "text": "Every product is classified under exactly one category.",
    "sql": "foreign key products(category_id) → categories",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Products",
@@ -2947,6 +2968,7 @@
    "text": "Every variant is a version of exactly one product; a product has at least one variant.",
    "sql": "foreign key variants(product_id) → products",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Variants",
@@ -2972,6 +2994,7 @@
    "text": "Each image illustrates exactly one product.",
    "sql": "foreign key product_images(product_id) → products",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Product_Images",
@@ -2997,6 +3020,7 @@
    "text": "Each listing sells exactly one variant; a variant can be listed by several sellers.",
    "sql": "foreign key listings(variant_id) → variants",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Listings",
@@ -3022,6 +3046,7 @@
    "text": "Each listing is offered by exactly one seller.",
    "sql": "foreign key listings(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Listings",
@@ -3047,6 +3072,7 @@
    "text": "Each price change belongs to exactly one listing.",
    "sql": "foreign key price_history(listing_id) → listings",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Price_History",
@@ -3072,6 +3098,7 @@
    "text": "Each question is asked by exactly one customer.",
    "sql": "foreign key product_questions(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Product_Questions",
@@ -3097,6 +3124,7 @@
    "text": "Each question is about exactly one product.",
    "sql": "foreign key product_questions(product_id) → products",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Product_Questions",
@@ -3122,6 +3150,7 @@
    "text": "Each answer is written by exactly one staff member.",
    "sql": "foreign key product_answers(staff_id) → staff",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Product_Answers",
@@ -3147,6 +3176,7 @@
    "text": "Each answer replies to exactly one question; a question may get several answers.",
    "sql": "foreign key product_answers(question_id) → product_questions",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Product_Answers",
@@ -3172,6 +3202,7 @@
    "text": "Each document belongs to exactly one product.",
    "sql": "foreign key product_documents(product_id) → products",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Product_Documents",
@@ -3197,6 +3228,7 @@
    "text": "Each seller review is written by exactly one customer.",
    "sql": "foreign key seller_reviews(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Reviews",
@@ -3222,6 +3254,7 @@
    "text": "Each seller review is about exactly one seller.",
    "sql": "foreign key seller_reviews(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Reviews",
@@ -3247,6 +3280,7 @@
    "text": "One-to-one: every cart belongs to exactly one customer and a customer has at most one cart.",
    "sql": "foreign key carts(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Carts",
@@ -3272,6 +3306,7 @@
    "text": "Each wishlist is kept by exactly one customer.",
    "sql": "foreign key wishlists(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Wishlists",
@@ -3297,6 +3332,7 @@
    "text": "Each promotion is run by exactly one seller.",
    "sql": "foreign key promotions(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Promotions",
@@ -3322,6 +3358,7 @@
    "text": "Each coupon is issued under exactly one promotion.",
    "sql": "foreign key coupons(promotion_id) → promotions",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Coupons",
@@ -3347,6 +3384,7 @@
    "text": "Each review is written by exactly one customer.",
    "sql": "foreign key reviews(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Reviews",
@@ -3372,6 +3410,7 @@
    "text": "Each review is about exactly one product.",
    "sql": "foreign key reviews(product_id) → products",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Reviews",
@@ -3397,6 +3436,7 @@
    "text": "Each review image is attached to exactly one review.",
    "sql": "foreign key review_images(review_id) → reviews",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Review_Images",
@@ -3422,6 +3462,7 @@
    "text": "Each gift card is bought by exactly one customer.",
    "sql": "foreign key gift_cards(buyer_customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Gift_Cards",
@@ -3447,6 +3488,7 @@
    "text": "Each warehouse is sited in exactly one city.",
    "sql": "foreign key warehouses(city_id) → cities",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Warehouses",
@@ -3472,6 +3514,7 @@
    "text": "Each bin is in exactly one warehouse; a warehouse has many bins.",
    "sql": "foreign key storage_bins(warehouse_id) → warehouses",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Storage_Bins",
@@ -3497,6 +3540,9 @@
    "text": "Each batch is stored in exactly one bin, and the bin must be in the batch's own warehouse.",
    "sql": "foreign key stock_batches(bin_id, warehouse_id) → storage_bins",
    "attrs": [],
+   "rules": [
+    "A stock batch is stored in a bin of its own warehouse (together with Batch_Of); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Stock_Batches",
@@ -3522,6 +3568,9 @@
    "text": "Each batch belongs to exactly one stock position, that is, to one Stocks relationship (aggregation). A stock position consists of many batches.",
    "sql": "foreign key stock_batches(seller_id, variant_id, warehouse_id) → stock_positions",
    "attrs": [],
+   "rules": [
+    "A stock batch is stored in a bin of its own warehouse (together with Stored_In); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Stock_Batches",
@@ -3547,6 +3596,7 @@
    "text": "A manual movement (a count correction or damage) is authorised by one staff member; movements made by the system, such as order reservations, have none.",
    "sql": "foreign key stock_movements(staff_id) → staff",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Stock_Movements",
@@ -3572,6 +3622,7 @@
    "text": "Each movement changes exactly one batch.",
    "sql": "foreign key stock_movements(batch_id) → stock_batches",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Stock_Movements",
@@ -3597,6 +3648,7 @@
    "text": "Each supplier record belongs to exactly one seller.",
    "sql": "foreign key suppliers(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Suppliers",
@@ -3622,6 +3674,7 @@
    "text": "Each purchase order is delivered to exactly one warehouse.",
    "sql": "foreign key purchase_orders(warehouse_id) → warehouses",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Purchase_Orders",
@@ -3647,6 +3700,7 @@
    "text": "Each purchase order is placed with exactly one supplier.",
    "sql": "foreign key purchase_orders(supplier_id) → suppliers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Purchase_Orders",
@@ -3672,6 +3726,7 @@
    "text": "Each purchase-order line orders exactly one variant.",
    "sql": "foreign key purchase_order_lines(variant_id) → variants",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Purchase_Order_Lines",
@@ -3697,6 +3752,7 @@
    "text": "A purchase-order line exists only inside its purchase order and is numbered within it.",
    "sql": "foreign key purchase_order_lines(purchase_order_id) → purchase_orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Purchase_Order_Lines",
@@ -3722,6 +3778,9 @@
    "text": "Each goods receipt is for exactly one purchase order.",
    "sql": "foreign key goods_receipts(purchase_order_id) → purchase_orders",
    "attrs": [],
+   "rules": [
+    "A goods receipt only receives lines of its own purchase order (together with Receives); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Goods_Receipts",
@@ -3747,6 +3806,7 @@
    "text": "Each inspection is conducted by exactly one staff member.",
    "sql": "foreign key warehouse_inspections(staff_id) → staff",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Warehouse_Inspections",
@@ -3772,6 +3832,7 @@
    "text": "Each inspection is of exactly one warehouse.",
    "sql": "foreign key warehouse_inspections(warehouse_id) → warehouses",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Warehouse_Inspections",
@@ -3797,6 +3858,7 @@
    "text": "An order may be collected at one pickup point instead of being delivered home.",
    "sql": "foreign key orders(pickup_point_id) → pickup_points",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Orders",
@@ -3822,6 +3884,7 @@
    "text": "Every order has exactly one delivery or billing address.",
    "sql": "foreign key orders(address_id) → addresses",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Orders",
@@ -3847,6 +3910,7 @@
    "text": "Every order is placed by exactly one customer.",
    "sql": "foreign key orders(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Orders",
@@ -3872,6 +3936,7 @@
    "text": "Each order line buys exactly one listing.",
    "sql": "foreign key order_lines(listing_id) → listings",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Order_Lines",
@@ -3897,6 +3962,7 @@
    "text": "An order line exists only inside its order and is numbered within it. Every order has at least one line.",
    "sql": "foreign key order_lines(order_id) → orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Order_Lines",
@@ -3922,6 +3988,7 @@
    "text": "Each status event belongs to exactly one order.",
    "sql": "foreign key order_status_events(order_id) → orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Order_Status_Events",
@@ -3947,6 +4014,7 @@
    "text": "Each payment method is saved by exactly one customer.",
    "sql": "foreign key payment_methods(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Payment_Methods",
@@ -3972,6 +4040,7 @@
    "text": "Every payment uses exactly one saved payment method.",
    "sql": "foreign key payments(payment_method_id) → payment_methods",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Payments",
@@ -3997,6 +4066,7 @@
    "text": "One-to-one: every payment is for exactly one order and an order has at most one payment.",
    "sql": "foreign key payments(order_id) → orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Payments",
@@ -4020,8 +4090,11 @@
    "kind": "binary, many-to-one",
    "identifying": false,
    "text": "A refund transaction pays back exactly one return request; capture transactions belong to no return.",
-   "sql": "foreign key payment_transactions(return_id) → return_requests",
+   "sql": "foreign key payment_transactions(return_id, order_id) → return_requests",
    "attrs": [],
+   "rules": [
+    "A refund is paid back from the payment of the order that was returned (together with Transaction_Of); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Payment_Transactions",
@@ -4045,8 +4118,11 @@
    "kind": "binary, many-to-one",
    "identifying": false,
    "text": "Each transaction belongs to exactly one payment.",
-   "sql": "foreign key payment_transactions(payment_id) → payments",
+   "sql": "foreign key payment_transactions(payment_id, order_id) → payments",
    "attrs": [],
+   "rules": [
+    "A refund is paid back from the payment of the order that was returned (together with Refund_For); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Payment_Transactions",
@@ -4072,6 +4148,7 @@
    "text": "One-to-one: every invoice is for exactly one order and an order has at most one invoice.",
    "sql": "foreign key invoices(order_id) → orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Invoices",
@@ -4097,6 +4174,7 @@
    "text": "Each invoice line bills exactly one order line.",
    "sql": "foreign key invoice_lines(order_id, order_line_no) → order_lines",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Invoice_Lines",
@@ -4122,6 +4200,7 @@
    "text": "An invoice line is taxed at most at one tax rate (none for tax-exempt lines).",
    "sql": "foreign key invoice_lines(tax_rate_id) → tax_rates",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Invoice_Lines",
@@ -4147,6 +4226,7 @@
    "text": "An invoice line exists only inside its invoice and is numbered within it.",
    "sql": "foreign key invoice_lines(invoice_id) → invoices",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Invoice_Lines",
@@ -4172,6 +4252,7 @@
    "text": "Each fulfilment is picked from exactly one warehouse.",
    "sql": "foreign key fulfillments(warehouse_id) → warehouses",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Fulfillments",
@@ -4197,6 +4278,7 @@
    "text": "Each fulfilment is handled by exactly one seller.",
    "sql": "foreign key fulfillments(seller_id) → seller_organizations",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Fulfillments",
@@ -4222,6 +4304,7 @@
    "text": "Each fulfilment fulfils exactly one order.",
    "sql": "foreign key fulfillments(order_id) → orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Fulfillments",
@@ -4247,6 +4330,7 @@
    "text": "Each package is packed for exactly one fulfilment.",
    "sql": "foreign key packages(fulfillment_id) → fulfillments",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Packages",
@@ -4272,6 +4356,7 @@
    "text": "A carrier service exists only for its carrier; the service code (STD, EXP) is unique only within the carrier. Every carrier offers at least one service.",
    "sql": "foreign key carrier_services(carrier_id) → carriers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Carrier_Services",
@@ -4297,6 +4382,7 @@
    "text": "Every shipment travels with exactly one carrier service.",
    "sql": "foreign key shipments(carrier_id, service_code) → carrier_services",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Shipments",
@@ -4322,6 +4408,7 @@
    "text": "One-to-one: every shipment carries exactly one package and a package is shipped at most once.",
    "sql": "foreign key shipments(package_id) → packages",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Shipments",
@@ -4347,6 +4434,7 @@
    "text": "Each tracking event is for exactly one shipment.",
    "sql": "foreign key tracking_events(shipment_id) → shipments",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Tracking_Events",
@@ -4372,6 +4460,7 @@
    "text": "Each delivery attempt is made by exactly one courier.",
    "sql": "foreign key delivery_attempts(courier_id) → couriers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Delivery_Attempts",
@@ -4397,6 +4486,7 @@
    "text": "Each delivery attempt is for exactly one shipment.",
    "sql": "foreign key delivery_attempts(shipment_id) → shipments",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Delivery_Attempts",
@@ -4422,6 +4512,9 @@
    "text": "Each return request is for exactly one order. The customer is reached through the order.",
    "sql": "foreign key return_requests(order_id) → orders",
    "attrs": [],
+   "rules": [
+    "A return request only returns lines of its own order (together with Returns); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Return_Requests",
@@ -4447,6 +4540,7 @@
    "text": "Each return inspection is done by exactly one staff member.",
    "sql": "foreign key return_inspections(staff_id) → staff",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Return_Inspections",
@@ -4472,6 +4566,7 @@
    "text": "Each inspection checks exactly one return request.",
    "sql": "foreign key return_inspections(return_id) → return_requests",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Return_Inspections",
@@ -4497,6 +4592,7 @@
    "text": "A ticket may be about one order.",
    "sql": "foreign key support_tickets(order_id) → orders",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Support_Tickets",
@@ -4522,6 +4618,7 @@
    "text": "Each ticket is opened by exactly one customer.",
    "sql": "foreign key support_tickets(customer_id) → customers",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Support_Tickets",
@@ -4547,6 +4644,7 @@
    "text": "Each message is written by exactly one account (customer or staff).",
    "sql": "foreign key ticket_messages(author_account_id) → accounts",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Ticket_Messages",
@@ -4572,6 +4670,7 @@
    "text": "Each message belongs to exactly one ticket.",
    "sql": "foreign key ticket_messages(ticket_id) → support_tickets",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Ticket_Messages",
@@ -4602,6 +4701,7 @@
      "domain": "TEXT"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Organizations",
@@ -4632,6 +4732,7 @@
      "domain": "TEXT"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Couriers",
@@ -4662,6 +4763,7 @@
      "domain": "TEXT"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Variants",
@@ -4692,6 +4794,7 @@
      "domain": "INTEGER; CHECK quantity > 0"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Carts",
@@ -4717,6 +4820,7 @@
    "text": "A wishlist holds listings, and the same listing may be saved in many wishlists.",
    "sql": "table wishlist_items (primary key wishlist_id, listing_id)",
    "attrs": [],
+   "rules": [],
    "parts": [
     {
      "target": "Wishlists",
@@ -4747,6 +4851,7 @@
      "domain": "TEXT"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Coupons",
@@ -4777,6 +4882,7 @@
      "domain": "INTEGER; CHECK amount_cents > 0"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Gift_Cards",
@@ -4811,6 +4917,7 @@
      "domain": "INTEGER; CHECK reorder_point >= 0"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Seller_Organizations",
@@ -4848,6 +4955,9 @@
      "domain": "INTEGER; CHECK received_qty > 0"
     }
    ],
+   "rules": [
+    "A goods receipt only receives lines of its own purchase order (together with Receipt_For); the schema enforces it with a composite foreign key"
+   ],
    "parts": [
     {
      "target": "Goods_Receipts",
@@ -4878,6 +4988,7 @@
      "domain": "INTEGER; CHECK quantity > 0"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Order_Lines",
@@ -4908,6 +5019,7 @@
      "domain": "INTEGER; CHECK quantity > 0"
     }
    ],
+   "rules": [],
    "parts": [
     {
      "target": "Fulfillments",
@@ -4937,6 +5049,9 @@
      "name": "quantity",
      "domain": "INTEGER; CHECK quantity > 0"
     }
+   ],
+   "rules": [
+    "A return request only returns lines of its own order (together with Return_Of); the schema enforces it with a composite foreign key"
    ],
    "parts": [
     {
