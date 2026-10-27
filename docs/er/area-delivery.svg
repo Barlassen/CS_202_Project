@@ -246,7 +246,7 @@
 <!-- E_fulfillments&#45;&gt;R97 -->
 <g id="edge46" class="edge">
 <title>E_fulfillments&#45;&gt;R97</title>
-<path fill="none" stroke="#333333" d="M408.78,-137.71C365.91,-124.32 295.9,-102.47 261.05,-91.58"/>
+<path fill="none" stroke="#333333" stroke-width="3" d="M408.78,-137.71C365.91,-124.32 295.9,-102.47 261.05,-91.58"/>
 </g>
 <!-- A__fulfillments__fulfillment_id -->
 <g id="node17" class="node">

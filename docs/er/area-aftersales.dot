@@ -73,6 +73,6 @@ R86 -> E_support_tickets [dir=none];
 R98 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Returns"];
 RA98__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
 RA98__quantity -> R98 [dir=none];
-E_return_requests -> R98 [dir=none];
+E_return_requests -> R98 [dir=none, penwidth=3];
 R98 -> E_order_lines [dir=none];
 }

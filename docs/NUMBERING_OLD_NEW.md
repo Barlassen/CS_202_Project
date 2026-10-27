@@ -143,7 +143,7 @@ Feedback eski numaraları kullanıyor. Bu tablo eski raporla yenisini eşler.
 | R65 | Stocks | R63 |
 | R66 | Receives | R64 |
 | R67 | Collect_At | R65 |
-| R68 | Ships_To | R66 |
+| R68 | Ships_To | R66 (renamed Billed_To) |
 | R69 | Places | R67 |
 | R70 | Buys | R68 |
 | R71 | Contains | R69 |

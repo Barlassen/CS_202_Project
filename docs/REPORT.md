@@ -71,7 +71,7 @@ Foreign-key columns are not drawn as attributes. In the ER model a reference to 
 **Aggregation.** The Stocks relationship, together with its three entity sets, is enclosed in a dashed box and treated as one entity set. Two relationships connect to the box:
 
 - **Batch_Of**: Each batch belongs to exactly one stock position, that is, to one Stocks relationship (aggregation). A stock position consists of many batches.
-- **Reserves**: An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses.
+- **Reserves**: An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses; the reserved quantities of a line add up to its ordered quantity.
 
 This is aggregation rather than a 4-ary relationship, for the reasons on the *Aggregation vs. ternary* slide. A reservation or a batch can only refer to a stock position that already exists. Reserves has its own descriptive attribute (quantity). And we can state constraints on it: each batch belongs to exactly one stock position (bold arrow).
 
@@ -85,6 +85,10 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
   - Invoices in Invoice_Has_Line: an invoice is issued with one line per order line.
   - Products in Variant_Of: a product is only published with at least one variant.
   - Carriers in Offers_Service: a carrier is only usable with at least one service.
+  - Couriers in Serves: a courier is registered together with at least one delivery zone.
+  - Order_Lines in Reserves: checkout reserves stock for every order line and creates no order when stock is short.
+  - Fulfillments in Includes: a fulfilment is created together with the order lines it ships.
+  - Return_Requests in Returns: a return request is created together with the order lines it returns.
 - **Consistency across relationships.** Some rules involve two relationships at once, for example that a returned line belongs to the returned order. The ER diagram cannot show such a rule, because every relationship is drawn on its own. The schema enforces each one with a composite foreign key through a shared column:
   - A goods receipt only receives lines of its own purchase order (Receipt_For + Receives): `goods_receipt_lines(receipt_id, purchase_order_id)` references `goods_receipts(receipt_id, purchase_order_id)`, and `(purchase_order_id, line_no)` references the purchase-order line, so both must name the same purchase order.
   - A return request only returns lines of its own order (Return_Of + Returns): `return_lines(return_id, order_id)` references `return_requests(return_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
@@ -346,7 +350,7 @@ A delivery address saved by an account, located in one city.
 | `street` | TEXT | required |
 | `postal_code` | TEXT | required |
 
-**Takes part in:** Lies_In, Saves_Address, Ships_To.
+**Takes part in:** Billed_To, Lies_In, Saves_Address.
 
 #### E18. Delivery_Zones
 
@@ -812,7 +816,7 @@ A customer's purchase of one or more listings, delivered to an address or a pick
 | `status` | TEXT; CHECK status IN ('placed','shipped','delivered','cancelled') | required |
 | `total_cents` | INTEGER; CHECK total_cents >= 0 | required |
 
-**Takes part in:** About_Order, Collect_At, Contains, Fulfills, Invoiced_As, Paid_By, Pays_With, Places, Redeems, Return_Of, Ships_To, Status_Of.
+**Takes part in:** About_Order, Billed_To, Collect_At, Contains, Fulfills, Invoiced_As, Paid_By, Pays_With, Places, Redeems, Return_Of, Status_Of.
 
 #### E50. Order_Lines (weak entity)
 
@@ -1360,7 +1364,7 @@ A courier serves one or more delivery zones and a zone is served by several cour
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
-| Couriers | — | no | partial |
+| Couriers | — | no | total |
 | Delivery_Zones | — | no | partial |
 
 Descriptive attributes: `since` (TEXT).
@@ -1972,7 +1976,7 @@ Implemented as table `goods_receipt_lines` (primary key receipt_id, purchase_ord
 
 *binary, many-to-one*
 
-An order may be collected at one pickup point instead of being delivered home.
+An order may be collected at one pickup point instead of being delivered to its address.
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
@@ -1981,11 +1985,11 @@ An order may be collected at one pickup point instead of being delivered home.
 
 Implemented as foreign key `orders(pickup_point_id)` → `pickup_points`.
 
-#### R66. Ships_To
+#### R66. Billed_To
 
 *binary, many-to-one*
 
-Every order has exactly one delivery or billing address.
+Every order has exactly one billing address, and the VAT rate comes from its country. A home-delivery order is also shipped to this address; a pickup order is collected at its pickup point (Collect_At).
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
@@ -2171,11 +2175,11 @@ Implemented as foreign key `invoice_lines(invoice_id)` → `invoices`.
 
 *relationship with an aggregation*
 
-An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses.
+An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses; the reserved quantities of a line add up to its ordered quantity.
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
-| Order_Lines | — | no | partial |
+| Order_Lines | — | no | total |
 | Stocks (aggregation of Seller_Organizations, Variants, Warehouses) | — | no | partial |
 
 Descriptive attributes: `quantity` (INTEGER; CHECK quantity > 0).
@@ -2322,7 +2326,7 @@ A fulfilment includes some quantity of order lines; a line split across warehous
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
-| Fulfillments | — | no | partial |
+| Fulfillments | — | no | total |
 | Order_Lines | — | no | partial |
 
 Descriptive attributes: `quantity` (INTEGER; CHECK quantity > 0).
@@ -2432,7 +2436,7 @@ A return request returns some quantity of order lines.
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
-| Return_Requests | — | no | partial |
+| Return_Requests | — | no | total |
 | Order_Lines | — | no | partial |
 
 Descriptive attributes: `quantity` (INTEGER; CHECK quantity > 0).

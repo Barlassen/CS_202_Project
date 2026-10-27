@@ -178,7 +178,7 @@
 <!-- E_couriers&#45;&gt;R88 -->
 <g id="edge38" class="edge">
 <title>E_couriers&#45;&gt;R88</title>
-<path fill="none" stroke="#333333" d="M621.32,-395.51C612.12,-384.41 600.48,-370.35 592.41,-360.61"/>
+<path fill="none" stroke="#333333" stroke-width="3" d="M621.32,-395.51C612.12,-384.41 600.48,-370.35 592.41,-360.61"/>
 </g>
 <!-- E_delivery_zones -->
 <g id="node14" class="node">
@@ -262,8 +262,8 @@
 <!-- R56 -->
 <g id="node36" class="node">
 <title>R56</title>
-<polygon fill="none" stroke="#222222" points="1266.8,-366 1227.8,-348 1266.8,-330 1305.8,-348 1266.8,-366"/>
-<text xml:space="preserve" text-anchor="middle" x="1266.8" y="-344.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Ships_To</text>
+<polygon fill="none" stroke="#222222" points="1266.8,-366 1228.28,-348 1266.8,-330 1305.32,-348 1266.8,-366"/>
+<text xml:space="preserve" text-anchor="middle" x="1266.8" y="-344.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Billed_To</text>
 </g>
 <!-- E_orders&#45;&gt;R56 -->
 <g id="edge33" class="edge">

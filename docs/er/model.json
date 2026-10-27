@@ -3855,7 +3855,7 @@
    "area": "orders",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "An order may be collected at one pickup point instead of being delivered home.",
+   "text": "An order may be collected at one pickup point instead of being delivered to its address.",
    "sql": "foreign key orders(pickup_point_id) → pickup_points",
    "attrs": [],
    "rules": [],
@@ -3877,11 +3877,11 @@
    ]
   },
   {
-   "name": "Ships_To",
+   "name": "Billed_To",
    "area": "orders",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "Every order has exactly one delivery or billing address.",
+   "text": "Every order has exactly one billing address, and the VAT rate comes from its country. A home-delivery order is also shipped to this address; a pickup order is collected at its pickup point (Collect_At).",
    "sql": "foreign key orders(address_id) → addresses",
    "attrs": [],
    "rules": [],
@@ -4738,7 +4738,7 @@
      "target": "Couriers",
      "aggregation": false,
      "key": false,
-     "total": false,
+     "total": true,
      "role": null
     },
     {
@@ -4980,7 +4980,7 @@
    "area": "orders",
    "kind": "relationship with an aggregation",
    "identifying": false,
-   "text": "An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses.",
+   "text": "An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses; the reserved quantities of a line add up to its ordered quantity.",
    "sql": "table stock_reservations (primary key order_id, line_no, seller_id, variant_id, warehouse_id)",
    "attrs": [
     {
@@ -4994,7 +4994,7 @@
      "target": "Order_Lines",
      "aggregation": false,
      "key": false,
-     "total": false,
+     "total": true,
      "role": null
     },
     {
@@ -5025,7 +5025,7 @@
      "target": "Fulfillments",
      "aggregation": false,
      "key": false,
-     "total": false,
+     "total": true,
      "role": null
     },
     {
@@ -5058,7 +5058,7 @@
      "target": "Return_Requests",
      "aggregation": false,
      "key": false,
-     "total": false,
+     "total": true,
      "role": null
     },
     {
@@ -5107,6 +5107,26 @@
    "relationship": "Offers_Service",
    "entity": "Carriers",
    "reason": "a carrier is only usable with at least one service"
+  },
+  {
+   "relationship": "Serves",
+   "entity": "Couriers",
+   "reason": "a courier is registered together with at least one delivery zone"
+  },
+  {
+   "relationship": "Reserves",
+   "entity": "Order_Lines",
+   "reason": "checkout reserves stock for every order line and creates no order when stock is short"
+  },
+  {
+   "relationship": "Includes",
+   "entity": "Fulfillments",
+   "reason": "a fulfilment is created together with the order lines it ships"
+  },
+  {
+   "relationship": "Returns",
+   "entity": "Return_Requests",
+   "reason": "a return request is created together with the order lines it returns"
   }
  ],
  "checks": [

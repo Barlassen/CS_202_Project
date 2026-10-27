@@ -139,7 +139,7 @@
 <!-- E_couriers&#45;&gt;R88 -->
 <g id="edge74" class="edge">
 <title>E_couriers&#45;&gt;R88</title>
-<path fill="none" stroke="#333333" d="M320.62,-223.34C347.68,-210.11 386.95,-190.92 408.61,-180.33"/>
+<path fill="none" stroke="#333333" stroke-width="3" d="M320.62,-223.34C347.68,-210.11 386.95,-190.92 408.61,-180.33"/>
 </g>
 <!-- A__couriers__license_no -->
 <g id="node9" class="node">

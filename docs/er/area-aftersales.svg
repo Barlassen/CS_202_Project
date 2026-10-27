@@ -148,7 +148,7 @@
 <!-- E_return_requests&#45;&gt;R98 -->
 <g id="edge32" class="edge">
 <title>E_return_requests&#45;&gt;R98</title>
-<path fill="none" stroke="#333333" d="M235.43,-131.51C227.66,-120.7 217.88,-107.1 210.91,-97.4"/>
+<path fill="none" stroke="#333333" stroke-width="3" d="M235.43,-131.51C227.66,-120.7 217.88,-107.1 210.91,-97.4"/>
 </g>
 <!-- A__return_requests__return_id -->
 <g id="node11" class="node">

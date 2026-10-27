@@ -49,6 +49,6 @@ R44 -> R94 [dir=none, lhead=cluster_agg, penwidth=1];
 R96 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Reserves"];
 RA96__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
 RA96__quantity -> R96 [dir=none];
-E_order_lines -> R96 [dir=none];
+E_order_lines -> R96 [dir=none, penwidth=3];
 R96 -> R94 [dir=none, lhead=cluster_agg, penwidth=1];
 }

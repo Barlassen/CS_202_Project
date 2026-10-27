@@ -100,6 +100,6 @@ R79 -> E_shipments [dir=none];
 R97 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Includes"];
 RA97__quantity [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="quantity"];
 RA97__quantity -> R97 [dir=none];
-E_fulfillments -> R97 [dir=none];
+E_fulfillments -> R97 [dir=none, penwidth=3];
 R97 -> E_order_lines [dir=none];
 }

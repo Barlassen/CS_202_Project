@@ -171,7 +171,7 @@ R87 -> E_staff [dir=none];
 R88 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Serves"];
 RA88__since [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="since"];
 RA88__since -> R88 [dir=none];
-E_couriers -> R88 [dir=none];
+E_couriers -> R88 [dir=none, penwidth=3];
 R88 -> E_delivery_zones [dir=none];
 ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="overlap: no\ncovering: yes"];
 E_accounts -> ISA [dir=none];

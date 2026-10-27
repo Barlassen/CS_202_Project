@@ -155,7 +155,7 @@ RELATIONSHIP_TABLES = {
     "gift_card_uses": ("shopping", "Pays_With", "An order is partly paid with gift cards; the relationship records how much of each card was spent."),
     "stock_positions": ("inventory", "Stocks", "TERNARY. A seller stocks a variant in a warehouse, with the available quantity and a reorder point. The quantity belongs to the triple: knowing that a seller sells a variant, that the seller uses a warehouse and that the warehouse holds the variant does not tell how many units of that seller's variant are in that warehouse (the Contracts argument on the Binary vs. Ternary slide)."),
     "goods_receipt_lines": ("inventory", "Receives", "A goods receipt receives some quantity of purchase-order lines. A line can arrive across several receipts."),
-    "stock_reservations": ("orders", "Reserves", "AGGREGATION. An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses."),
+    "stock_reservations": ("orders", "Reserves", "AGGREGATION. An order line reserves a quantity from a stock position, that is, from a Stocks relationship (seller, variant, warehouse) treated as one object. One line may be served from several warehouses; the reserved quantities of a line add up to its ordered quantity."),
     "fulfillment_lines": ("delivery", "Includes", "A fulfilment includes some quantity of order lines; a line split across warehouses appears in several fulfilments."),
     "return_lines": ("aftersales", "Returns", "A return request returns some quantity of order lines."),
 }
@@ -222,8 +222,8 @@ FK_RELATIONSHIPS = {
     ("warehouse_inspections", "staff_id"): ("Conducts", "Each inspection is conducted by exactly one staff member."),
     ("stock_movements", "staff_id"): ("Authorizes", "A manual movement (a count correction or damage) is authorised by one staff member; movements made by the system, such as order reservations, have none."),
     ("orders", "customer_id"): ("Places", "Every order is placed by exactly one customer."),
-    ("orders", "address_id"): ("Ships_To", "Every order has exactly one delivery or billing address."),
-    ("orders", "pickup_point_id"): ("Collect_At", "An order may be collected at one pickup point instead of being delivered home."),
+    ("orders", "address_id"): ("Billed_To", "Every order has exactly one billing address, and the VAT rate comes from its country. A home-delivery order is also shipped to this address; a pickup order is collected at its pickup point (Collect_At)."),
+    ("orders", "pickup_point_id"): ("Collect_At", "An order may be collected at one pickup point instead of being delivered to its address."),
     ("order_lines", "order_id"): ("Contains", "IDENTIFYING. An order line exists only inside its order and is numbered within it. Every order has at least one line."),
     ("order_lines", "listing_id"): ("Buys", "Each order line buys exactly one listing."),
     ("order_status_events", "order_id"): ("Status_Of", "Each status event belongs to exactly one order."),
@@ -263,6 +263,10 @@ TOTAL_PARTICIPATION = {
     ("Invoice_Has_Line", "invoices"): "an invoice is issued with one line per order line",
     ("Variant_Of", "products"): "a product is only published with at least one variant",
     ("Offers_Service", "carriers"): "a carrier is only usable with at least one service",
+    ("Serves", "couriers"): "a courier is registered together with at least one delivery zone",
+    ("Reserves", "order_lines"): "checkout reserves stock for every order line and creates no order when stock is short",
+    ("Includes", "fulfillments"): "a fulfilment is created together with the order lines it ships",
+    ("Returns", "return_requests"): "a return request is created together with the order lines it returns",
 }
 
 # Rules that span two relationships. An ER diagram draws each relationship on its own,

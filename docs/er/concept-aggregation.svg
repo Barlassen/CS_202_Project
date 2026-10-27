@@ -30,7 +30,7 @@
 <!-- E_order_lines&#45;&gt;R96 -->
 <g id="edge22" class="edge">
 <title>E_order_lines&#45;&gt;R96</title>
-<path fill="none" stroke="#333333" d="M730.91,-218.66C711.76,-206.99 687.71,-192.33 672.11,-182.82"/>
+<path fill="none" stroke="#333333" stroke-width="3" d="M730.91,-218.66C711.76,-206.99 687.71,-192.33 672.11,-182.82"/>
 </g>
 <!-- P__order_lines__line_no -->
 <g id="node2" class="node">

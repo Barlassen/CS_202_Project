@@ -74,7 +74,7 @@ R41 -> E_cities [dir=none];
 R55 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Collect_At"];
 E_orders -> R55 [dir=forward, arrowhead=normal];
 R55 -> E_pickup_points [dir=none];
-R56 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Ships_To"];
+R56 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Billed_To"];
 E_orders -> R56 [dir=forward, arrowhead=normal, penwidth=3];
 R56 -> E_addresses [dir=none];
 R68 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Taxed_At"];
@@ -83,6 +83,6 @@ R68 -> E_tax_rates [dir=none];
 R88 [shape=diamond, penwidth=1, margin="0.02,0.02", label="Serves"];
 RA88__since [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="since"];
 RA88__since -> R88 [dir=none];
-E_couriers -> R88 [dir=none];
+E_couriers -> R88 [dir=none, penwidth=3];
 R88 -> E_delivery_zones [dir=none];
 }
