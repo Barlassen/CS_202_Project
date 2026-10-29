@@ -44,7 +44,7 @@ Syllabus değerlendirmesinde “Implementation Project (Database Design)” %14,
 
 **Kapsam:** Kavramsal modelde **67 entity kümesi** ve **99 ilişki kümesi** var. Bunlara bir ISA hiyerarşisi de ekleniyor. SQL şemasında 79 tablo bulunuyor: 67'si entity, 12'si ilişki tablosu (`seller_staff`, `courier_zones`, `variant_values`, `cart_lines`, `wishlist_items`, `coupon_redemptions`, `gift_card_uses`, `stock_positions`, `goods_receipt_lines`, `stock_reservations`, `fulfillment_lines`, `return_lines`). Diğer ilişkiler bir entity tablosundaki yabancı anahtarla uygulanıyor.
 
-Model `tools/er_model.py` dosyasında yazılı. `python3 tools/build_er.py` bu modeli `schema.sql` ile karşılaştırıyor ve yönergenin 1–4. maddelerini otomatik denetliyor: entity sayısı, tek bağlı bileşen, dört zorunlu kavram, her entity'nin anahtarı. Ardından diyagramları ve raporu üretiyor. Hocanın şüpheyle bakabileceği yaklaşık 13 entity için (resimler, durum geçmişi gibi) raporda "neden entity" gerekçesi yazıyor. Bu gerekçe slayttaki *Entity vs. Attribute* kuralına dayanıyor: bir varlığın birden çok değeri olabiliyorsa o şey attribute olamaz. Bu 13'ün hepsi kabul edilmese bile sayı 50'nin üstünde kalıyor.
+Model `tools/er_model.py` dosyasında yazılı. `python3 tools/build_er.py` bu modeli `schema.sql` ile karşılaştırıyor ve yönergenin 1–4. maddelerini otomatik denetliyor: entity sayısı, tek bağlı bileşen, dört zorunlu kavram, her entity'nin anahtarı. Ardından diyagramları ve raporu üretiyor. Hocanın şüpheyle bakabileceği 12 entity için (resimler, durum geçmişi gibi) raporda "neden entity" gerekçesi yazıyor. Bu gerekçe slayttaki *Entity vs. Attribute* kuralına dayanıyor: bir varlığın birden çok değeri olabiliyorsa o şey attribute olamaz. Bu 12'sinin hepsi kabul edilmese bile 55 entity kalıyor, yani sayı 50'nin üstünde.
 
 ## 4. Dosyaları hangi sırayla okuyacağız?
 
@@ -124,7 +124,7 @@ Uygulamadaki SQL sorguları `?` parametreleriyle çalışır; kullanıcı girdis
 1. PostgreSQL beklentisi net değil. Zorunluysa SQLite şeması ve Python erişim katmanı taşınmalı.
 2. E-sheet ve ders ana sayfasındaki **tam SQL sorgusu/teslim listesi** elimizde yok.
 3. ER diyagramı ve rapor artık ders gösterimiyle üretiliyor. Yine de ikinizin de her entity'yi ve her ilişkiyi açıklayabilmesi gerekir; yönergedeki AI kuralının şartı bu.
-4. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok.
+4. Web arayüzü yalnız ana akışları çalıştırıyor. Kupon, tedarik, hediye kartı, destek, gerçek kullanıcı rolleri ve fiziksel iade incelemesinin UI akışları yok. Teslimatta alıcı adı demo basitleştirmesi olarak müşterinin adından yazılıyor; bu gerçek bir teslim kanıtı değil.
 5. İki ilişkinin aynı kayda varmasını gerektiren kurallar (sipariş adresinin ve ödeme yönteminin siparişi veren müşteriye ait olması, iade/fatura/fulfillment/mal kabul kalemlerinin kendi siparişine ait olması, stok batch'inin kendi deposundaki rafta durması gibi) artık şemada composite foreign key ile zorlanıyor; tam listesi `REPORT.md` içinde *Consistency across relationships* başlığında. `accounts.role` ile alt tür eşleşmesi trigger'la zorlanıyor. İlişki tablolarındaki total participation (ör. boş fulfillment olmaması) SQL'de değil, uygulamada sağlanıyor.
 6. Normalizasyon/FD incelemesi ve hocanın isteyebileceği özgül SQL örnekleri henüz tamamlanmadı.
 

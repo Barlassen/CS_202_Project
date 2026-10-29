@@ -502,6 +502,7 @@ def write_report(ent, rels, tables, checks):
     w("- **Participation that SQL cannot enforce.** Total participation of the \"one\" side is guaranteed by the application, not by a foreign key:")
     for (rel, table), reason in M.TOTAL_PARTICIPATION.items():
         w(f"  - {name_of(table)} in {rel}: {reason}.")
+    w(f"  - {name_of(M.ISA['parent'])} in the ISA hierarchy (covering): every account is created together with its subclass row.")
     w("- **Consistency across relationships.** Some rules involve two relationships at once, for example that a returned line "
       "belongs to the returned order. The ER diagram cannot show such a rule, because every relationship is drawn on its own. "
       "The schema enforces each one with a composite foreign key through a shared column:")

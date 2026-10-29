@@ -64,7 +64,7 @@ Foreign-key columns are not drawn as attributes. In the ER model a reference to 
 - **Invoice_Lines**: owner Invoices, identifying relationship Invoice_Has_Line, partial key `line_no`. Full key = (invoice_id, line_no).
 - **Carrier_Services**: owner Carriers, identifying relationship Offers_Service, partial key `service_code`. Full key = (carrier_id, service_code).
 
-**ISA hierarchy.** Accounts ISA Customers, Staff, Couriers. Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key account_id, but each has its own attributes and takes part in different relationships. Overlap is not allowed: an account has exactly one role, and triggers reject a subtype row whose account has a different role. Covering holds: role is mandatory, so every account is one of the three.
+**ISA hierarchy.** Accounts ISA Customers, Staff, Couriers. Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key account_id, but each has its own attributes and takes part in different relationships. Overlap is not allowed: an account has exactly one role. Triggers reject a subtype row whose account has a different role, and an account cannot change its role once it has a subtype row, so no account is in two subclasses. Covering holds: every account is a customer, a staff member or a courier. SQL cannot require the subtype row, because the account row has to exist first; the application creates both together.
 
 **Ternary relationship.** Stocks relates Seller_Organizations, Variants and Warehouses. A seller stocks a variant in a warehouse, with the available quantity and a reorder point. The quantity belongs to the triple: knowing that a seller sells a variant, that the seller uses a warehouse and that the warehouse holds the variant does not tell how many units of that seller's variant are in that warehouse (the Contracts argument on the Binary vs. Ternary slide).
 
@@ -89,6 +89,7 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
   - Order_Lines in Reserves: checkout reserves stock for every order line and creates no order when stock is short.
   - Fulfillments in Includes: a fulfilment is created together with the order lines it ships.
   - Return_Requests in Returns: a return request is created together with the order lines it returns.
+  - Accounts in the ISA hierarchy (covering): every account is created together with its subclass row.
 - **Consistency across relationships.** Some rules involve two relationships at once, for example that a returned line belongs to the returned order. The ER diagram cannot show such a rule, because every relationship is drawn on its own. The schema enforces each one with a composite foreign key through a shared column:
   - A goods receipt only receives lines of its own purchase order (Receipt_For + Receives): `goods_receipt_lines(receipt_id, purchase_order_id)` references `goods_receipts(receipt_id, purchase_order_id)`, and `(purchase_order_id, line_no)` references the purchase-order line, so both must name the same purchase order.
   - A return request only returns lines of its own order (Return_Of + Returns): `return_lines(return_id, order_id)` references `return_requests(return_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
@@ -1106,7 +1107,7 @@ One message in a support ticket's conversation, written by an account.
 
 ### ISA: Accounts → Customers, Staff, Couriers
 
-Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key account_id, but each has its own attributes and takes part in different relationships. Overlap is not allowed: an account has exactly one role, and triggers reject a subtype row whose account has a different role. Covering holds: role is mandatory, so every account is one of the three.
+Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key account_id, but each has its own attributes and takes part in different relationships. Overlap is not allowed: an account has exactly one role. Triggers reject a subtype row whose account has a different role, and an account cannot change its role once it has a subtype row, so no account is in two subclasses. Covering holds: every account is a customer, a staff member or a courier. SQL cannot require the subtype row, because the account row has to exist first; the application creates both together.
 
 ### People and accounts
 

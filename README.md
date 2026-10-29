@@ -45,7 +45,7 @@ Entity sets that could look like attributes (images, price history, status event
 - *Weak entity:* `Order_Lines` shows only its partial key `line_no`; the owner's key comes from the bold identifying relationship `Contains`, not from the entity box.
 - *Aggregation:* `Reserves` now connects to the dashed aggregation box around `Stocks`, not to the `Stocks` diamond. `Batch_Of` (each stock batch belongs to exactly one stock position) is a second relationship on the aggregation.
 
-**ISA decided and enforced:** overlap not allowed, covering holds. Triggers reject a `customers`/`staff`/`couriers` row whose account has a different role.
+**ISA decided:** overlap not allowed, covering holds. Overlap is enforced by triggers: a `customers`/`staff`/`couriers` row must match its account's role, and an account cannot change its role once it has a subtype row. Covering cannot be required in SQL (the account row must exist first); the application creates every account together with its subtype row.
 
 **Submission files:** [`docs/MarketLab_Project_Description.docx`](docs/MarketLab_Project_Description.docx) (introduction, Part 1, Part 2, generated from the same model) and [`docs/MarketLab_ER_Diagram.pdf`](docs/MarketLab_ER_Diagram.pdf) (the complete diagram).
 
@@ -92,7 +92,7 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 | `static/style.css` | Responsive interface styling |
 | `tools/er_model.py` | The conceptual ER model: which table is an entity or a relationship, names, explanations, weak entities, ISA, aggregation |
 | `tools/build_er.py` | Checks the model against `schema.sql` and the guidelines, then generates the diagrams and the report |
-| `docs/MarketLab_Project_Description.docx` | Generated submission report (Word), as item 5 of the guidelines asks: a short introduction, Part 1 (every entity) and Part 2 (every relationship). Fill in the names and student IDs before submitting. |
+| `docs/MarketLab_Project_Description.docx` | Generated submission report (Word), as item 5 of the guidelines asks: a short introduction, Part 1 (every entity) and Part 2 (every relationship). Team names and student IDs are filled in. |
 | `docs/MarketLab_ER_Diagram.pdf` | The complete ER diagram as a one-page vector PDF, submitted next to the report (made from `docs/er/full.svg`; printing the SVG to PDF from a browser gives the same result). |
 | `docs/REPORT.md` | Generated report: guideline checklist, the four concepts, Part 1 entities, Part 2 relationships |
 | `docs/er/full.svg` | Generated complete ER diagram (large; zoom in) |
@@ -119,7 +119,7 @@ node tools/render/report_docx.mjs     # Word document from model.json and the PN
 
 The database schema models the complete domain. The web interface implements the **core vertical slice**: browse listings, cart, checkout, inventory allocation, invoice/payment records, fulfillment, shipment, delivery, returns, and reports. Several modeled areas, such as coupons, supplier purchasing, gift cards, staff permissions, and support tickets, have schema and relationships but **do not yet have full UI workflows**. Do not present those as finished features.
 
-This is a **local academic demo**. It uses a fixed demo customer and a shared seller panel. It has no authentication, real payment gateway, real carrier integration, or production security controls. Payment and refund rows are explicitly simulated. The return approval records a refund but does not put returned goods back into sellable stock; inspection and restocking would be a later step.
+This is a **local academic demo**. It uses a fixed demo customer and a shared seller panel. It has no authentication, real payment gateway, real carrier integration, or production security controls. Payment and refund rows are explicitly simulated. On delivery the demo records the customer as the recipient; it is not real proof of who received the parcel. The return approval records a refund but does not put returned goods back into sellable stock; inspection and restocking would be a later step.
 
 The PDF gives no exact list of required SQL queries or delivery dates. Check the course page for later query specifications and adapt `docs/SQL_QUERIES.md` and the Reports page to them.
 

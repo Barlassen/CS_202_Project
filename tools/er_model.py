@@ -138,8 +138,10 @@ ISA = {
     "explanation": (
         "Customers, staff and couriers share the attributes of an account (e-mail, name) and inherit its key "
         "account_id, but each has its own attributes and takes part in different relationships. "
-        "Overlap is not allowed: an account has exactly one role, and triggers reject a subtype row whose "
-        "account has a different role. Covering holds: role is mandatory, so every account is one of the three."
+        "Overlap is not allowed: an account has exactly one role. Triggers reject a subtype row whose account has "
+        "a different role, and an account cannot change its role once it has a subtype row, so no account is in two "
+        "subclasses. Covering holds: every account is a customer, a staff member or a courier. SQL cannot require "
+        "the subtype row, because the account row has to exist first; the application creates both together."
     ),
 }
 

@@ -32,7 +32,7 @@ Birden çok bağımsız satıcı aynı pazaryerinde ürün çeşidi listeler. M�
 
 ### ISA
 
-`accounts` ortak kişi bilgilerini taşır. `customers`, `staff`, `couriers` bu üst varlığın özelleşmiş türleridir. Alt tablodaki `account_id`, hem birincil anahtar hem de `accounts` tablosuna yabancı anahtardır. Bu sayede aynı isim/e-posta ortak tabloda bir kez tutulur. Demo rolleri ayrı varsayar; veritabanında rol/alt tür uyumunu doğrulayan ek trigger henüz yoktur.
+`accounts` ortak kişi bilgilerini taşır. `customers`, `staff`, `couriers` bu üst varlığın özelleşmiş türleridir. Alt tablodaki `account_id`, hem birincil anahtar hem de `accounts` tablosuna yabancı anahtardır. Bu sayede aynı isim/e-posta ortak tabloda bir kez tutulur. Overlap trigger'larla zorlanıyor: alt tür satırı hesabın rolüyle aynı olmak zorunda ve alt tür satırı olan bir hesabın rolü değiştirilemiyor, bu yüzden bir hesap iki alt türde bulunamaz. Covering (her hesabın bir alt türü olması) SQL'de zorlanamıyor, çünkü önce `accounts` satırı eklenmek zorunda; hesaplar alt tür satırıyla birlikte oluşturuluyor.
 
 ### Ternary relationship
 

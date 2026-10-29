@@ -24,7 +24,9 @@ CREATE TABLE tax_rates (
 
 -- People and sellers
 -- ISA: accounts is specialized into customers, staff, and couriers.
--- Overlap is not allowed (one role per account); covering holds (role is mandatory).
+-- Overlap is not allowed (one role per account): the triggers below enforce it.
+-- Covering holds: the application creates every account together with its subtype row;
+-- SQL cannot require a row in another table, because the account row must exist first.
 CREATE TABLE accounts (
   account_id INTEGER PRIMARY KEY, email TEXT NOT NULL UNIQUE,
   full_name TEXT NOT NULL, role TEXT NOT NULL CHECK(role IN ('customer','staff','courier'))
@@ -77,6 +79,23 @@ BEGIN SELECT RAISE(ABORT, 'account role is not staff'); END;
 CREATE TRIGGER couriers_role BEFORE INSERT ON couriers
 WHEN (SELECT role FROM accounts WHERE account_id = NEW.account_id) IS NOT 'courier'
 BEGIN SELECT RAISE(ABORT, 'account role is not courier'); END;
+-- A subtype row may not be moved to an account of another role ...
+CREATE TRIGGER customers_role_update BEFORE UPDATE OF account_id ON customers
+WHEN (SELECT role FROM accounts WHERE account_id = NEW.account_id) IS NOT 'customer'
+BEGIN SELECT RAISE(ABORT, 'account role is not customer'); END;
+CREATE TRIGGER staff_role_update BEFORE UPDATE OF account_id ON staff
+WHEN (SELECT role FROM accounts WHERE account_id = NEW.account_id) IS NOT 'staff'
+BEGIN SELECT RAISE(ABORT, 'account role is not staff'); END;
+CREATE TRIGGER couriers_role_update BEFORE UPDATE OF account_id ON couriers
+WHEN (SELECT role FROM accounts WHERE account_id = NEW.account_id) IS NOT 'courier'
+BEGIN SELECT RAISE(ABORT, 'account role is not courier'); END;
+-- ... and an account keeps its role once it has a subtype row, so it can never be in two subtypes.
+CREATE TRIGGER accounts_role_fixed BEFORE UPDATE OF role ON accounts
+WHEN NEW.role IS NOT OLD.role AND (
+  EXISTS (SELECT 1 FROM customers WHERE account_id = OLD.account_id)
+  OR EXISTS (SELECT 1 FROM staff WHERE account_id = OLD.account_id)
+  OR EXISTS (SELECT 1 FROM couriers WHERE account_id = OLD.account_id))
+BEGIN SELECT RAISE(ABORT, 'role cannot change while the account has a subtype row'); END;
 CREATE TABLE commission_plans (
   plan_id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE,
   rate_percent REAL NOT NULL CHECK(rate_percent BETWEEN 0 AND 50)

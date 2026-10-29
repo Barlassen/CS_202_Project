@@ -164,7 +164,9 @@ const part2 = [
   heading("2.0 ISA hierarchy", HeadingLevel.HEADING_2),
   para(`${M.isa.parent} ISA ${M.isa.children.join(", ")}. The subclasses inherit the attributes of an account and its key, account_id, and each takes part in its own relationships: `
     + "only customers place orders, only staff members work in departments, and only couriers drive vehicles and attempt deliveries. "
-    + "Overlap is not allowed, because every account has exactly one role; covering holds, because the role is mandatory."),
+    + "Overlap is not allowed: every account has exactly one role, triggers reject a subtype row whose account has another role, "
+    + "and an account cannot change its role once it has a subtype row. Covering holds: every account is one of the three. "
+    + "SQL cannot require the subtype row, because the account row must exist first, so the application creates both together."),
 ];
 sec = 0;
 for (const [area, label] of Object.entries(M.areas)) {
@@ -198,7 +200,8 @@ const design = [
     + "already determines it. After the instructor's review, four entity sets that repeated information were merged: Inventory_Adjustments into Stock_Movements, "
     + "Refunds into Payment_Transactions, Proof_Of_Delivery into Delivery_Attempts and Storage_Zones into Storage_Bins.")]),
   para([bold("Total participation that a foreign key cannot express. "), run("When the \"one\" side of a relationship must take part at least once, "
-    + "a foreign key cannot require it; the application creates the rows together:")], { keepNext: true }),
+    + "a foreign key cannot require it; the application creates the rows together. The covering ISA hierarchy is the same case: "
+    + "every account is created together with its Customers, Staff or Couriers row.")], { keepNext: true }),
   table([3300, 6338], ["Entity set in relationship", "Guaranteed because"],
     M.total_participation.map((t) => [`${t.entity} in ${t.relationship}`, t.reason[0].toUpperCase() + t.reason.slice(1) + "."])),
   para("", { spacing: { after: 120 } }),
