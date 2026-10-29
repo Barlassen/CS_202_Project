@@ -1,4 +1,5 @@
 """Create a local demo database. No external services or packages are required."""
+from contextlib import closing
 from pathlib import Path
 import os
 import re
@@ -14,7 +15,8 @@ def db_path() -> Path:
 def initialize(path: Path | None = None) -> Path:
     path = path or db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(path) as db:
+    # `with db` commits; closing() also closes the file (Windows cannot delete an open database).
+    with closing(sqlite3.connect(path)) as db, db:
         db.execute("PRAGMA foreign_keys = ON")
         exists = db.execute("SELECT 1 FROM sqlite_master WHERE type='table' AND name='accounts'").fetchone()
         if exists:

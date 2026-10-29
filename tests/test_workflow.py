@@ -1,4 +1,5 @@
 """Run with: python3 -m unittest discover -s tests -v"""
+from contextlib import closing
 import os
 import tempfile
 import unittest
@@ -23,7 +24,8 @@ class MarketplaceWorkflowTest(unittest.TestCase):
         self.directory.cleanup()
 
     def test_multi_seller_order_delivery_and_refund(self):
-        with app.connect() as db:
+        # closing(): `with connection` only commits; an open file cannot be deleted on Windows.
+        with closing(app.connect()) as db:
             app.add_to_cart(db, {"listing_id": ["1"], "quantity": ["2"]})
             app.add_to_cart(db, {"listing_id": ["3"], "quantity": ["1"]})
             order_id = app.checkout(db)
@@ -46,7 +48,7 @@ class MarketplaceWorkflowTest(unittest.TestCase):
             self.assertEqual(db.execute("PRAGMA foreign_key_check").fetchall(), [])
 
     def test_insufficient_stock_rolls_back_whole_checkout(self):
-        with app.connect() as db:
+        with closing(app.connect()) as db:
             app.add_to_cart(db, {"listing_id": ["1"], "quantity": ["100"]})
             with self.assertRaisesRegex(ValueError, "Insufficient stock"):
                 app.checkout(db)
