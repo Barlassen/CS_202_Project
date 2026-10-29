@@ -331,13 +331,10 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
     return "\n".join(lines) + "\n"
 
 
-# One row, so that it fits under the complete diagram (see add_legend); the invisible edges
-# keep the groups side by side.
 LEGEND_DOT = """digraph Legend {
-graph [rankdir=LR, nodesep=0.2, ranksep=0.35, fontname="Helvetica", pad=0.3];
-node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"]; edge [color="#333333", arrowsize=0.8];
-subgraph cluster_legend { label="Legend: notation of the course slides (Ramakrishnan & Gehrke, ch. 2)"; fontsize=16; labeljust=l; margin=14; penwidth=1.2;
-subgraph cluster_1 { label="Entity set and attributes; the key is underlined"; fontsize=11; style=rounded;
+graph [rankdir=LR, nodesep=0.3, ranksep=0.5, fontname="Helvetica", fontsize=18, labelloc=t, label="Notation (course slides, Ramakrishnan & Gehrke ch. 2)", pad=0.3];
+node [fontname="Helvetica", fontsize=11]; edge [arrowsize=0.8];
+subgraph cluster_1 { label="Entity set, attributes, key"; fontsize=11; style=rounded;
   k1 [shape=ellipse, fontsize=9, label=<<U>key</U>>]; a1 [shape=ellipse, fontsize=9, label="attribute"]; e1 [shape=box, label="Entity_Set"];
   k1 -> e1 [dir=none]; a1 -> e1 [dir=none]; }
 subgraph cluster_6 { label="Derived attribute: computed from other data"; fontsize=11; style=rounded;
@@ -348,11 +345,9 @@ subgraph cluster_3 { label="Total participation: each A in at least one R"; font
   e3 [shape=box, label="A"]; r3 [shape=diamond, label="R"]; f3 [shape=box, label="B"]; e3 -> r3 [dir=none, penwidth=3]; r3 -> f3 [dir=none]; }
 subgraph cluster_4 { label="Both: each A in exactly one R"; fontsize=11; style=rounded;
   e4 [shape=box, label="A"]; r4 [shape=diamond, label="R"]; f4 [shape=box, label="B"]; e4 -> r4 [arrowhead=normal, penwidth=3]; r4 -> f4 [dir=none]; }
-subgraph cluster_5 { label="Weak entity, identifying relationship, partial key (dashed underline)"; fontsize=11; style=rounded;
+subgraph cluster_5 { label="Weak entity, identifying relationship, partial key"; fontsize=11; style=rounded;
   P__legend__partial [shape=ellipse, fontsize=9, label=<<U>partial_key</U>>]; w5 [shape=box, penwidth=3, label="Weak"]; r5 [shape=diamond, penwidth=3, label="Identifies"]; o5 [shape=box, label="Owner"];
   P__legend__partial -> w5 [dir=none]; w5 -> r5 [arrowhead=normal, penwidth=3]; r5 -> o5 [dir=none]; }
-}
-e1 -> d6 [style=invis]; e6 -> e2 [style=invis]; f2 -> e3 [style=invis]; f3 -> e4 [style=invis]; f4 -> P__legend__partial [style=invis];
 }
 """
 
@@ -381,20 +376,6 @@ def postprocess_svg(path):
 
     svg = re.sub(r'<g id="[^"]*" class="node">.*?</g>', underline, svg, flags=re.S)
     path.write_text(svg)
-
-
-def add_legend(full, legend):
-    """Put the legend under the complete diagram, at the left, so the submitted PDF explains its notation."""
-    size = r'<svg width="([\d.]+)pt" height="([\d.]+)pt"\s+viewBox="[^"]*"'
-    svg, leg = full.read_text(encoding="utf-8"), legend.read_text(encoding="utf-8")
-    w, h = map(float, re.search(size, svg).groups())
-    lw, lh = map(float, re.search(size, leg).groups())
-    body = leg[leg.index('<g id="graph0"'):leg.rindex("</svg>")]
-    body = re.sub(r'id="(\w+)"', r'id="legend_\1"', body)  # Graphviz numbers ids from 1 in every file
-    width, height = max(w, lw), h + lh
-    svg = re.sub(size, f'<svg width="{width:g}pt" height="{height:g}pt"\n viewBox="0.00 0.00 {width:.2f} {height:.2f}"', svg, count=1)
-    head, tail = svg.rsplit("</svg>", 1)
-    full.write_text(f'{head}<g id="legend" transform="translate(0 {h:.2f})">\n{body}</g>\n</svg>{tail}', encoding="utf-8")
 
 
 # --------------------------------------------------------------------------- report
@@ -715,7 +696,6 @@ def main():
     subprocess.run(["node", str(RENDER / "render.mjs"), *map(str, paths)], check=True)
     for path in paths:
         postprocess_svg(path.with_suffix(".svg"))
-    add_legend(ER_DIR / "full.svg", ER_DIR / "legend.svg")
     subprocess.run(["node", str(RENDER / "render.mjs"), "--png", *(str(p.with_suffix(".svg")) for p in paths)], check=True)
 
 
