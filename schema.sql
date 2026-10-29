@@ -96,6 +96,14 @@ WHEN NEW.role IS NOT OLD.role AND (
   OR EXISTS (SELECT 1 FROM staff WHERE account_id = OLD.account_id)
   OR EXISTS (SELECT 1 FROM couriers WHERE account_id = OLD.account_id))
 BEGIN SELECT RAISE(ABORT, 'role cannot change while the account has a subtype row'); END;
+-- INSERT OR REPLACE deletes the old account row and inserts a new one without firing UPDATE
+-- triggers, so the same rule is checked before an insert that would replace an account.
+CREATE TRIGGER accounts_role_fixed_on_replace BEFORE INSERT ON accounts
+WHEN NEW.role IS NOT (SELECT role FROM accounts WHERE account_id = NEW.account_id) AND (
+  EXISTS (SELECT 1 FROM customers WHERE account_id = NEW.account_id)
+  OR EXISTS (SELECT 1 FROM staff WHERE account_id = NEW.account_id)
+  OR EXISTS (SELECT 1 FROM couriers WHERE account_id = NEW.account_id))
+BEGIN SELECT RAISE(ABORT, 'role cannot change while the account has a subtype row'); END;
 CREATE TABLE commission_plans (
   plan_id INTEGER PRIMARY KEY, name TEXT NOT NULL UNIQUE,
   rate_percent REAL NOT NULL CHECK(rate_percent BETWEEN 0 AND 50)
