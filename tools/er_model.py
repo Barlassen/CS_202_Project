@@ -121,6 +121,13 @@ WHY_ENTITY = {
     "countries": "Cities and tax rates both depend on the country; a separate entity stores the country name once.",
 }
 
+# Derived attributes (dashed oval, as in the problem-session diagrams): their value is computed
+# from other data, so they are not independent facts. (table, column) -> how it is computed.
+DERIVED = {
+    ("orders", "total_cents"): "the sum of quantity × unit_price_cents over the order's lines",
+    ("invoices", "total_cents"): "the sum of amount_cents over the invoice's lines",
+}
+
 # Weak entities: table -> owner table. The identifying relationship is the FK to the owner;
 # the partial key is the rest of the primary key.
 WEAK_ENTITIES = {

@@ -98,6 +98,9 @@ def build_model(tables):
             if not info["key"] or len(info["key"]) != len(t["pk"]):
                 problems.append(f"Entity {table} has no key of its own (PK {t['pk']})")
         ent[table] = info
+    for table, col in M.DERIVED:
+        if table not in ent or col not in {c["name"] for c in ent[table]["attrs"]}:
+            problems.append(f"Derived attribute {table}.{col} is not an attribute of an entity set")
 
     rels = []
     used_fk_keys = set()
@@ -260,7 +263,8 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
                     out.append(f'P__{table}__{c} [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label={attr_label(c, True)}];')
                     out.append(f"P__{table}__{c} -> E_{table} [dir=none];")
                 else:
-                    out.append(f'A__{table}__{c} [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label={attr_label(c, c in e["key"])}];')
+                    dashed = ", style=dashed" if (table, c) in M.DERIVED else ""
+                    out.append(f'A__{table}__{c} [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3{dashed}, label={attr_label(c, c in e["key"])}];')
                     out.append(f"A__{table}__{c} -> E_{table} [dir=none];")
         else:
             area = M.AREAS[e["area"]]
@@ -327,21 +331,28 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
     return "\n".join(lines) + "\n"
 
 
+# One row, so that it fits under the complete diagram (see add_legend); the invisible edges
+# keep the groups side by side.
 LEGEND_DOT = """digraph Legend {
-graph [rankdir=LR, nodesep=0.3, ranksep=0.5, fontname="Helvetica", fontsize=18, labelloc=t, label="Notation (course slides, Ramakrishnan & Gehrke ch. 2)", pad=0.3];
-node [fontname="Helvetica", fontsize=11]; edge [arrowsize=0.8];
-subgraph cluster_1 { label="Entity set, attributes, key"; fontsize=11; style=rounded;
+graph [rankdir=LR, nodesep=0.2, ranksep=0.35, fontname="Helvetica", pad=0.3];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"]; edge [color="#333333", arrowsize=0.8];
+subgraph cluster_legend { label="Legend: notation of the course slides (Ramakrishnan & Gehrke, ch. 2)"; fontsize=16; labeljust=l; margin=14; penwidth=1.2;
+subgraph cluster_1 { label="Entity set and attributes; the key is underlined"; fontsize=11; style=rounded;
   k1 [shape=ellipse, fontsize=9, label=<<U>key</U>>]; a1 [shape=ellipse, fontsize=9, label="attribute"]; e1 [shape=box, label="Entity_Set"];
   k1 -> e1 [dir=none]; a1 -> e1 [dir=none]; }
+subgraph cluster_6 { label="Derived attribute: computed from other data"; fontsize=11; style=rounded;
+  d6 [shape=ellipse, fontsize=9, style=dashed, label="derived"]; e6 [shape=box, label="Entity_Set"]; d6 -> e6 [dir=none]; }
 subgraph cluster_2 { label="Key constraint: each A in at most one R"; fontsize=11; style=rounded;
   e2 [shape=box, label="A"]; r2 [shape=diamond, label="R"]; f2 [shape=box, label="B"]; e2 -> r2 [arrowhead=normal]; r2 -> f2 [dir=none]; }
 subgraph cluster_3 { label="Total participation: each A in at least one R"; fontsize=11; style=rounded;
   e3 [shape=box, label="A"]; r3 [shape=diamond, label="R"]; f3 [shape=box, label="B"]; e3 -> r3 [dir=none, penwidth=3]; r3 -> f3 [dir=none]; }
 subgraph cluster_4 { label="Both: each A in exactly one R"; fontsize=11; style=rounded;
   e4 [shape=box, label="A"]; r4 [shape=diamond, label="R"]; f4 [shape=box, label="B"]; e4 -> r4 [arrowhead=normal, penwidth=3]; r4 -> f4 [dir=none]; }
-subgraph cluster_5 { label="Weak entity, identifying relationship, partial key"; fontsize=11; style=rounded;
+subgraph cluster_5 { label="Weak entity, identifying relationship, partial key (dashed underline)"; fontsize=11; style=rounded;
   P__legend__partial [shape=ellipse, fontsize=9, label=<<U>partial_key</U>>]; w5 [shape=box, penwidth=3, label="Weak"]; r5 [shape=diamond, penwidth=3, label="Identifies"]; o5 [shape=box, label="Owner"];
   P__legend__partial -> w5 [dir=none]; w5 -> r5 [arrowhead=normal, penwidth=3]; r5 -> o5 [dir=none]; }
+}
+e1 -> d6 [style=invis]; e6 -> e2 [style=invis]; f2 -> e3 [style=invis]; f3 -> e4 [style=invis]; f4 -> P__legend__partial [style=invis];
 }
 """
 
@@ -372,6 +383,20 @@ def postprocess_svg(path):
     path.write_text(svg)
 
 
+def add_legend(full, legend):
+    """Put the legend under the complete diagram, at the left, so the submitted PDF explains its notation."""
+    size = r'<svg width="([\d.]+)pt" height="([\d.]+)pt"\s+viewBox="[^"]*"'
+    svg, leg = full.read_text(encoding="utf-8"), legend.read_text(encoding="utf-8")
+    w, h = map(float, re.search(size, svg).groups())
+    lw, lh = map(float, re.search(size, leg).groups())
+    body = leg[leg.index('<g id="graph0"'):leg.rindex("</svg>")]
+    body = re.sub(r'id="(\w+)"', r'id="legend_\1"', body)  # Graphviz numbers ids from 1 in every file
+    width, height = max(w, lw), h + lh
+    svg = re.sub(size, f'<svg width="{width:g}pt" height="{height:g}pt"\n viewBox="0.00 0.00 {width:.2f} {height:.2f}"', svg, count=1)
+    head, tail = svg.rsplit("</svg>", 1)
+    full.write_text(f'{head}<g id="legend" transform="translate(0 {h:.2f})">\n{body}</g>\n</svg>{tail}', encoding="utf-8")
+
+
 # --------------------------------------------------------------------------- report
 def domain(table_info, col):
     parts = [col["type"] or "ANY"]
@@ -388,6 +413,8 @@ def column_notes(table_info, col, e):
         notes.append("**partial key**")
     if {col["name"]} in table_info["uniques"] and col["name"] not in e["key"]:
         notes.append("unique (candidate key)")
+    if (e["table"], col["name"]) in M.DERIVED:
+        notes.append(f"**derived**: {M.DERIVED[(e['table'], col['name'])]}")
     notes.append("required" if col["notnull"] else "optional")
     return ", ".join(notes)
 
@@ -448,6 +475,7 @@ def write_report(ent, rels, tables, checks):
     w("| Symbol | Meaning |")
     w("| --- | --- |")
     w("| Rectangle | Entity set. Ovals around it are its attributes; the key attribute is underlined. |")
+    w("| Dashed oval | Derived attribute: its value is computed from other data. |")
     w("| Diamond | Relationship set. Ovals attached to a diamond are descriptive attributes of the relationship. |")
     w("| Arrow from an entity set to a diamond | Key constraint: each entity takes part in at most one relationship of that set. |")
     w("| Bold line | Total participation: each entity takes part in at least one relationship of that set. |")
@@ -499,6 +527,9 @@ def write_report(ent, rels, tables, checks):
       "Others are entity sets because their structure matters (see the reason under each one in Part 1).")
     w("- **Avoiding redundancy.** A coupon redemption and a return request do not store the customer again. "
       "The customer is already determined by the order, and storing it twice could let the two disagree (compare the *Entity vs. Relationship* slide).")
+    w("- **Derived attributes.** " + "; ".join(f"`{name_of(t)}.{c}` is {how}" for (t, c), how in M.DERIVED.items()) + ". "
+      "They are drawn as dashed ovals because they are not independent facts. The schema keeps the value so that order lists need not add up "
+      "the lines; the application writes it once at checkout, from the same lines, and never changes it.")
     w("- **Participation that SQL cannot enforce.** Total participation of the \"one\" side is guaranteed by the application, not by a foreign key:")
     for (rel, table), reason in M.TOTAL_PARTICIPATION.items():
         w(f"  - {name_of(table)} in {rel}: {reason}.")
@@ -611,7 +642,8 @@ def export_json(ent, rels, tables, checks):
             owner=ent[e["weak_owner"]]["name"] if e["weak_owner"] else None,
             owner_key=ent[e["weak_owner"]]["key"] if e["weak_owner"] else None,
             attrs=[dict(name=c["name"], domain=domain(t, c), required=c["notnull"],
-                        unique={c["name"]} in t["uniques"] and c["name"] not in e["key"]) for c in e["attrs"]],
+                        unique={c["name"]} in t["uniques"] and c["name"] not in e["key"],
+                        derived=M.DERIVED.get((e["table"], c["name"]))) for c in e["attrs"]],
             checks=t["checks"].get(None, []))
 
     def relationship(r):
@@ -634,6 +666,7 @@ def export_json(ent, rels, tables, checks):
                  overlap=M.ISA["overlap"], covering=M.ISA["covering"], text=M.ISA["explanation"]),
         total_participation=[dict(relationship=r, entity=name_of(t), reason=why) for (r, t), why in M.TOTAL_PARTICIPATION.items()],
         cross_rules=[dict(relationships=list(r), rule=rule, how=how.replace("`", "")) for r, rule, how in M.CROSS_RULES],
+        derived=[dict(entity=name_of(t), attribute=c, how=how) for (t, c), how in M.DERIVED.items()],
         checks=[dict(requirement=a, ok=b, evidence=c) for a, b, c in checks],
         tables=len(tables), relationship_tables=len(M.RELATIONSHIP_TABLES))
     (ER_DIR / "model.json").write_text(json.dumps(data, indent=1, ensure_ascii=False))
@@ -682,6 +715,7 @@ def main():
     subprocess.run(["node", str(RENDER / "render.mjs"), *map(str, paths)], check=True)
     for path in paths:
         postprocess_svg(path.with_suffix(".svg"))
+    add_legend(ER_DIR / "full.svg", ER_DIR / "legend.svg")
     subprocess.run(["node", str(RENDER / "render.mjs"), "--png", *(str(p.with_suffix(".svg")) for p in paths)], check=True)
 
 

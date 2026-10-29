@@ -29,25 +29,29 @@
      "name": "account_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "email",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "full_name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "role",
      "domain": "TEXT; CHECK role IN ('customer','staff','courier')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -68,13 +72,15 @@
      "name": "joined_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "loyalty_points",
      "domain": "INTEGER; CHECK loyalty_points >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -95,7 +101,8 @@
      "name": "title",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -116,7 +123,8 @@
      "name": "license_no",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     }
    ],
    "checks": []
@@ -139,19 +147,22 @@
      "name": "department_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "budget_cents",
      "domain": "INTEGER; CHECK budget_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -174,25 +185,29 @@
      "name": "tier_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "min_points",
      "domain": "INTEGER; CHECK min_points >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "discount_percent",
      "domain": "INTEGER; CHECK discount_percent BETWEEN 0 AND 50",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -215,25 +230,29 @@
      "name": "vehicle_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "fleet_code",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "vehicle_type",
      "domain": "TEXT; CHECK vehicle_type IN ('bicycle','motorbike','van')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "capacity_kg",
      "domain": "INTEGER; CHECK capacity_kg > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -256,13 +275,15 @@
      "name": "seller_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -285,19 +306,22 @@
      "name": "plan_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "rate_percent",
      "domain": "REAL; CHECK rate_percent BETWEEN 0 AND 50",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -320,19 +344,22 @@
      "name": "verification_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('pending','approved','rejected')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "checked_at",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -355,25 +382,29 @@
      "name": "policy_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "policy_type",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "body",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "effective_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -396,19 +427,22 @@
      "name": "payout_account_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "masked_iban",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('pending','verified','disabled')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -431,37 +465,43 @@
      "name": "payout_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "period_start",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "period_end",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "amount_cents",
      "domain": "INTEGER; CHECK amount_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('scheduled','paid','failed')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "paid_at",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": [
@@ -486,25 +526,29 @@
      "name": "notification_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "message",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "created_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "read_at",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -527,13 +571,15 @@
      "name": "country_code",
      "domain": "TEXT; CHECK length(country_code) = 2",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     }
    ],
    "checks": []
@@ -556,13 +602,15 @@
      "name": "city_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -585,25 +633,29 @@
      "name": "address_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "label",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "street",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "postal_code",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -626,13 +678,15 @@
      "name": "delivery_zone_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -655,19 +709,22 @@
      "name": "pickup_point_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "opening_hours",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -690,19 +747,22 @@
      "name": "tax_rate_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "rate_percent",
      "domain": "REAL; CHECK rate_percent BETWEEN 0 AND 100",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -725,13 +785,15 @@
      "name": "category_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     }
    ],
    "checks": []
@@ -754,13 +816,15 @@
      "name": "brand_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     }
    ],
    "checks": []
@@ -783,19 +847,22 @@
      "name": "product_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "description",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -818,19 +885,22 @@
      "name": "variant_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "sku",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "variant_name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -853,25 +923,29 @@
      "name": "image_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "image_url",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "alt_text",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "display_order",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -894,13 +968,15 @@
      "name": "attribute_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     }
    ],
    "checks": []
@@ -923,19 +999,22 @@
      "name": "listing_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "price_cents",
      "domain": "INTEGER; CHECK price_cents > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "active",
      "domain": "INTEGER; CHECK active IN (0,1)",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -958,25 +1037,29 @@
      "name": "price_history_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "old_price_cents",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "new_price_cents",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "changed_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -999,19 +1082,22 @@
      "name": "question_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "body",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "asked_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1034,19 +1120,22 @@
      "name": "answer_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "body",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "answered_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1069,19 +1158,22 @@
      "name": "document_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "document_type",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "file_url",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1104,25 +1196,29 @@
      "name": "seller_review_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "stars",
      "domain": "INTEGER; CHECK stars BETWEEN 1 AND 5",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "body",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "created_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1145,13 +1241,15 @@
      "name": "cart_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "updated_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1174,13 +1272,15 @@
      "name": "wishlist_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1203,31 +1303,36 @@
      "name": "promotion_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "starts_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "ends_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "discount_percent",
      "domain": "INTEGER; CHECK discount_percent BETWEEN 1 AND 100",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1250,19 +1355,22 @@
      "name": "coupon_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "code",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "max_uses",
      "domain": "INTEGER; CHECK max_uses > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1285,25 +1393,29 @@
      "name": "review_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "stars",
      "domain": "INTEGER; CHECK stars BETWEEN 1 AND 5",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "body",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "created_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1326,13 +1438,15 @@
      "name": "review_image_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "image_url",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1355,25 +1469,29 @@
      "name": "gift_card_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "code",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "initial_cents",
      "domain": "INTEGER; CHECK initial_cents > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "balance_cents",
      "domain": "INTEGER; CHECK balance_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1396,13 +1514,15 @@
      "name": "warehouse_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1425,19 +1545,22 @@
      "name": "bin_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "zone_code",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "code",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1460,19 +1583,22 @@
      "name": "batch_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "received_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "quantity",
      "domain": "INTEGER; CHECK quantity >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1495,25 +1621,29 @@
      "name": "movement_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "quantity_delta",
      "domain": "INTEGER; CHECK quantity_delta <> 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "reason",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "moved_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1536,19 +1666,22 @@
      "name": "supplier_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "contact_email",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1571,19 +1704,22 @@
      "name": "purchase_order_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "ordered_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1608,19 +1744,22 @@
      "name": "line_no",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "quantity",
      "domain": "INTEGER; CHECK quantity > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "unit_cost_cents",
      "domain": "INTEGER; CHECK unit_cost_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1643,13 +1782,15 @@
      "name": "receipt_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "received_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1672,19 +1813,22 @@
      "name": "inspection_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "result",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "inspected_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1707,25 +1851,29 @@
      "name": "order_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "placed_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('placed','shipped','delivered','cancelled')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "total_cents",
      "domain": "INTEGER; CHECK total_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": "the sum of quantity × unit_price_cents over the order's lines"
     }
    ],
    "checks": []
@@ -1750,19 +1898,22 @@
      "name": "line_no",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "quantity",
      "domain": "INTEGER; CHECK quantity > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "unit_price_cents",
      "domain": "INTEGER; CHECK unit_price_cents > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1785,19 +1936,22 @@
      "name": "event_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "event_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1820,25 +1974,29 @@
      "name": "payment_method_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "method_type",
      "domain": "TEXT; CHECK method_type IN ('card','wallet','bank_transfer')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "masked_number",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "expires_on",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1861,19 +2019,22 @@
      "name": "payment_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "amount_cents",
      "domain": "INTEGER; CHECK amount_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -1896,31 +2057,36 @@
      "name": "transaction_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "kind",
      "domain": "TEXT; CHECK kind IN ('capture','refund')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "amount_cents",
      "domain": "INTEGER; CHECK amount_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "created_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": [
@@ -1945,19 +2111,22 @@
      "name": "invoice_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "issued_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "total_cents",
      "domain": "INTEGER; CHECK total_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": "the sum of amount_cents over the invoice's lines"
     }
    ],
    "checks": []
@@ -1982,13 +2151,15 @@
      "name": "line_no",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "amount_cents",
      "domain": "INTEGER; CHECK amount_cents >= 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2011,13 +2182,15 @@
      "name": "fulfillment_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "created_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2040,13 +2213,15 @@
      "name": "package_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "weight_grams",
      "domain": "INTEGER; CHECK weight_grams > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2069,13 +2244,15 @@
      "name": "carrier_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     }
    ],
    "checks": []
@@ -2100,19 +2277,22 @@
      "name": "service_code",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "name",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "max_delivery_days",
      "domain": "INTEGER; CHECK max_delivery_days > 0",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2135,31 +2315,36 @@
      "name": "shipment_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "tracking_code",
      "domain": "TEXT",
      "required": true,
-     "unique": true
+     "unique": true,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('shipped','delivered')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "shipped_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "delivered_at",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2182,25 +2367,29 @@
      "name": "tracking_event_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "location",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "event_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2223,37 +2412,43 @@
      "name": "attempt_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "attempted_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "outcome",
      "domain": "TEXT; CHECK outcome IN ('delivered','failed')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "recipient_name",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "evidence_url",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "notes",
      "domain": "TEXT",
      "required": false,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": [
@@ -2279,25 +2474,29 @@
      "name": "return_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "reason",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('requested','approved','rejected')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "requested_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2320,19 +2519,22 @@
      "name": "return_inspection_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "condition",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "inspected_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2355,25 +2557,29 @@
      "name": "ticket_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "subject",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "status",
      "domain": "TEXT; CHECK status IN ('open','closed')",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "created_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -2396,19 +2602,22 @@
      "name": "message_id",
      "domain": "INTEGER",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "body",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     },
     {
      "name": "sent_at",
      "domain": "TEXT",
      "required": true,
-     "unique": false
+     "unique": false,
+     "derived": null
     }
    ],
    "checks": []
@@ -5233,6 +5442,18 @@
    ],
    "rule": "a stock batch is stored in a bin of its own warehouse",
    "how": "stock_batches(bin_id, warehouse_id) references storage_bins(bin_id, warehouse_id), and warehouse_id is also part of the batch's stock position"
+  }
+ ],
+ "derived": [
+  {
+   "entity": "Orders",
+   "attribute": "total_cents",
+   "how": "the sum of quantity × unit_price_cents over the order's lines"
+  },
+  {
+   "entity": "Invoices",
+   "attribute": "total_cents",
+   "how": "the sum of amount_cents over the invoice's lines"
   }
  ],
  "checks": [

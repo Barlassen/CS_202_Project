@@ -93,7 +93,7 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 | `tools/er_model.py` | The conceptual ER model: which table is an entity or a relationship, names, explanations, weak entities, ISA, aggregation |
 | `tools/build_er.py` | Checks the model against `schema.sql` and the guidelines, then generates the diagrams and the report |
 | `docs/MarketLab_Project_Description.docx` | Generated submission report (Word), as item 5 of the guidelines asks: a short introduction, Part 1 (every entity) and Part 2 (every relationship). Team names and student IDs are filled in. |
-| `docs/MarketLab_ER_Diagram.pdf` | The complete ER diagram as a one-page vector PDF, submitted next to the report (made from `docs/er/full.svg`; printing the SVG to PDF from a browser gives the same result). |
+| `docs/MarketLab_ER_Diagram.pdf` | The complete ER diagram with a legend of the notation, as a one-page vector PDF, submitted next to the report (made from `docs/er/full.svg`; printing the SVG to PDF from a browser gives the same result). |
 | `docs/REPORT.md` | Generated report: guideline checklist, the four concepts, Part 1 entities, Part 2 relationships |
 | `docs/er/full.svg` | Generated complete ER diagram (large; zoom in) |
 | `docs/er/area-*.svg`, `concept-*.svg` | Generated ER diagram per business area, and one small figure per required construct (PNG copies are used in the Word document) |

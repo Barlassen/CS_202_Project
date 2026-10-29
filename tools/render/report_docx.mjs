@@ -80,6 +80,7 @@ function attrRuns(e) {
     out.push(run(a.name, { size: 18 }));
     const tags = [];
     if (a.unique) tags.push("unique");
+    if (a.derived) tags.push("derived");
     if (!a.required) tags.push("optional");
     if (tags.length) out.push(run(` (${tags.join(", ")})`, { size: 16, color: MUTED }));
     if (i < list.length - 1) out.push(run(", ", { size: 18 }));
@@ -135,7 +136,8 @@ const part1 = [
   heading("Part 1 – Entities", HeadingLevel.HEADING_1),
   para("Entity sets are grouped by business area. For each one we give its meaning, its key and its own attributes. The key is underlined. "
     + "A weak entity is identified by its partial key (dashed underline) together with the key of its owner, and the subclasses of Accounts inherit the Accounts key. "
-    + "Attributes that point to another entity are not listed, because such links are relationships (Part 2)."),
+    + "Attributes that point to another entity are not listed, because such links are relationships (Part 2). "
+    + "A derived attribute, whose value is computed from other data, is drawn as a dashed oval."),
 ];
 let sec = 0;
 for (const [area, label] of Object.entries(M.areas)) {
@@ -199,6 +201,9 @@ const design = [
   para([bold("Avoiding redundancy. "), run("A fact is stored once. A return request or a coupon redemption does not store the customer again, because the order "
     + "already determines it. After the instructor's review, four entity sets that repeated information were merged: Inventory_Adjustments into Stock_Movements, "
     + "Refunds into Payment_Transactions, Proof_Of_Delivery into Delivery_Attempts and Storage_Zones into Storage_Bins.")]),
+  para([bold("Derived attributes. "), run(M.derived.map((d) => `${d.entity}.${d.attribute} is ${d.how}`).join("; ") + ". "
+    + "They are drawn as dashed ovals because they are not independent facts. The schema keeps the value so that order lists need not add up "
+    + "the lines; the application writes it once at checkout, from the same lines, and never changes it.")]),
   para([bold("Total participation that a foreign key cannot express. "), run("When the \"one\" side of a relationship must take part at least once, "
     + "a foreign key cannot require it; the application creates the rows together. The covering ISA hierarchy is the same case: "
     + "every account is created together with its Customers, Staff or Couriers row.")], { keepNext: true }),

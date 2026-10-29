@@ -28,7 +28,7 @@ A__orders__placed_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3,
 A__orders__placed_at -> E_orders [dir=none];
 A__orders__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
 A__orders__status -> E_orders [dir=none];
-A__orders__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="total_cents"];
+A__orders__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, style=dashed, label="total_cents"];
 A__orders__total_cents -> E_orders [dir=none];
 R59 [shape=diamond, penwidth=3, margin="0.02,0.02", label="Contains"];
 E_order_lines -> R59 [dir=forward, arrowhead=normal, penwidth=3];

@@ -31,6 +31,7 @@ The diagrams follow the notation of the course slides (Ramakrishnan & Gehrke, ch
 | Symbol | Meaning |
 | --- | --- |
 | Rectangle | Entity set. Ovals around it are its attributes; the key attribute is underlined. |
+| Dashed oval | Derived attribute: its value is computed from other data. |
 | Diamond | Relationship set. Ovals attached to a diamond are descriptive attributes of the relationship. |
 | Arrow from an entity set to a diamond | Key constraint: each entity takes part in at most one relationship of that set. |
 | Bold line | Total participation: each entity takes part in at least one relationship of that set. |
@@ -79,6 +80,7 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
 
 - **Entity vs. attribute.** Several concepts are modelled as entity sets because an entity can have several of them, and attributes cannot be set-valued. Others are entity sets because their structure matters (see the reason under each one in Part 1).
 - **Avoiding redundancy.** A coupon redemption and a return request do not store the customer again. The customer is already determined by the order, and storing it twice could let the two disagree (compare the *Entity vs. Relationship* slide).
+- **Derived attributes.** `Orders.total_cents` is the sum of quantity × unit_price_cents over the order's lines; `Invoices.total_cents` is the sum of amount_cents over the invoice's lines. They are drawn as dashed ovals because they are not independent facts. The schema keeps the value so that order lists need not add up the lines; the application writes it once at checkout, from the same lines, and never changes it.
 - **Participation that SQL cannot enforce.** Total participation of the "one" side is guaranteed by the application, not by a foreign key:
   - Orders in Contains: checkout always creates at least one order line.
   - Purchase_Orders in PO_Has_Line: a purchase order is created together with its lines.
@@ -820,7 +822,7 @@ A customer's purchase of one or more listings, delivered to an address or a pick
 | `order_id` | INTEGER | **key**, required |
 | `placed_at` | TEXT | required |
 | `status` | TEXT; CHECK status IN ('placed','shipped','delivered','cancelled') | required |
-| `total_cents` | INTEGER; CHECK total_cents >= 0 | required |
+| `total_cents` | INTEGER; CHECK total_cents >= 0 | **derived**: the sum of quantity × unit_price_cents over the order's lines, required |
 
 **Takes part in:** About_Order, Billed_To, Collect_At, Contains, Fulfills, Invoiced_As, Paid_By, Pays_With, Places, Redeems, Return_Of, Status_Of.
 
@@ -913,7 +915,7 @@ The legal invoice issued for an order.
 | --- | --- | --- |
 | `invoice_id` | INTEGER | **key**, required |
 | `issued_at` | TEXT | required |
-| `total_cents` | INTEGER; CHECK total_cents >= 0 | required |
+| `total_cents` | INTEGER; CHECK total_cents >= 0 | **derived**: the sum of amount_cents over the invoice's lines, required |
 
 **Takes part in:** Invoice_Has_Line, Invoiced_As.
 

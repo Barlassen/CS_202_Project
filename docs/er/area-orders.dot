@@ -22,7 +22,7 @@ A__invoices__invoice_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0
 A__invoices__invoice_id -> E_invoices [dir=none];
 A__invoices__issued_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="issued_at"];
 A__invoices__issued_at -> E_invoices [dir=none];
-A__invoices__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="total_cents"];
+A__invoices__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, style=dashed, label="total_cents"];
 A__invoices__total_cents -> E_invoices [dir=none];
 E_listings [shape=box, style="filled,dashed", fillcolor="#eeeeee", penwidth=1, label="Listings
 (Catalogue)"];
@@ -47,7 +47,7 @@ A__orders__placed_at [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3,
 A__orders__placed_at -> E_orders [dir=none];
 A__orders__status [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"];
 A__orders__status -> E_orders [dir=none];
-A__orders__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="total_cents"];
+A__orders__total_cents [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, style=dashed, label="total_cents"];
 A__orders__total_cents -> E_orders [dir=none];
 E_payment_methods [shape=box, penwidth=1, label="Payment_Methods"];
 A__payment_methods__payment_method_id [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>payment_method_id</U>>];

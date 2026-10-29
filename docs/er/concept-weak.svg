@@ -186,7 +186,7 @@
 <!-- A__orders__total_cents -->
 <g id="node16" class="node">
 <title>A__orders__total_cents</title>
-<ellipse fill="none" stroke="#222222" cx="523.96" cy="-84" rx="31.84" ry="10.8"/>
+<ellipse fill="none" stroke="#222222" stroke-dasharray="5,2" cx="523.96" cy="-84" rx="31.84" ry="10.8"/>
 <text xml:space="preserve" text-anchor="middle" x="523.96" y="-81.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">total_cents</text>
 </g>
 <!-- A__orders__total_cents&#45;&gt;E_orders -->
