@@ -2,13 +2,21 @@
 
 **Proposed e-sheet title:** Multi-Vendor Marketplace and Order Fulfillment Management System
 
-MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **67 entity sets and 99 relationship sets** in one connected diagram, implemented as an **79-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The application uses Python's standard library only; there is no package installation, external API, or GitHub dependency. Only re-rendering the ER diagrams needs Node.js (see below).
+MarketLab is a local, database-backed web demo for a multi-vendor marketplace. Its conceptual ER model has **67 entity sets and 100 relationship sets** in one connected diagram, implemented as an **79-table SQLite schema**. It has a browser interface, sample data, and working order, stock, shipment, return, and SQL reporting flows. The application uses Python's standard library only; there is no package installation, external API, or GitHub dependency. Only re-rendering the ER diagrams needs Node.js (see below).
 
 **Course-fit status:** This is a working draft. Read [`docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md`](docs/DERS_UYUMU_VE_ADIM_ADIM_ANLATIM.md) before treating it as a submission. The team confirmed that the project-specific AI allowance applies to two-person projects; all generated work must still be checked and understood. PostgreSQL and the exact required SQL queries still need confirmation.
 
 **ER design (Part 1 deliverable):** [`docs/REPORT.md`](docs/REPORT.md) starts with the guideline checklist and the four required concepts, followed by Part 1 (every entity) and Part 2 (every relationship). The diagrams in [`docs/er/`](docs/er/) use the notation of the course slides.
 
 ## Changes in the `project_changes` branch
+
+**After the feedback on the ER diagram (November 2026): 99 → 100 relationships.** Three items:
+
+| Feedback | Change |
+| --- | --- |
+| Missing notation explanation | Page 1 of [`docs/MarketLab_ER_Diagram.pdf`](docs/MarketLab_ER_Diagram.pdf) is a legend ([`docs/er/legend.html`](docs/er/legend.html)) of every symbol used: entity set, key, derived attribute, relationship set and its attributes, role labels, how to read cardinality (M:N, 1:N, 1:1) and participation from the lines, weak entity with identifying relationship and partial key, ternary relationship, aggregation and ISA. Each symbol is drawn with a real MarketLab example. |
+| Poor readability | The PDF is no longer one 5.5 m wide page. Page 2 is an overview ([`docs/er/overview.svg`](docs/er/overview.svg)) with all 67 entity sets and 100 relationship sets but no attributes, grouped in one box per business area, so the connected design can be followed. Pages 3–11 are the nine areas with all attributes. |
+| Missing `Ships_To` | New relationship *Ships_To* between Orders and Addresses (`orders.shipping_address_id`). The shipping address may differ from the billing address (*Billed_To*) and must be one of the customer's own addresses (composite foreign key, like *Billed_To*). A pickup order has no shipping address: a CHECK makes every order have exactly one of *Ships_To* and *Collect_At*. Tests in `tests/test_design.py`. |
 
 **After the instructor's feedback (27 October 2026): 71 → 67 entities, 103 → 99 relationships.** Four entity sets that repeated information were merged:
 
@@ -39,7 +47,7 @@ This branch reworks the ER design against `Guidelines.pdf` and the instructor's 
 
 Entity sets that could look like attributes (images, price history, status events, ...) now carry an explicit *entity vs. attribute* justification in the report. Even if all 12 of them were rejected, 55 entities would remain.
 
-**Diagrams in course notation** ([`docs/er/`](docs/er/)): attributes as ovals with the key underlined; arrows for key constraints, bold lines for total participation; weak entities and identifying relationships drawn bold with a dashed partial key; ISA triangle with its overlap and covering decisions; aggregation as a dashed box. There is one complete diagram (`full.svg`), one per business area (`area-*.svg`) and a legend.
+**Diagrams in course notation** ([`docs/er/`](docs/er/)): attributes as ovals with the key underlined; arrows for key constraints, bold lines for total participation; weak entities and identifying relationships drawn bold with a dashed partial key; ISA triangle with its overlap and covering decisions; aggregation as a dashed box. There is one overview without attributes (`overview.svg`), one complete diagram with every attribute (`full.svg`, very large), one per business area (`area-*.svg`) and a legend (`legend.html`).
 
 **Two corrected constructs:**
 - *Weak entity:* `Order_Lines` shows only its partial key `line_no`; the owner's key comes from the bold identifying relationship `Contains`, not from the entity box.
@@ -93,11 +101,12 @@ Open <http://127.0.0.1:8000>. The first run creates `marketplace.db` and inserts
 | `tools/er_model.py` | The conceptual ER model: which table is an entity or a relationship, names, explanations, weak entities, ISA, aggregation |
 | `tools/build_er.py` | Checks the model against `schema.sql` and the guidelines, then generates the diagrams and the report |
 | `docs/MarketLab_Project_Description.docx` | Generated submission report (Word), as item 5 of the guidelines asks: a short introduction, Part 1 (every entity) and Part 2 (every relationship). Team names and student IDs are filled in. |
-| `docs/MarketLab_ER_Diagram.pdf` | The complete ER diagram as a one-page vector PDF, submitted next to the report (made from `docs/er/full.svg`; printing the SVG to PDF from a browser gives the same result). |
+| `docs/MarketLab_ER_Diagram.pdf` | The ER diagram submitted next to the report, an 11-page vector PDF: legend, overview, then the nine business areas. `tools/build_er.py` prints each page with headless Chrome or Edge and joins them with `pypdf`. |
 | `docs/REPORT.md` | Generated report: guideline checklist, the four concepts, Part 1 entities, Part 2 relationships |
-| `docs/er/full.svg` | Generated complete ER diagram (large; zoom in) |
+| `docs/er/overview.svg` | Generated overview: every entity and relationship set, without attributes, grouped by business area |
+| `docs/er/full.svg` | Generated complete ER diagram with every attribute (very large; zoom in) |
 | `docs/er/area-*.svg`, `concept-*.svg` | Generated ER diagram per business area, and one small figure per required construct (PNG copies are used in the Word document) |
-| `docs/er/legend.svg` | The notation used in the diagrams |
+| `docs/er/legend.html`, `legend/*.svg` | The notation used in the diagrams (page 1 of the PDF) |
 | `docs/DESIGN.md` | Implementation decisions: cardinalities, transactions, integrity rules |
 | `docs/SQL_QUERIES.md` | Query explanations and SQL examples |
 | `docs/ANLATIM_TR.md` | Step-by-step Turkish explanation and oral-exam questions |
@@ -111,9 +120,11 @@ Edit `tools/er_model.py` or `schema.sql`, never the generated files. Then:
 ```bash
 python3 tools/build_er.py --check     # model vs schema + guideline checks only
 cd tools/render && npm install && cd ../..   # once, for SVG rendering (Graphviz as WebAssembly)
-python3 tools/build_er.py             # checks, DOT, SVG/PNG, docs/REPORT.md and docs/er/model.json
+python3 tools/build_er.py             # checks, DOT, SVG/PNG, docs/REPORT.md, docs/er/model.json and the diagram PDF
 node tools/render/report_docx.mjs     # Word document from model.json and the PNG figures
 ```
+
+The PDF step needs Chrome or Edge and `pip install pypdf`; if the browser is not found, set `ER_BROWSER` to its executable.
 
 ## What is implemented, and what remains
 

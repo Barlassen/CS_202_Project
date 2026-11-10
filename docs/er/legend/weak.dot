@@ -1,0 +1,6 @@
+digraph L {
+graph [rankdir=LR, compound=true, nodesep=0.25, ranksep=0.35, pad=0.05, fontname="Helvetica"];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+P__legend__line_no [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>line_no</U>>]; w [shape=box, penwidth=3, label="Order_Lines"]; r [shape=diamond, penwidth=3, margin="0.02,0.02", label="Contains"]; o [shape=box, label="Orders"]; P__legend__line_no -> w [dir=none]; w -> r [arrowhead=normal, penwidth=3]; r -> o [dir=none, penwidth=3];
+}

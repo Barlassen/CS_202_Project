@@ -154,8 +154,10 @@ def checkout(db: sqlite3.Connection) -> int:
             allocations.append(line_allocations)
         address = db.execute("SELECT address_id FROM addresses WHERE account_id=? ORDER BY address_id LIMIT 1", (CUSTOMER_ID,)).fetchone()
         total = sum(r["price_cents"] * r["quantity"] for r in rows)
-        order_id = db.execute("INSERT INTO orders(customer_id,address_id,status,total_cents) VALUES(?,?,'placed',?)",
-                              (CUSTOMER_ID, address[0], total)).lastrowid
+        # The demo checkout ships to the first saved address and bills the same address;
+        # the schema also allows a different shipping address or a pickup point.
+        order_id = db.execute("""INSERT INTO orders(customer_id,address_id,shipping_address_id,status,total_cents)
+          VALUES(?,?,?,'placed',?)""", (CUSTOMER_ID, address[0], address[0], total)).lastrowid
         for line_no, (r, positions) in enumerate(zip(rows, allocations), 1):
             db.execute("INSERT INTO order_lines VALUES(?,?,?,?,?)",
                        (order_id, line_no, r["listing_id"], r["quantity"], r["price_cents"]))
@@ -319,9 +321,10 @@ def deliver(db: sqlite3.Connection, order_id: int) -> None:
         shipments = db.execute("""SELECT sh.shipment_id FROM shipments sh
           JOIN packages p ON p.package_id=sh.package_id JOIN fulfillments f ON f.fulfillment_id=p.fulfillment_id
           WHERE f.order_id=?""", (order_id,)).fetchall()
-        # The courier is one who serves a delivery zone in the order's city; the customer receives the parcel.
+        # The courier is one who serves a delivery zone in the city of the shipping address
+        # (pickup orders have none and get no courier); the customer receives the parcel.
         courier = db.execute("""SELECT cz.courier_id FROM orders o
-          JOIN addresses a ON a.address_id=o.address_id
+          JOIN addresses a ON a.address_id=o.shipping_address_id
           JOIN delivery_zones dz ON dz.city_id=a.city_id
           JOIN courier_zones cz ON cz.delivery_zone_id=dz.delivery_zone_id
           WHERE o.order_id=? ORDER BY cz.courier_id LIMIT 1""", (order_id,)).fetchone()

@@ -1,0 +1,630 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>MarketLab ER diagram: notation</title>
+<style>
+body { font-family: Helvetica, Arial, sans-serif; color: #111; margin: 0; }
+h1 { font-size: 22pt; margin: 0 0 4pt; }
+.sub { font-size: 11pt; margin: 0 0 12pt; color: #333; }
+.cols { display: flex; gap: 22pt; align-items: flex-start; }
+.cols > div { flex: 1; }
+table { border-collapse: collapse; width: 100%; font-size: 10.5pt; }
+th { text-align: left; font-size: 12pt; padding: 10pt 0 4pt; border-bottom: 1.5pt solid #222; }
+td { padding: 5pt 6pt; border-bottom: 0.5pt solid #ccc; vertical-align: middle; line-height: 1.3; }
+td.sym { width: 46%; text-align: center; }
+td.sym svg { max-width: 100%; height: auto; max-height: 120pt; }
+.box { border: 1pt solid #888; border-radius: 6pt; padding: 8pt 12pt; font-size: 10.5pt; margin-top: 12pt; line-height: 1.4; }
+.box ul { margin: 4pt 0 0; padding-left: 16pt; }
+</style></head><body>
+<h1>MarketLab — ER diagram: notation and contents</h1>
+<p class="sub">Notation of the course slides (Ramakrishnan &amp; Gehrke, chapter 2). Every symbol below is drawn exactly as on the diagram pages; the examples are relationship sets of MarketLab.</p>
+<div class="cols">
+<div><table><tr><th colspan="2">Basic symbols</th></tr><tr><td class="sym"><svg width="76pt" height="43pt"
+ viewBox="0.00 0.00 76.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_entity_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 72.78,-39.6 72.78,3.6 -3.6,3.6"/>
+<!-- e -->
+<g id="lg_entity_node1" class="node">
+<title>e</title>
+<polygon fill="none" stroke="#222222" points="69.18,-36 0,-36 0,0 69.18,0 69.18,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="34.59" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Customers</text>
+</g>
+</g>
+</svg>
+</td><td><b>Entity set</b> (rectangle): a collection of similar objects, stored as one table.</td></tr><tr><td class="sym"><svg width="140pt" height="69pt"
+ viewBox="0.00 0.00 140.00 69.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_attribute_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 65.2)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-65.2 136.6,-65.2 136.6,3.6 -3.6,3.6"/>
+<!-- k -->
+<g id="lg_attribute_node1" class="node">
+<title>k</title>
+<ellipse fill="none" stroke="#222222" cx="27" cy="-50.8" rx="27" ry="10.8"/>
+<text xml:space="preserve" text-anchor="start" x="10.49" y="-49.1" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">order_id</text>
+<line x1="10.49" y1="-47.10" x2="43.51" y2="-47.10" stroke="black" stroke-width="0.9"/>
+</g>
+<!-- e -->
+<g id="lg_attribute_node3" class="node">
+<title>e</title>
+<polygon fill="none" stroke="#222222" points="133,-48.8 79,-48.8 79,-12.8 133,-12.8 133,-48.8"/>
+<text xml:space="preserve" text-anchor="middle" x="106" y="-27.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- k&#45;&gt;e -->
+<g id="lg_attribute_edge1" class="edge">
+<title>k&#45;&gt;e</title>
+<path fill="none" stroke="#333333" d="M50.27,-45.02C59.15,-42.71 69.45,-40.03 78.7,-37.63"/>
+</g>
+<!-- a -->
+<g id="lg_attribute_node2" class="node">
+<title>a</title>
+<ellipse fill="none" stroke="#222222" cx="27" cy="-10.8" rx="27" ry="10.8"/>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-8.1" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">status</text>
+</g>
+<!-- a&#45;&gt;e -->
+<g id="lg_attribute_edge2" class="edge">
+<title>a&#45;&gt;e</title>
+<path fill="none" stroke="#333333" d="M50.27,-16.58C59.15,-18.89 69.45,-21.57 78.7,-23.97"/>
+</g>
+</g>
+</svg>
+</td><td><b>Attribute</b> (oval) of the entity set it is attached to. The <b>key</b> attribute, which identifies each entity, is <u>underlined</u>.</td></tr><tr><td class="sym"><svg width="150pt" height="43pt"
+ viewBox="0.00 0.00 150.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_derived_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 146.29,-39.6 146.29,3.6 -3.6,3.6"/>
+<!-- d -->
+<g id="lg_derived_node1" class="node">
+<title>d</title>
+<ellipse fill="none" stroke="#222222" stroke-dasharray="5,2" cx="31.84" cy="-18" rx="31.84" ry="10.8"/>
+<text xml:space="preserve" text-anchor="middle" x="31.84" y="-15.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">total_cents</text>
+</g>
+<!-- e -->
+<g id="lg_derived_node2" class="node">
+<title>e</title>
+<polygon fill="none" stroke="#222222" points="142.69,-36 88.69,-36 88.69,0 142.69,0 142.69,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="115.69" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- d&#45;&gt;e -->
+<g id="lg_derived_edge1" class="edge">
+<title>d&#45;&gt;e</title>
+<path fill="none" stroke="#333333" d="M63.79,-18C71.84,-18 80.45,-18 88.25,-18"/>
+</g>
+</g>
+</svg>
+</td><td><b>Derived attribute</b> (dashed oval): computed from other data. An order's total is the sum over its lines.</td></tr><tr><td class="sym"><svg width="301pt" height="83pt"
+ viewBox="0.00 0.00 301.00 83.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_relationship_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 79.4)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-79.4 296.93,-79.4 296.93,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_relationship_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="118.11,-75.8 0,-75.8 0,-39.8 118.11,-39.8 118.11,-75.8"/>
+<text xml:space="preserve" text-anchor="middle" x="59.05" y="-54.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations</text>
+</g>
+<!-- r -->
+<g id="lg_relationship_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="178.72,-51.8 143.11,-33.8 178.72,-15.8 214.33,-33.8 178.72,-51.8"/>
+<text xml:space="preserve" text-anchor="middle" x="178.72" y="-30.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Employs</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_relationship_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M118.54,-45.87C130.43,-43.45 142.33,-41.02 152.31,-38.98"/>
+</g>
+<!-- b -->
+<g id="lg_relationship_node3" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="293.33,-51.8 239.33,-51.8 239.33,-15.8 293.33,-15.8 293.33,-51.8"/>
+<text xml:space="preserve" text-anchor="middle" x="266.33" y="-30.5" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Staff</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_relationship_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M215.04,-33.8C223.05,-33.8 231.43,-33.8 238.99,-33.8"/>
+</g>
+<!-- x -->
+<g id="lg_relationship_node4" class="node">
+<title>x</title>
+<ellipse fill="none" stroke="#222222" cx="59.05" cy="-10.8" rx="35.08" ry="10.8"/>
+<text xml:space="preserve" text-anchor="middle" x="59.05" y="-8.1" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">assigned_at</text>
+</g>
+<!-- x&#45;&gt;r -->
+<g id="lg_relationship_edge3" class="edge">
+<title>x&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M89.44,-16.54C108.78,-20.32 133.82,-25.22 152.3,-28.83"/>
+</g>
+</g>
+</svg>
+</td><td><b>Relationship set</b> (diamond): connects the entity sets on its lines. An oval on the diamond is a <b>descriptive attribute</b> of the relationship (here: since when the staff member works for the seller).</td></tr><tr><td class="sym"><svg width="258pt" height="43pt"
+ viewBox="0.00 0.00 258.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_roles_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 254.52,-39.6 254.52,3.6 -3.6,3.6"/>
+<!-- c -->
+<g id="lg_roles_node1" class="node">
+<title>c</title>
+<polygon fill="none" stroke="#222222" points="69.2,-36 0,-36 0,0 69.2,0 69.2,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="34.6" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Categories</text>
+</g>
+<!-- r -->
+<g id="lg_roles_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="185.82,-36 120.71,-18 185.82,0 250.92,-18 185.82,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="185.82" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Subcategory_Of</text>
+</g>
+<!-- c&#45;&gt;r -->
+<g id="lg_roles_edge1" class="edge">
+<title>c&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M69.46,-18C81.52,-18 95.63,-18 109.76,-18"/>
+<polygon fill="#333333" stroke="#333333" points="109.52,-20.8 117.52,-18 109.52,-15.2 109.52,-20.8"/>
+<text xml:space="preserve" text-anchor="middle" x="94.95" y="-20.7" font-family="Helvetica,sans-Serif" font-size="9.00">child</text>
+</g>
+<!-- r&#45;&gt;c -->
+<g id="lg_roles_edge2" class="edge">
+<title>r&#45;&gt;c</title>
+<path fill="none" stroke="#333333" d="M153.35,-8.6C133.03,-3.73 106.03,0.49 82.2,-3.2 78.09,-3.84 73.84,-4.77 69.67,-5.87"/>
+<text xml:space="preserve" text-anchor="middle" x="94.95" y="-5.9" font-family="Helvetica,sans-Serif" font-size="9.00">parent</text>
+</g>
+</g>
+</svg>
+</td><td><b>Role label</b> on a line: when one entity set takes part twice in a relationship, each line names its role.</td></tr><tr><th colspan="2">Cardinality and participation (read the lines at the diamond)</th></tr><tr><td class="sym"><svg width="301pt" height="43pt"
+ viewBox="0.00 0.00 301.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_many_many_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 296.93,-39.6 296.93,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_many_many_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="118.11,-36 0,-36 0,0 118.11,0 118.11,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="59.05" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations</text>
+</g>
+<!-- r -->
+<g id="lg_many_many_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="178.72,-36 143.11,-18 178.72,0 214.33,-18 178.72,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="178.72" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Employs</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_many_many_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M118.54,-18C126.62,-18 134.7,-18 142.19,-18"/>
+</g>
+<!-- b -->
+<g id="lg_many_many_node3" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="293.33,-36 239.33,-36 239.33,0 293.33,0 293.33,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="266.33" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Staff</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_many_many_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M215.04,-18C223.05,-18 231.43,-18 238.99,-18"/>
+</g>
+</g>
+</svg>
+</td><td><b>Thin line, no arrow:</b> no constraint. A seller may employ many staff members and a staff member may work for many sellers: <b>many-to-many (M:N)</b>.</td></tr><tr><td class="sym"><svg width="311pt" height="43pt"
+ viewBox="0.00 0.00 311.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_key_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 307.19,-39.6 307.19,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_key_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="95.48,-36 0,-36 0,0 95.48,0 95.48,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="47.74" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Support_Tickets</text>
+</g>
+<!-- r -->
+<g id="lg_key_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="172.53,-36 120.48,-18 172.53,0 224.59,-18 172.53,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="172.53" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">About_Order</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_key_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M95.86,-18C100.36,-18 104.97,-18 109.58,-18"/>
+<polygon fill="#333333" stroke="#333333" points="109.5,-20.8 117.5,-18 109.5,-15.2 109.5,-20.8"/>
+</g>
+<!-- b -->
+<g id="lg_key_node3" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="303.59,-36 249.59,-36 249.59,0 303.59,0 303.59,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="276.59" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_key_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M226.05,-18C234.06,-18 242.02,-18 249.15,-18"/>
+</g>
+</g>
+</svg>
+</td><td><b>Arrow into the diamond = key constraint (at most one).</b> Each ticket is about at most one order; an order may have many tickets: <b>one-to-many (1:N)</b>. The arrow is on the line of the entity set that is in the relationship at most once.</td></tr><tr><td class="sym"><svg width="266pt" height="43pt"
+ viewBox="0.00 0.00 266.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_total_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 262.25,-39.6 262.25,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_total_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="57.57,-36 0,-36 0,0 57.57,0 57.57,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="28.78" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Couriers</text>
+</g>
+<!-- r -->
+<g id="lg_total_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="111.9,-36 82.57,-18 111.9,0 141.23,-18 111.9,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="111.9" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Serves</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_total_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M57.7,-18C65.49,-18 73.97,-18 81.83,-18"/>
+</g>
+<!-- b -->
+<g id="lg_total_node3" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="258.65,-36 166.23,-36 166.23,0 258.65,0 258.65,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="212.44" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Delivery_Zones</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_total_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M141.93,-18C149.43,-18 157.68,-18 165.8,-18"/>
+</g>
+</g>
+</svg>
+</td><td><b>Thick line = total participation (at least one).</b> Every courier serves at least one delivery zone. A thin line is partial participation: zero is allowed.</td></tr><tr><td class="sym"><svg width="237pt" height="43pt"
+ viewBox="0.00 0.00 237.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_exactly_one_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 233.52,-39.6 233.52,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_exactly_one_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="54,-36 0,-36 0,0 54,0 54,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="27" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- r -->
+<g id="lg_exactly_one_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="107.37,-36 79,-18 107.37,0 135.74,-18 107.37,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="107.37" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Places</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_exactly_one_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M54.1,-18C57.85,-18 61.78,-18 65.74,-18"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="3" points="65.69,-20.8 73.69,-18 65.69,-15.2 65.69,-20.8"/>
+</g>
+<!-- b -->
+<g id="lg_exactly_one_node3" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="229.92,-36 160.74,-36 160.74,0 229.92,0 229.92,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="195.33" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Customers</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_exactly_one_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M136.52,-18C144.15,-18 152.51,-18 160.43,-18"/>
+</g>
+</g>
+</svg>
+</td><td><b>Thick line with arrow = exactly one.</b> Every order is placed by exactly one customer; a customer places any number of orders (1:N).</td></tr><tr><td class="sym"><svg width="245pt" height="43pt"
+ viewBox="0.00 0.00 245.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_one_one_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 241.82,-39.6 241.82,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_one_one_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="64.91,-36 0,-36 0,0 64.91,0 64.91,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="32.45" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Payments</text>
+</g>
+<!-- r -->
+<g id="lg_one_one_node2" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="124.57,-36 89.91,-18 124.57,0 159.22,-18 124.57,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="124.57" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Paid_By</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_one_one_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M65.22,-18C68.96,-18 72.82,-18 76.7,-18"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="3" points="76.48,-20.8 84.48,-18 76.48,-15.2 76.48,-20.8"/>
+</g>
+<!-- b -->
+<g id="lg_one_one_node3" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="238.22,-36 184.22,-36 184.22,0 238.22,0 238.22,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="211.22" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_one_one_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M169.44,-18C174.37,-18 179.27,-18 183.87,-18"/>
+<polygon fill="#333333" stroke="#333333" points="169.51,-15.2 161.51,-18 169.51,-20.8 169.51,-15.2"/>
+</g>
+</g>
+</svg>
+</td><td><b>Arrows on both lines: one-to-one (1:1).</b> Each payment is for exactly one order, and an order has at most one payment.</td></tr></table></div>
+<div><table><tr><th colspan="2">Advanced constructs</th></tr><tr><td class="sym"><svg width="340pt" height="43pt"
+ viewBox="0.00 0.00 340.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_weak_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 336.31,-39.6 336.31,3.6 -3.6,3.6"/>
+<!-- P__legend__line_no -->
+<g id="lg_weak_node1" class="node">
+<title>P__legend__line_no</title>
+<ellipse fill="none" stroke="#222222" cx="27" cy="-18" rx="27" ry="10.8"/>
+<text xml:space="preserve" text-anchor="start" x="12.49" y="-16.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">line_no</text>
+<line x1="12.49" y1="-14.30" x2="41.51" y2="-14.30" stroke="black" stroke-width="0.9" stroke-dasharray="2.5,1.8"/>
+</g>
+<!-- w -->
+<g id="lg_weak_node2" class="node">
+<title>w</title>
+<polygon fill="none" stroke="#222222" stroke-width="3" points="155.53,-36 79,-36 79,0 155.53,0 155.53,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="117.27" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Order_Lines</text>
+</g>
+<!-- P__legend__line_no&#45;&gt;w -->
+<g id="lg_weak_edge1" class="edge">
+<title>P__legend__line_no&#45;&gt;w</title>
+<path fill="none" stroke="#333333" d="M54.48,-18C61.8,-18 69.88,-18 77.73,-18"/>
+</g>
+<!-- r -->
+<g id="lg_weak_node3" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" stroke-width="3" points="217.12,-36 180.53,-18 217.12,0 253.71,-18 217.12,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="217.12" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Contains</text>
+</g>
+<!-- w&#45;&gt;r -->
+<g id="lg_weak_edge2" class="edge">
+<title>w&#45;&gt;r</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M156.94,-18C159.57,-18 162.24,-18 164.92,-18"/>
+<polygon fill="#333333" stroke="#333333" stroke-width="3" points="164.87,-20.8 172.87,-18 164.87,-15.2 164.87,-20.8"/>
+</g>
+<!-- o -->
+<g id="lg_weak_node4" class="node">
+<title>o</title>
+<polygon fill="none" stroke="#222222" points="332.71,-36 278.71,-36 278.71,0 332.71,0 332.71,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="305.71" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- r&#45;&gt;o -->
+<g id="lg_weak_edge3" class="edge">
+<title>r&#45;&gt;o</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M256.86,-18C264.15,-18 271.62,-18 278.42,-18"/>
+</g>
+</g>
+</svg>
+</td><td><b>Weak entity set</b> (thick rectangle) and its <b>identifying relationship</b> (thick diamond). The weak entity has no key of its own: its <b>partial key</b> (dashed underline) is unique only within its owner, so an order line is identified by order_id + line_no. The thick arrow says each line belongs to exactly one order.</td></tr><tr><td class="sym"><svg width="310pt" height="97pt"
+ viewBox="0.00 0.00 310.00 97.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_ternary_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 93.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-93.6 306.19,-93.6 306.19,3.6 -3.6,3.6"/>
+<!-- a -->
+<g id="lg_ternary_node1" class="node">
+<title>a</title>
+<polygon fill="none" stroke="#222222" points="118.11,-87 0,-87 0,-51 118.11,-51 118.11,-87"/>
+<text xml:space="preserve" text-anchor="middle" x="59.05" y="-65.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Organizations</text>
+</g>
+<!-- r -->
+<g id="lg_ternary_node4" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="171.48,-63 143.11,-45 171.48,-27 199.84,-45 171.48,-63"/>
+<text xml:space="preserve" text-anchor="middle" x="171.48" y="-41.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Stocks</text>
+</g>
+<!-- a&#45;&gt;r -->
+<g id="lg_ternary_edge1" class="edge">
+<title>a&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M118.5,-56.3C129.57,-53.89 140.47,-51.52 149.4,-49.58"/>
+</g>
+<!-- b -->
+<g id="lg_ternary_node2" class="node">
+<title>b</title>
+<polygon fill="none" stroke="#222222" points="291.89,-90 235.54,-90 235.54,-54 291.89,-54 291.89,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="263.72" y="-68.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Variants</text>
+</g>
+<!-- c -->
+<g id="lg_ternary_node3" class="node">
+<title>c</title>
+<polygon fill="none" stroke="#222222" points="302.59,-36 224.84,-36 224.84,0 302.59,0 302.59,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="263.72" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Warehouses</text>
+</g>
+<!-- r&#45;&gt;b -->
+<g id="lg_ternary_edge2" class="edge">
+<title>r&#45;&gt;b</title>
+<path fill="none" stroke="#333333" d="M191.61,-50.73C204.24,-54.5 220.98,-59.51 235.04,-63.72"/>
+</g>
+<!-- r&#45;&gt;c -->
+<g id="lg_ternary_edge3" class="edge">
+<title>r&#45;&gt;c</title>
+<path fill="none" stroke="#333333" d="M191.61,-39.27C201.24,-36.39 213.25,-32.8 224.65,-29.39"/>
+</g>
+<!-- x -->
+<g id="lg_ternary_node5" class="node">
+<title>x</title>
+<ellipse fill="none" stroke="#222222" cx="59.05" cy="-22" rx="37.67" ry="10.8"/>
+<text xml:space="preserve" text-anchor="middle" x="59.05" y="-19.3" font-family="Helvetica,sans-Serif" font-size="9.00" fill="#111111">available_qty</text>
+</g>
+<!-- x&#45;&gt;r -->
+<g id="lg_ternary_edge4" class="edge">
+<title>x&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M90.52,-28.35C109.16,-32.23 132.54,-37.1 149.2,-40.57"/>
+</g>
+</g>
+</svg>
+</td><td><b>Ternary relationship</b>: one diamond joins three entity sets. A stock position is one (seller, variant, warehouse) combination with its available quantity.</td></tr><tr><td class="sym"><svg width="387pt" height="186pt"
+ viewBox="0.00 0.00 387.00 186.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_aggregation_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 182.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-182.6 383.6,-182.6 383.6,3.6 -3.6,3.6"/>
+<g id="lg_aggregation_clust1" class="cluster">
+<title>cluster_agg</title>
+<polygon fill="none" stroke="black" stroke-dasharray="5,2" points="96.71,-45 96.71,-171 372,-171 372,-45 96.71,-45"/>
+<text xml:space="preserve" text-anchor="middle" x="149.46" y="-158" font-family="Helvetica,sans-Serif" font-size="10.00">Aggregation: Stocks</text>
+</g>
+<!-- s -->
+<g id="lg_aggregation_node1" class="node">
+<title>s</title>
+<polygon fill="none" stroke="#222222" points="176.34,-90 104.71,-90 104.71,-54 176.34,-54 176.34,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="140.53" y="-68.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Seller_Org.</text>
+</g>
+<!-- r -->
+<g id="lg_aggregation_node4" class="node">
+<title>r</title>
+<polygon fill="none" stroke="#222222" points="232.89,-89 204.52,-71 232.89,-53 261.25,-71 232.89,-89"/>
+<text xml:space="preserve" text-anchor="middle" x="232.89" y="-67.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Stocks</text>
+</g>
+<!-- s&#45;&gt;r -->
+<g id="lg_aggregation_edge1" class="edge">
+<title>s&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M176.72,-71.61C185.84,-71.51 195.53,-71.4 204.2,-71.31"/>
+</g>
+<!-- v -->
+<g id="lg_aggregation_node2" class="node">
+<title>v</title>
+<polygon fill="none" stroke="#222222" points="353.3,-89 296.95,-89 296.95,-53 353.3,-53 353.3,-89"/>
+<text xml:space="preserve" text-anchor="middle" x="325.13" y="-67.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Variants</text>
+</g>
+<!-- h -->
+<g id="lg_aggregation_node3" class="node">
+<title>h</title>
+<polygon fill="none" stroke="#222222" points="364,-143 286.25,-143 286.25,-107 364,-107 364,-143"/>
+<text xml:space="preserve" text-anchor="middle" x="325.13" y="-121.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Warehouses</text>
+</g>
+<!-- r&#45;&gt;v -->
+<g id="lg_aggregation_edge2" class="edge">
+<title>r&#45;&gt;v</title>
+<path fill="none" stroke="#333333" d="M261.95,-71C273.02,-71 285.7,-71 296.71,-71"/>
+</g>
+<!-- r&#45;&gt;h -->
+<g id="lg_aggregation_edge3" class="edge">
+<title>r&#45;&gt;h</title>
+<path fill="none" stroke="#333333" d="M248.39,-79.68C260.44,-86.89 278.02,-97.41 293.21,-106.5"/>
+</g>
+<!-- l -->
+<g id="lg_aggregation_node5" class="node">
+<title>l</title>
+<polygon fill="none" stroke="#222222" points="76.53,-36 0,-36 0,0 76.53,0 76.53,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="38.27" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Order_Lines</text>
+</g>
+<!-- x -->
+<g id="lg_aggregation_node6" class="node">
+<title>x</title>
+<polygon fill="none" stroke="#222222" points="140.53,-36 101.53,-18 140.53,0 179.52,-18 140.53,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="140.53" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Reserves</text>
+</g>
+<!-- l&#45;&gt;x -->
+<g id="lg_aggregation_edge4" class="edge">
+<title>l&#45;&gt;x</title>
+<path fill="none" stroke="#333333" stroke-width="3" d="M76.88,-18C84.55,-18 92.64,-18 100.36,-18"/>
+</g>
+<!-- x&#45;&gt;r -->
+<g id="lg_aggregation_edge5" class="edge">
+<title>x&#45;&gt;r</title>
+<path fill="none" stroke="#333333" d="M158.52,-27.97C166.82,-32.83 177.22,-38.94 187.56,-45"/>
+</g>
+</g>
+</svg>
+</td><td><b>Aggregation</b> (dashed box): the Stocks relationship together with its entity sets is treated as one entity set, so another relationship can connect to it. A line that ends at the box (Reserves) relates to a whole stock position.</td></tr><tr><td class="sym"><svg width="242pt" height="151pt"
+ viewBox="0.00 0.00 242.00 151.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_isa_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 147.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-147.6 238.03,-147.6 238.03,3.6 -3.6,3.6"/>
+<!-- p -->
+<g id="lg_isa_node1" class="node">
+<title>p</title>
+<polygon fill="none" stroke="#222222" points="61.25,-90 0,-90 0,-54 61.25,-54 61.25,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="30.62" y="-68.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Accounts</text>
+</g>
+<!-- t -->
+<g id="lg_isa_node2" class="node">
+<title>t</title>
+<polygon fill="none" stroke="#222222" points="113.25,-90 86.25,-63 140.25,-63 113.25,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="113.25" y="-69" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#111111">ISA</text>
+<text xml:space="preserve" text-anchor="middle" x="56.79" y="-45" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#111111">overlap: no</text>
+<text xml:space="preserve" text-anchor="middle" x="56.79" y="-33" font-family="Helvetica,sans-Serif" font-size="10.00" fill="#111111">covering: yes</text>
+</g>
+<!-- p&#45;&gt;t -->
+<g id="lg_isa_edge1" class="edge">
+<title>p&#45;&gt;t</title>
+<path fill="none" stroke="#333333" d="M61.64,-72C72.75,-72 84.97,-72 94.62,-72"/>
+</g>
+<!-- c1 -->
+<g id="lg_isa_node3" class="node">
+<title>c1</title>
+<polygon fill="none" stroke="#222222" points="234.43,-144 165.25,-144 165.25,-108 234.43,-108 234.43,-144"/>
+<text xml:space="preserve" text-anchor="middle" x="199.84" y="-122.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Customers</text>
+</g>
+<!-- t&#45;&gt;c1 -->
+<g id="lg_isa_edge2" class="edge">
+<title>t&#45;&gt;c1</title>
+<path fill="none" stroke="#333333" d="M124.96,-78.84C136.25,-86.05 154.52,-97.71 170.07,-107.63"/>
+</g>
+<!-- c2 -->
+<g id="lg_isa_node4" class="node">
+<title>c2</title>
+<polygon fill="none" stroke="#222222" points="226.84,-90 172.84,-90 172.84,-54 226.84,-54 226.84,-90"/>
+<text xml:space="preserve" text-anchor="middle" x="199.84" y="-68.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Staff</text>
+</g>
+<!-- t&#45;&gt;c2 -->
+<g id="lg_isa_edge3" class="edge">
+<title>t&#45;&gt;c2</title>
+<path fill="none" stroke="#333333" d="M131.77,-72C143.58,-72 159.37,-72 172.65,-72"/>
+</g>
+<!-- c3 -->
+<g id="lg_isa_node5" class="node">
+<title>c3</title>
+<polygon fill="none" stroke="#222222" points="228.62,-36 171.05,-36 171.05,0 228.62,0 228.62,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="199.84" y="-14.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Couriers</text>
+</g>
+<!-- t&#45;&gt;c3 -->
+<g id="lg_isa_edge4" class="edge">
+<title>t&#45;&gt;c3</title>
+<path fill="none" stroke="#333333" d="M128.98,-62.59C140.44,-55.28 156.67,-44.92 170.6,-36.02"/>
+</g>
+</g>
+</svg>
+</td><td><b>ISA hierarchy</b> (triangle): the subclasses inherit the key and attributes of Accounts. <i>overlap: no</i> = an account is in at most one subclass; <i>covering: yes</i> = every account is in one of them.</td></tr><tr><th colspan="2">How the pages are drawn</th></tr><tr><td class="sym"><svg width="133pt" height="43pt"
+ viewBox="0.00 0.00 133.00 43.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_other_area_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 39.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-39.6 129.67,-39.6 129.67,3.6 -3.6,3.6"/>
+<!-- e -->
+<g id="lg_other_area_node1" class="node">
+<title>e</title>
+<polygon fill="#eeeeee" stroke="#222222" stroke-dasharray="5,2" points="126.07,-36 0,-36 0,0 126.07,0 126.07,-36"/>
+<text xml:space="preserve" text-anchor="middle" x="63.03" y="-21.3" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Customers</text>
+<text xml:space="preserve" text-anchor="middle" x="63.03" y="-8.1" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">(People and accounts)</text>
+</g>
+</g>
+</svg>
+</td><td><b>Area pages:</b> a grey dashed rectangle is an entity set of another area, named with its area in brackets. Its attributes are on its own area page.</td></tr><tr><td class="sym"><svg width="133pt" height="151pt"
+ viewBox="0.00 0.00 133.00 151.00" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="lg_area_box_graph0" class="graph" transform="scale(1 1) rotate(0) translate(3.6 147.6)">
+<title>L</title>
+<polygon fill="white" stroke="none" points="-3.6,3.6 -3.6,-147.6 128.99,-147.6 128.99,3.6 -3.6,3.6"/>
+<g id="lg_area_box_clust1" class="cluster">
+<title>cluster_a</title>
+<path fill="none" stroke="#8a8a8a" stroke-width="1.2" d="M12,-8C12,-8 113.39,-8 113.39,-8 119.39,-8 125.39,-14 125.39,-20 125.39,-20 125.39,-124 125.39,-124 125.39,-130 119.39,-136 113.39,-136 113.39,-136 12,-136 12,-136 6,-136 0,-130 0,-124 0,-124 0,-20 0,-20 0,-14 6,-8 12,-8"/>
+<text xml:space="preserve" text-anchor="middle" x="62.69" y="-121.2" font-family="Helvetica,sans-Serif" font-size="12.00">Orders and payment</text>
+</g>
+<!-- e -->
+<g id="lg_area_box_node1" class="node">
+<title>e</title>
+<polygon fill="none" stroke="#222222" points="89.19,-52 35.19,-52 35.19,-16 89.19,-16 89.19,-52"/>
+<text xml:space="preserve" text-anchor="middle" x="62.19" y="-30.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Orders</text>
+</g>
+<!-- f -->
+<g id="lg_area_box_node2" class="node">
+<title>f</title>
+<polygon fill="none" stroke="#222222" points="90.37,-106 34.02,-106 34.02,-70 90.37,-70 90.37,-106"/>
+<text xml:space="preserve" text-anchor="middle" x="62.19" y="-84.7" font-family="Helvetica,sans-Serif" font-size="11.00" fill="#111111">Invoices</text>
+</g>
+</g>
+</svg>
+</td><td><b>Overview page:</b> a grey rounded box groups the entity sets of one business area. It only helps reading; it is not an ER construct. Relationships between two areas are drawn outside the boxes.</td></tr></table>
+<div class="box"><b>Contents of this PDF</b><ul><li>Page 1: this notation</li><li>Page 2: overview of the complete design (all entity and relationship sets, without attributes)</li><li>Page 3: People and accounts (with all attributes)</li><li>Page 4: Sellers (with all attributes)</li><li>Page 5: Locations and tax (with all attributes)</li><li>Page 6: Catalogue (with all attributes)</li><li>Page 7: Shopping and marketing (with all attributes)</li><li>Page 8: Inventory and procurement (with all attributes)</li><li>Page 9: Orders and payment (with all attributes)</li><li>Page 10: Fulfilment and delivery (with all attributes)</li><li>Page 11: After-sales and support (with all attributes)</li></ul>
+The overview shows that all entity sets form one connected design; each area page repeats its part of the design with all attributes.</div>
+</div></div>
+</body></html>

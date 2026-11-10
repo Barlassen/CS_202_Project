@@ -222,11 +222,14 @@ def attr_label(col, underline):
     return f"<<U>{col}</U>>" if underline else q(col)
 
 
-def build_dot(ent, rels, focus, title, only=None, isa=None):
+def build_dot(ent, rels, focus, title, only=None, isa=None, overview=False):
     """focus: set of entity tables drawn with attributes; other participants are drawn grey.
 
     only: draw just these relationship names (their participants get attributes).
     isa: force the ISA hierarchy on or off; by default it is drawn when focus touches it.
+    overview: every entity and relationship set without attributes, grouped in one box per
+    business area, so the whole connected design can be read on one page. The attributes
+    are on the area pages.
     """
     lines = [
         "digraph ER {",
@@ -255,7 +258,11 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
     def entity_nodes(table):
         e = ent[table]
         out = []
-        if table in focus:
+        if overview:
+            # Entity sets inside the aggregation box are away from their area box, so they name it.
+            label = e["name"] + (chr(10) + "(" + M.AREAS[e["area"]] + ")" if table in in_cluster else "")
+            out.append(f'E_{table} [shape=box, penwidth={3 if e["weak_owner"] else 1}, label={q(label)}];')
+        elif table in focus:
             out.append(f'E_{table} [shape=box, penwidth={3 if e["weak_owner"] else 1}, label={q(e["name"])}];')
             for col in e["attrs"]:
                 c = col["name"]
@@ -273,7 +280,7 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
 
     def rel_nodes(i, rel):
         out = [f'R{i} [shape=diamond, penwidth={3 if rel["identifying"] else 1}, margin="0.02,0.02", label={q(rel["name"])}];']
-        for col in rel["attrs"]:
+        for col in [] if overview else rel["attrs"]:
             out.append(f'RA{i}__{col["name"]} [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label={q(col["name"])}];')
             out.append(f'RA{i}__{col["name"]} -> R{i} [dir=none];')
         return out
@@ -304,8 +311,32 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
             out.append(f"{ends[0]} -> {ends[1]} [{', '.join(style)}];")
         return out
     in_cluster = stocks_parts if uses_agg else set()
-    for table in sorted(drawn - in_cluster):
-        lines += entity_nodes(table)
+    isa_lines = []
+    if isa:
+        note = f"overlap: {'yes' if M.ISA['overlap'] else 'no'}\\ncovering: {'yes' if M.ISA['covering'] else 'no'}"
+        isa_lines.append(f'ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="{note}"];')
+    if overview:
+        # Nodes are declared inside their area box; edges come after all boxes, at top level.
+        def home(rel):
+            areas = {ent[p["target"]]["area"] for p in rel["parts"] if p["target"] != AGG}
+            return areas.pop() if len(areas) == 1 and rel is not stocks else None
+        for key, label in M.AREAS.items():
+            lines.append(f'subgraph cluster_area_{key} {{ label={q(label)}; style=rounded; color="#8a8a8a"; penwidth=1.2; fontsize=16; margin=12;')
+            for table in sorted(t for t in drawn - in_cluster if ent[t]["area"] == key):
+                lines += entity_nodes(table)
+            for rel in chosen:
+                if home(rel) == key:
+                    lines += rel_nodes(index[id(rel)], rel)
+            if isa and key == ent[M.ISA["parent"]]["area"]:
+                lines += isa_lines
+                isa_lines = []
+            lines.append("}")
+        for rel in chosen:
+            if rel is not stocks and home(rel) is None:
+                lines += rel_nodes(index[id(rel)], rel)
+    else:
+        for table in sorted(drawn - in_cluster):
+            lines += entity_nodes(table)
     if uses_agg:
         lines.append('subgraph cluster_agg { style=dashed; color="#222222"; penwidth=1.4; margin=14; label="Aggregation: Stocks"; fontsize=12; labeljust=l;')
         for table in sorted(in_cluster):
@@ -318,12 +349,12 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
         i = index[id(rel)]
         if rel is stocks:
             continue
-        lines += rel_nodes(i, rel)
+        if not overview:
+            lines += rel_nodes(i, rel)
         lines += participant_edges(i, rel)
 
     if isa:
-        note = f"overlap: {'yes' if M.ISA['overlap'] else 'no'}\\ncovering: {'yes' if M.ISA['covering'] else 'no'}"
-        lines.append(f'ISA [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="{note}"];')
+        lines += isa_lines
         lines.append(f"E_{M.ISA['parent']} -> ISA [dir=none];")
         for child in M.ISA["children"]:
             lines.append(f"ISA -> E_{child} [dir=none];")
@@ -331,25 +362,212 @@ def build_dot(ent, rels, focus, title, only=None, isa=None):
     return "\n".join(lines) + "\n"
 
 
-LEGEND_DOT = """digraph Legend {
-graph [rankdir=LR, nodesep=0.3, ranksep=0.5, fontname="Helvetica", fontsize=18, labelloc=t, label="Notation (course slides, Ramakrishnan & Gehrke ch. 2)", pad=0.3];
-node [fontname="Helvetica", fontsize=11]; edge [arrowsize=0.8];
-subgraph cluster_1 { label="Entity set, attributes, key"; fontsize=11; style=rounded;
-  k1 [shape=ellipse, fontsize=9, label=<<U>key</U>>]; a1 [shape=ellipse, fontsize=9, label="attribute"]; e1 [shape=box, label="Entity_Set"];
-  k1 -> e1 [dir=none]; a1 -> e1 [dir=none]; }
-subgraph cluster_6 { label="Derived attribute: computed from other data"; fontsize=11; style=rounded;
-  d6 [shape=ellipse, fontsize=9, style=dashed, label="derived"]; e6 [shape=box, label="Entity_Set"]; d6 -> e6 [dir=none]; }
-subgraph cluster_2 { label="Key constraint: each A in at most one R"; fontsize=11; style=rounded;
-  e2 [shape=box, label="A"]; r2 [shape=diamond, label="R"]; f2 [shape=box, label="B"]; e2 -> r2 [arrowhead=normal]; r2 -> f2 [dir=none]; }
-subgraph cluster_3 { label="Total participation: each A in at least one R"; fontsize=11; style=rounded;
-  e3 [shape=box, label="A"]; r3 [shape=diamond, label="R"]; f3 [shape=box, label="B"]; e3 -> r3 [dir=none, penwidth=3]; r3 -> f3 [dir=none]; }
-subgraph cluster_4 { label="Both: each A in exactly one R"; fontsize=11; style=rounded;
-  e4 [shape=box, label="A"]; r4 [shape=diamond, label="R"]; f4 [shape=box, label="B"]; e4 -> r4 [arrowhead=normal, penwidth=3]; r4 -> f4 [dir=none]; }
-subgraph cluster_5 { label="Weak entity, identifying relationship, partial key"; fontsize=11; style=rounded;
-  P__legend__partial [shape=ellipse, fontsize=9, label=<<U>partial_key</U>>]; w5 [shape=box, penwidth=3, label="Weak"]; r5 [shape=diamond, penwidth=3, label="Identifies"]; o5 [shape=box, label="Owner"];
-  P__legend__partial -> w5 [dir=none]; w5 -> r5 [arrowhead=normal, penwidth=3]; r5 -> o5 [dir=none]; }
-}
+# --------------------------------------------------------------------------- legend
+# One row per symbol: (section, name, DOT body, explanation). Each body is drawn with the
+# same Graphviz settings as the diagrams, so the legend shows exactly what the pages show.
+# The examples are real relationship sets of MarketLab.
+E = 'shape=box'
+ATTR = 'shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3'
+LEGEND = [
+    ("Basic symbols", "entity",
+     f'e [{E}, label="Customers"];',
+     "<b>Entity set</b> (rectangle): a collection of similar objects, stored as one table."),
+    ("Basic symbols", "attribute",
+     f'k [{ATTR}, label=<<U>order_id</U>>]; a [{ATTR}, label="status"]; e [{E}, label="Orders"]; k -> e [dir=none]; a -> e [dir=none];',
+     "<b>Attribute</b> (oval) of the entity set it is attached to. The <b>key</b> attribute, which identifies each entity, is <u>underlined</u>."),
+    ("Basic symbols", "derived",
+     f'd [{ATTR}, style=dashed, label="total_cents"]; e [{E}, label="Orders"]; d -> e [dir=none];',
+     "<b>Derived attribute</b> (dashed oval): computed from other data. An order's total is the sum over its lines."),
+    ("Basic symbols", "relationship",
+     f'a [{E}, label="Seller_Organizations"]; r [shape=diamond, margin="0.02,0.02", label="Employs"]; b [{E}, label="Staff"]; '
+     f'x [{ATTR}, label="assigned_at"]; a -> r [dir=none]; r -> b [dir=none]; x -> r [dir=none];',
+     "<b>Relationship set</b> (diamond): connects the entity sets on its lines. An oval on the diamond is a "
+     "<b>descriptive attribute</b> of the relationship (here: since when the staff member works for the seller)."),
+    ("Basic symbols", "roles",
+     f'c [{E}, label="Categories"]; r [shape=diamond, margin="0.02,0.02", label="Subcategory_Of"]; '
+     'c -> r [arrowhead=normal, label="child"]; r -> c [dir=none, label="parent"];',
+     "<b>Role label</b> on a line: when one entity set takes part twice in a relationship, each line names its role."),
+
+    ("Cardinality and participation (read the lines at the diamond)", "many-many",
+     f'a [{E}, label="Seller_Organizations"]; r [shape=diamond, margin="0.02,0.02", label="Employs"]; b [{E}, label="Staff"]; '
+     'a -> r [dir=none]; r -> b [dir=none];',
+     "<b>Thin line, no arrow:</b> no constraint. A seller may employ many staff members and a staff member may work for "
+     "many sellers: <b>many-to-many (M:N)</b>."),
+    ("Cardinality and participation (read the lines at the diamond)", "key",
+     f'a [{E}, label="Support_Tickets"]; r [shape=diamond, margin="0.02,0.02", label="About_Order"]; b [{E}, label="Orders"]; '
+     'a -> r [arrowhead=normal]; r -> b [dir=none];',
+     "<b>Arrow into the diamond = key constraint (at most one).</b> Each ticket is about at most one order; an order may "
+     "have many tickets: <b>one-to-many (1:N)</b>. The arrow is on the line of the entity set that is in the relationship at most once."),
+    ("Cardinality and participation (read the lines at the diamond)", "total",
+     f'a [{E}, label="Couriers"]; r [shape=diamond, margin="0.02,0.02", label="Serves"]; b [{E}, label="Delivery_Zones"]; '
+     'a -> r [dir=none, penwidth=3]; r -> b [dir=none];',
+     "<b>Thick line = total participation (at least one).</b> Every courier serves at least one delivery zone. "
+     "A thin line is partial participation: zero is allowed."),
+    ("Cardinality and participation (read the lines at the diamond)", "exactly-one",
+     f'a [{E}, label="Orders"]; r [shape=diamond, margin="0.02,0.02", label="Places"]; b [{E}, label="Customers"]; '
+     'a -> r [arrowhead=normal, penwidth=3]; r -> b [dir=none];',
+     "<b>Thick line with arrow = exactly one.</b> Every order is placed by exactly one customer; a customer places "
+     "any number of orders (1:N)."),
+    ("Cardinality and participation (read the lines at the diamond)", "one-one",
+     f'a [{E}, label="Payments"]; r [shape=diamond, margin="0.02,0.02", label="Paid_By"]; b [{E}, label="Orders"]; '
+     'a -> r [arrowhead=normal, penwidth=3]; r -> b [dir=back, arrowtail=normal];',
+     "<b>Arrows on both lines: one-to-one (1:1).</b> Each payment is for exactly one order, and an order has at most one payment."),
+
+    ("Advanced constructs", "weak",
+     f'P__legend__line_no [{ATTR}, label=<<U>line_no</U>>]; w [{E}, penwidth=3, label="Order_Lines"]; '
+     f'r [shape=diamond, penwidth=3, margin="0.02,0.02", label="Contains"]; o [{E}, label="Orders"]; '
+     'P__legend__line_no -> w [dir=none]; w -> r [arrowhead=normal, penwidth=3]; r -> o [dir=none, penwidth=3];',
+     "<b>Weak entity set</b> (thick rectangle) and its <b>identifying relationship</b> (thick diamond). The weak entity has no "
+     "key of its own: its <b>partial key</b> (dashed underline) is unique only within its owner, so an order line is identified by "
+     "order_id + line_no. The thick arrow says each line belongs to exactly one order."),
+    ("Advanced constructs", "ternary",
+     f'a [{E}, label="Seller_Organizations"]; b [{E}, label="Variants"]; c [{E}, label="Warehouses"]; '
+     f'r [shape=diamond, margin="0.02,0.02", label="Stocks"]; x [{ATTR}, label="available_qty"]; '
+     'a -> r [dir=none]; r -> b [dir=none]; r -> c [dir=none]; x -> r [dir=none];',
+     "<b>Ternary relationship</b>: one diamond joins three entity sets. A stock position is one (seller, variant, warehouse) "
+     "combination with its available quantity."),
+    ("Advanced constructs", "aggregation",
+     f'subgraph cluster_agg {{ style=dashed; label="Aggregation: Stocks"; fontsize=10; labeljust=l; margin=8; '
+     f's [{E}, label="Seller_Org."]; v [{E}, label="Variants"]; h [{E}, label="Warehouses"]; '
+     f'r [shape=diamond, margin="0.02,0.02", label="Stocks"]; s -> r [dir=none]; r -> v [dir=none]; r -> h [dir=none]; }} '
+     f'l [{E}, label="Order_Lines"]; x [shape=diamond, margin="0.02,0.02", label="Reserves"]; '
+     'l -> x [dir=none, penwidth=3]; x -> r [dir=none, lhead=cluster_agg];',
+     "<b>Aggregation</b> (dashed box): the Stocks relationship together with its entity sets is treated as one entity set, "
+     "so another relationship can connect to it. A line that ends at the box (Reserves) relates to a whole stock position."),
+    ("Advanced constructs", "isa",
+     f'p [{E}, label="Accounts"]; t [shape=triangle, label="ISA", fontsize=10, margin=0, xlabel="overlap: no\\ncovering: yes"]; '
+     f'c1 [{E}, label="Customers"]; c2 [{E}, label="Staff"]; c3 [{E}, label="Couriers"]; '
+     'p -> t [dir=none]; t -> c1 [dir=none]; t -> c2 [dir=none]; t -> c3 [dir=none];',
+     "<b>ISA hierarchy</b> (triangle): the subclasses inherit the key and attributes of Accounts. "
+     "<i>overlap: no</i> = an account is in at most one subclass; <i>covering: yes</i> = every account is in one of them."),
+
+    ("How the pages are drawn", "other-area",
+     f'e [{E}, style="filled,dashed", fillcolor="#eeeeee", label="Customers\\n(People and accounts)"];',
+     "<b>Area pages:</b> a grey dashed rectangle is an entity set of another area, named with its area in brackets. "
+     "Its attributes are on its own area page."),
+    ("How the pages are drawn", "area-box",
+     f'subgraph cluster_a {{ label="Orders and payment"; style=rounded; color="#8a8a8a"; penwidth=1.2; fontsize=12; margin=8; '
+     f'e [{E}, label="Orders"]; f [{E}, label="Invoices"]; }}',
+     "<b>Overview page:</b> a grey rounded box groups the entity sets of one business area. It only helps reading; "
+     "it is not an ER construct. Relationships between two areas are drawn outside the boxes."),
+]
+
+
+def legend_dot(body):
+    return ("digraph L {\n"
+            'graph [rankdir=LR, compound=true, nodesep=0.25, ranksep=0.35, pad=0.05, fontname="Helvetica"];\n'
+            'node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];\n'
+            'edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];\n'
+            f"{body}\n}}\n")
+
+
+def inline_svg(path, prefix):
+    """The SVG element of a Graphviz file, with ids made unique so several fit in one HTML page."""
+    svg = path.read_text(encoding="utf-8")
+    svg = svg[svg.index("<svg"):]
+    return re.sub(r'id="([^"]+)"', lambda m: f'id="{prefix}_{m.group(1)}"', svg)
+
+
+def write_legend_html(pages):
+    """docs/er/legend.html: the notation, plus the list of pages of the diagram PDF."""
+    rows, section = [], None
+    for sec, name, _, text in LEGEND:
+        if sec != section:
+            rows.append(f'<tr><th colspan="2">{sec}</th></tr>')
+            section = sec
+        rows.append(f'<tr><td class="sym">{inline_svg(ER_DIR / "legend" / f"{name}.svg", "lg_" + name.replace("-", "_"))}</td><td>{text}</td></tr>')
+    contents = "".join(f"<li>Page {n}: {label}</li>" for n, label in pages)
+    html = f"""<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>MarketLab ER diagram: notation</title>
+<style>
+body {{ font-family: Helvetica, Arial, sans-serif; color: #111; margin: 0; }}
+h1 {{ font-size: 22pt; margin: 0 0 4pt; }}
+.sub {{ font-size: 11pt; margin: 0 0 12pt; color: #333; }}
+.cols {{ display: flex; gap: 22pt; align-items: flex-start; }}
+.cols > div {{ flex: 1; }}
+table {{ border-collapse: collapse; width: 100%; font-size: 10.5pt; }}
+th {{ text-align: left; font-size: 12pt; padding: 10pt 0 4pt; border-bottom: 1.5pt solid #222; }}
+td {{ padding: 5pt 6pt; border-bottom: 0.5pt solid #ccc; vertical-align: middle; line-height: 1.3; }}
+td.sym {{ width: 46%; text-align: center; }}
+td.sym svg {{ max-width: 100%; height: auto; max-height: 120pt; }}
+.box {{ border: 1pt solid #888; border-radius: 6pt; padding: 8pt 12pt; font-size: 10.5pt; margin-top: 12pt; line-height: 1.4; }}
+.box ul {{ margin: 4pt 0 0; padding-left: 16pt; }}
+</style></head><body>
+<h1>MarketLab — ER diagram: notation and contents</h1>
+<p class="sub">Notation of the course slides (Ramakrishnan &amp; Gehrke, chapter 2). Every symbol below is drawn exactly as on the diagram pages; the examples are relationship sets of MarketLab.</p>
+<div class="cols">
+<div><table>{"".join(rows[:rows.index('<tr><th colspan="2">Advanced constructs</th></tr>')])}</table></div>
+<div><table>{"".join(rows[rows.index('<tr><th colspan="2">Advanced constructs</th></tr>'):])}</table>
+<div class="box"><b>Contents of this PDF</b><ul>{contents}</ul>
+The overview shows that all entity sets form one connected design; each area page repeats its part of the design with all attributes.</div>
+</div></div>
+</body></html>
 """
+    (ER_DIR / "legend.html").write_text(html, encoding="utf-8")
+
+
+def pdf_pages(order):
+    """The pages of the diagram PDF as (HTML, width pt, height pt): legend, overview, areas."""
+    legend = (ER_DIR / "legend.html").read_text(encoding="utf-8")
+    pages = [(legend, *LEGEND_PAGE)]
+    for name in order:
+        svg = inline_svg(ER_DIR / f"{name}.svg", "d")
+        w, h = map(float, re.search(r'width="([\d.]+)pt" height="([\d.]+)pt"', svg).groups())
+        html = (f'<!doctype html><html><head><meta charset="utf-8"><title>{name}</title>'
+                f"<style>body {{ margin: 0; }} svg {{ display: block; }}</style></head><body>{svg}</body></html>")
+        pages.append((html, w + 2 * PAGE_MARGIN, h + 2 * PAGE_MARGIN))
+    return pages
+
+
+PAGE_MARGIN = 20  # pt around each diagram
+LEGEND_PAGE = (1191, 1100)  # pt; A3 width, tall enough for the whole notation on one page
+
+BROWSERS = [
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome",
+    "/Applications/Microsoft Edge.app/Contents/MacOS/Microsoft Edge",
+    r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+    r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+    r"C:\Program Files\Google\Chrome\Application\chrome.exe",
+    "google-chrome", "chromium", "chromium-browser", "msedge",
+]
+
+
+def make_pdf(order):
+    """Print each page with a headless Chromium browser (Chrome or Edge) at its own size, then
+    join them into docs/MarketLab_ER_Diagram.pdf. Needs pypdf; set ER_BROWSER to the browser
+    executable if it is not found automatically.
+    """
+    import os
+    import shutil
+    import tempfile
+    try:
+        from pypdf import PdfWriter
+    except ImportError:
+        print("PDF skipped: pip install pypdf")
+        return
+    candidates = [os.environ["ER_BROWSER"]] if os.environ.get("ER_BROWSER") else BROWSERS
+    browser = next((c for c in candidates if Path(c).exists() or shutil.which(c)), None)
+    if not browser:
+        print("PDF skipped: no Chrome or Edge found; set ER_BROWSER to its executable.")
+        return
+    out = DOCS / "MarketLab_ER_Diagram.pdf"
+    writer = PdfWriter()
+    with tempfile.TemporaryDirectory() as tmp:
+        tmp = Path(tmp)
+        for n, (html, w, h) in enumerate(pdf_pages(order)):
+            margin = 30 if n == 0 else PAGE_MARGIN
+            html = html.replace("</head>", f"<style>@page {{ size: {w:.0f}pt {h:.0f}pt; margin: {margin}pt; }}</style></head>", 1)
+            src, pdf = tmp / f"page{n}.html", tmp / f"page{n}.pdf"
+            src.write_text(html, encoding="utf-8")
+            subprocess.run([browser, "--headless", "--disable-gpu", "--no-pdf-header-footer", f"--user-data-dir={tmp / 'profile'}",
+                            f"--print-to-pdf={pdf}", src.resolve().as_uri()], check=True, capture_output=True)
+            writer.append(str(pdf))
+            if len(writer.pages) != n + 1:
+                print(f"Warning: page {n + 1} of the PDF did not fit on one sheet")
+        writer.add_metadata({"/Title": "MarketLab ER Diagram"})
+        with open(out, "wb") as f:
+            writer.write(f)
+    print(f"Wrote {out.relative_to(ROOT)} ({len(writer.pages)} pages)")
 
 
 def postprocess_svg(path):
@@ -447,7 +665,8 @@ def write_report(ent, rels, tables, checks):
     w("| [`er/full.svg`](er/full.svg) | The complete connected ER diagram with every entity set, attribute and relationship set. |")
     for key, label in M.AREAS.items():
         w(f"| [`er/area-{key}.svg`](er/area-{key}.svg) | {label}: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |")
-    w("| [`er/legend.svg`](er/legend.svg) | The notation used. |")
+    w("| [`er/overview.svg`](er/overview.svg) | Every entity set and relationship set without attributes, grouped by business area: the whole connected design on one page. |")
+    w("| [`er/legend.html`](er/legend.html) | The notation used, with an example from MarketLab for every symbol. |")
     w("")
     w("### Notation")
     w("")
@@ -671,7 +890,9 @@ def main():
         return
 
     ER_DIR.mkdir(parents=True, exist_ok=True)
-    dots = {"full": build_dot(ent, rels, set(ent), f"MarketLab — complete ER diagram ({len(ent)} entity sets, {len(rels)} relationship sets)")}
+    dots = {"full": build_dot(ent, rels, set(ent), f"MarketLab — complete ER diagram ({len(ent)} entity sets, {len(rels)} relationship sets)"),
+            "overview": build_dot(ent, rels, set(ent), f"MarketLab — overview: all {len(ent)} entity sets and {len(rels)} relationship sets "
+                                  "(attributes on the area pages)", overview=True)}
     for key, label in M.AREAS.items():
         focus = {t for t, e in ent.items() if e["area"] == key}
         dots[f"area-{key}"] = build_dot(ent, rels, focus, f"MarketLab — {label}")
@@ -680,7 +901,9 @@ def main():
     dots["concept-weak"] = build_dot(ent, rels, set(), "Weak entities and identifying relationships", only={"Contains", "Offers_Service"} & weak_rels, isa=False)
     dots["concept-isa"] = build_dot(ent, rels, {M.ISA["parent"], *M.ISA["children"]}, "ISA hierarchy", only=set(), isa=True)
     dots["concept-aggregation"] = build_dot(ent, rels, set(), "Ternary relationship Stocks and its aggregation", only={"Stocks", "Reserves", "Batch_Of"}, isa=False)
-    dots["legend"] = LEGEND_DOT
+    (ER_DIR / "legend").mkdir(exist_ok=True)
+    for _, name, body, _ in LEGEND:
+        dots[f"legend/{name}"] = legend_dot(body)
     paths = []
     for name, text in dots.items():
         path = ER_DIR / f"{name}.dot"
@@ -696,7 +919,12 @@ def main():
     subprocess.run(["node", str(RENDER / "render.mjs"), *map(str, paths)], check=True)
     for path in paths:
         postprocess_svg(path.with_suffix(".svg"))
-    subprocess.run(["node", str(RENDER / "render.mjs"), "--png", *(str(p.with_suffix(".svg")) for p in paths)], check=True)
+    subprocess.run(["node", str(RENDER / "render.mjs"), "--png", *(str(p.with_suffix(".svg")) for p in paths if "legend" not in p.parts)], check=True)
+    order = ["overview", *(f"area-{key}" for key in M.AREAS)]
+    pages = [(1, "this notation"), (2, "overview of the complete design (all entity and relationship sets, without attributes)")]
+    pages += [(n + 3, f"{label} (with all attributes)") for n, label in enumerate(M.AREAS.values())]
+    write_legend_html(pages)
+    make_pdf(order)
 
 
 if __name__ == "__main__":

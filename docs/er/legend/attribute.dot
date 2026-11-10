@@ -1,0 +1,6 @@
+digraph L {
+graph [rankdir=LR, compound=true, nodesep=0.25, ranksep=0.35, pad=0.05, fontname="Helvetica"];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+k [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label=<<U>order_id</U>>]; a [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="status"]; e [shape=box, label="Orders"]; k -> e [dir=none]; a -> e [dir=none];
+}

@@ -1,0 +1,6 @@
+digraph L {
+graph [rankdir=LR, compound=true, nodesep=0.25, ranksep=0.35, pad=0.05, fontname="Helvetica"];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+subgraph cluster_agg { style=dashed; label="Aggregation: Stocks"; fontsize=10; labeljust=l; margin=8; s [shape=box, label="Seller_Org."]; v [shape=box, label="Variants"]; h [shape=box, label="Warehouses"]; r [shape=diamond, margin="0.02,0.02", label="Stocks"]; s -> r [dir=none]; r -> v [dir=none]; r -> h [dir=none]; } l [shape=box, label="Order_Lines"]; x [shape=diamond, margin="0.02,0.02", label="Reserves"]; l -> x [dir=none, penwidth=3]; x -> r [dir=none, lhead=cluster_agg];
+}

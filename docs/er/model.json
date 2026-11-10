@@ -1876,7 +1876,9 @@
      "derived": "the sum of quantity × unit_price_cents over the order's lines"
     }
    ],
-   "checks": []
+   "checks": [
+    "(shipping_address_id IS NULL) <> (pickup_point_id IS NULL)"
+   ]
   },
   {
    "name": "Order_Lines",
@@ -2997,7 +2999,8 @@
    "sql": "foreign key addresses(account_id) → accounts",
    "attrs": [],
    "rules": [
-    "An order is billed to an address that its own customer saved (together with Places and Billed_To); the schema enforces it with a composite foreign key"
+    "An order is billed to an address that its own customer saved (together with Places and Billed_To); the schema enforces it with a composite foreign key",
+    "An order is shipped to an address that its own customer saved (together with Places and Ships_To); the schema enforces it with a composite foreign key"
    ],
    "parts": [
     {
@@ -4067,7 +4070,7 @@
    "area": "orders",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "An order may be collected at one pickup point instead of being delivered to its address.",
+   "text": "An order may be collected at one pickup point instead of being shipped to an address (Ships_To); every order has exactly one of the two.",
    "sql": "foreign key orders(pickup_point_id) → pickup_points",
    "attrs": [],
    "rules": [],
@@ -4093,7 +4096,7 @@
    "area": "orders",
    "kind": "binary, many-to-one",
    "identifying": false,
-   "text": "Every order has exactly one billing address, and the VAT rate comes from its country. A home-delivery order is also shipped to this address; a pickup order is collected at its pickup point (Collect_At).",
+   "text": "Every order has exactly one billing address, and the VAT rate comes from its country. Where the order goes is a separate choice (Ships_To or Collect_At).",
    "sql": "foreign key orders(address_id, customer_id) → addresses",
    "attrs": [],
    "rules": [
@@ -4117,6 +4120,34 @@
    ]
   },
   {
+   "name": "Ships_To",
+   "area": "orders",
+   "kind": "binary, many-to-one",
+   "identifying": false,
+   "text": "A home-delivery order is shipped to one address of its customer. The shipping address may differ from the billing address (Billed_To). A pickup order has no shipping address; every order has exactly one of Ships_To and Collect_At.",
+   "sql": "foreign key orders(shipping_address_id, customer_id) → addresses",
+   "attrs": [],
+   "rules": [
+    "An order is shipped to an address that its own customer saved (together with Places and Saves_Address); the schema enforces it with a composite foreign key"
+   ],
+   "parts": [
+    {
+     "target": "Orders",
+     "aggregation": false,
+     "key": true,
+     "total": false,
+     "role": null
+    },
+    {
+     "target": "Addresses",
+     "aggregation": false,
+     "key": false,
+     "total": false,
+     "role": null
+    }
+   ]
+  },
+  {
    "name": "Places",
    "area": "orders",
    "kind": "binary, many-to-one",
@@ -4126,6 +4157,7 @@
    "attrs": [],
    "rules": [
     "An order is billed to an address that its own customer saved (together with Billed_To and Saves_Address); the schema enforces it with a composite foreign key",
+    "An order is shipped to an address that its own customer saved (together with Ships_To and Saves_Address); the schema enforces it with a composite foreign key",
     "A support ticket can only be about an order of the customer who opened it (together with Opens and About_Order); the schema enforces it with a composite foreign key"
    ],
    "parts": [
@@ -5402,6 +5434,15 @@
   },
   {
    "relationships": [
+    "Places",
+    "Ships_To",
+    "Saves_Address"
+   ],
+   "rule": "an order is shipped to an address that its own customer saved",
+   "how": "orders(shipping_address_id, customer_id) references addresses(address_id, account_id)"
+  },
+  {
+   "relationships": [
     "Paid_By",
     "Uses_Method",
     "Saves_Method"
@@ -5465,7 +5506,7 @@
   {
    "requirement": "2. One connected ER design",
    "ok": true,
-   "evidence": "67 entity sets, 99 relationship sets and the ISA hierarchy form one connected component"
+   "evidence": "67 entity sets, 100 relationship sets and the ISA hierarchy form one connected component"
   },
   {
    "requirement": "3a. Weak entity",

@@ -8,7 +8,7 @@
 
 Independent sellers list variants of catalogue products on one marketplace. A customer can buy from several sellers in one order. Each seller keeps stock in shared warehouses, so checkout reserves stock from the right seller in the right warehouse, and the order is split into one fulfilment per seller and warehouse. Packages are shipped with a carrier service and delivered by couriers. After delivery, the customer can return items and receive a refund.
 
-The design has **67 entity sets** and **99 relationship sets**, plus one ISA hierarchy. They form one connected ER diagram.
+The design has **67 entity sets** and **100 relationship sets**, plus one ISA hierarchy. They form one connected ER diagram.
 
 | Diagram | Content |
 | --- | --- |
@@ -22,7 +22,8 @@ The design has **67 entity sets** and **99 relationship sets**, plus one ISA hie
 | [`er/area-orders.svg`](er/area-orders.svg) | Orders and payment: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
 | [`er/area-delivery.svg`](er/area-delivery.svg) | Fulfilment and delivery: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
 | [`er/area-aftersales.svg`](er/area-aftersales.svg) | After-sales and support: the same notation, zoomed in. Grey dashed boxes are entity sets from other areas. |
-| [`er/legend.svg`](er/legend.svg) | The notation used. |
+| [`er/overview.svg`](er/overview.svg) | Every entity set and relationship set without attributes, grouped by business area: the whole connected design on one page. |
+| [`er/legend.html`](er/legend.html) | The notation used, with an example from MarketLab for every symbol. |
 
 ### Notation
 
@@ -48,7 +49,7 @@ Foreign-key columns are not drawn as attributes. In the ER model a reference to 
 | Requirement | Met | Evidence |
 | --- | --- | --- |
 | 1. At least 50 entities (two-person project) | yes | 67 entity sets |
-| 2. One connected ER design | yes | 67 entity sets, 99 relationship sets and the ISA hierarchy form one connected component |
+| 2. One connected ER design | yes | 67 entity sets, 100 relationship sets and the ISA hierarchy form one connected component |
 | 3a. Weak entity | yes | Order_Lines (owner Orders), Purchase_Order_Lines (owner Purchase_Orders), Invoice_Lines (owner Invoices), Carrier_Services (owner Carriers); each has a partial key and total participation with a key constraint in its identifying relationship |
 | 3b. ISA hierarchy | yes | Accounts ISA Customers, Staff, Couriers (overlap: not allowed, covering: yes) |
 | 3c. Ternary relationship | yes | Stocks |
@@ -97,6 +98,7 @@ This is aggregation rather than a 4-ary relationship, for the reasons on the *Ag
   - A return request only returns lines of its own order (Return_Of + Returns): `return_lines(return_id, order_id)` references `return_requests(return_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
   - A refund is paid back from the payment of the order that was returned (Transaction_Of + Refund_For): `payment_transactions` carries `order_id` only for this: `(payment_id, order_id)` references `payments` and `(return_id, order_id)` references `return_requests`, so the payment and the return belong to the same order.
   - An order is billed to an address that its own customer saved (Places + Billed_To + Saves_Address): `orders(address_id, customer_id)` references `addresses(address_id, account_id)`.
+  - An order is shipped to an address that its own customer saved (Places + Ships_To + Saves_Address): `orders(shipping_address_id, customer_id)` references `addresses(address_id, account_id)`.
   - An order is paid with a payment method that its own customer saved (Paid_By + Uses_Method + Saves_Method): `payments` carries `customer_id` only for this: `(order_id, customer_id)` references `orders` and `(payment_method_id, customer_id)` references `payment_methods`, so the order and the method belong to the same customer.
   - An invoice only bills lines of its own order (Invoiced_As + Invoice_Has_Line + Bills): `invoice_lines(invoice_id, order_id)` references `invoices(invoice_id, order_id)`, and `(order_id, order_line_no)` references the order line, so both must name the same order.
   - A fulfilment only includes lines of its own order (Fulfills + Includes): `fulfillment_lines(fulfillment_id, order_id)` references `fulfillments(fulfillment_id, order_id)`, and `(order_id, line_no)` references the order line, so both must name the same order.
@@ -358,7 +360,7 @@ A delivery address saved by an account, located in one city.
 | `street` | TEXT | required |
 | `postal_code` | TEXT | required |
 
-**Takes part in:** Billed_To, Lies_In, Saves_Address.
+**Takes part in:** Billed_To, Lies_In, Saves_Address, Ships_To.
 
 #### E18. Delivery_Zones
 
@@ -824,7 +826,9 @@ A customer's purchase of one or more listings, delivered to an address or a pick
 | `status` | TEXT; CHECK status IN ('placed','shipped','delivered','cancelled') | required |
 | `total_cents` | INTEGER; CHECK total_cents >= 0 | **derived**: the sum of quantity × unit_price_cents over the order's lines, required |
 
-**Takes part in:** About_Order, Billed_To, Collect_At, Contains, Fulfills, Invoiced_As, Paid_By, Pays_With, Places, Redeems, Return_Of, Status_Of.
+Constraint: `(shipping_address_id IS NULL) <> (pickup_point_id IS NULL)`.
+
+**Takes part in:** About_Order, Billed_To, Collect_At, Contains, Fulfills, Invoiced_As, Paid_By, Pays_With, Places, Redeems, Return_Of, Ships_To, Status_Of.
 
 #### E50. Order_Lines (weak entity)
 
@@ -1328,6 +1332,8 @@ Each address is saved by exactly one account; an account can save many addresses
 Implemented as foreign key `addresses(account_id)` → `accounts`.
 
 **Consistency:** An order is billed to an address that its own customer saved (together with Places and Billed_To); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
+**Consistency:** An order is shipped to an address that its own customer saved (together with Places and Ships_To); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
 #### R17. Zone_Of
 
@@ -1988,7 +1994,7 @@ Implemented as table `goods_receipt_lines` (primary key receipt_id, purchase_ord
 
 *binary, many-to-one*
 
-An order may be collected at one pickup point instead of being delivered to its address.
+An order may be collected at one pickup point instead of being shipped to an address (Ships_To); every order has exactly one of the two.
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
@@ -2001,7 +2007,7 @@ Implemented as foreign key `orders(pickup_point_id)` → `pickup_points`.
 
 *binary, many-to-one*
 
-Every order has exactly one billing address, and the VAT rate comes from its country. A home-delivery order is also shipped to this address; a pickup order is collected at its pickup point (Collect_At).
+Every order has exactly one billing address, and the VAT rate comes from its country. Where the order goes is a separate choice (Ships_To or Collect_At).
 
 | Participant | Role | Key constraint | Participation |
 | --- | --- | --- | --- |
@@ -2012,7 +2018,22 @@ Implemented as foreign key `orders(address_id, customer_id)` → `addresses`.
 
 **Consistency:** An order is billed to an address that its own customer saved (together with Places and Saves_Address); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R67. Places
+#### R67. Ships_To
+
+*binary, many-to-one*
+
+A home-delivery order is shipped to one address of its customer. The shipping address may differ from the billing address (Billed_To). A pickup order has no shipping address; every order has exactly one of Ships_To and Collect_At.
+
+| Participant | Role | Key constraint | Participation |
+| --- | --- | --- | --- |
+| Orders | — | yes: at most one | partial |
+| Addresses | — | no | partial |
+
+Implemented as foreign key `orders(shipping_address_id, customer_id)` → `addresses`.
+
+**Consistency:** An order is shipped to an address that its own customer saved (together with Places and Saves_Address); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
+#### R68. Places
 
 *binary, many-to-one*
 
@@ -2027,9 +2048,11 @@ Implemented as foreign key `orders(customer_id)` → `customers`.
 
 **Consistency:** An order is billed to an address that its own customer saved (together with Billed_To and Saves_Address); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
+**Consistency:** An order is shipped to an address that its own customer saved (together with Ships_To and Saves_Address); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
+
 **Consistency:** A support ticket can only be about an order of the customer who opened it (together with Opens and About_Order); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R68. Buys
+#### R69. Buys
 
 *binary, many-to-one*
 
@@ -2042,7 +2065,7 @@ Each order line buys exactly one listing.
 
 Implemented as foreign key `order_lines(listing_id)` → `listings`.
 
-#### R69. Contains
+#### R70. Contains
 
 *identifying relationship of a weak entity (one owner, many weak entities)*
 
@@ -2055,7 +2078,7 @@ An order line exists only inside its order and is numbered within it. Every orde
 
 Implemented as foreign key `order_lines(order_id)` → `orders`.
 
-#### R70. Status_Of
+#### R71. Status_Of
 
 *binary, many-to-one*
 
@@ -2068,7 +2091,7 @@ Each status event belongs to exactly one order.
 
 Implemented as foreign key `order_status_events(order_id)` → `orders`.
 
-#### R71. Saves_Method
+#### R72. Saves_Method
 
 *binary, many-to-one*
 
@@ -2083,7 +2106,7 @@ Implemented as foreign key `payment_methods(customer_id)` → `customers`.
 
 **Consistency:** An order is paid with a payment method that its own customer saved (together with Paid_By and Uses_Method); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R72. Uses_Method
+#### R73. Uses_Method
 
 *binary, many-to-one*
 
@@ -2098,7 +2121,7 @@ Implemented as foreign key `payments(payment_method_id, customer_id)` → `payme
 
 **Consistency:** An order is paid with a payment method that its own customer saved (together with Paid_By and Saves_Method); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R73. Paid_By
+#### R74. Paid_By
 
 *binary, one-to-one*
 
@@ -2113,7 +2136,7 @@ Implemented as foreign key `payments(order_id, customer_id)` → `orders`.
 
 **Consistency:** An order is paid with a payment method that its own customer saved (together with Uses_Method and Saves_Method); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R74. Refund_For
+#### R75. Refund_For
 
 *binary, many-to-one*
 
@@ -2128,7 +2151,7 @@ Implemented as foreign key `payment_transactions(return_id, order_id)` → `retu
 
 **Consistency:** A refund is paid back from the payment of the order that was returned (together with Transaction_Of); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R75. Transaction_Of
+#### R76. Transaction_Of
 
 *binary, many-to-one*
 
@@ -2143,7 +2166,7 @@ Implemented as foreign key `payment_transactions(payment_id, order_id)` → `pay
 
 **Consistency:** A refund is paid back from the payment of the order that was returned (together with Refund_For); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R76. Invoiced_As
+#### R77. Invoiced_As
 
 *binary, one-to-one*
 
@@ -2158,7 +2181,7 @@ Implemented as foreign key `invoices(order_id)` → `orders`.
 
 **Consistency:** An invoice only bills lines of its own order (together with Invoice_Has_Line and Bills); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R77. Bills
+#### R78. Bills
 
 *binary, many-to-one*
 
@@ -2173,7 +2196,7 @@ Implemented as foreign key `invoice_lines(order_id, order_line_no)` → `order_l
 
 **Consistency:** An invoice only bills lines of its own order (together with Invoiced_As and Invoice_Has_Line); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R78. Taxed_At
+#### R79. Taxed_At
 
 *binary, many-to-one*
 
@@ -2186,7 +2209,7 @@ An invoice line is taxed at most at one tax rate (none for tax-exempt lines).
 
 Implemented as foreign key `invoice_lines(tax_rate_id)` → `tax_rates`.
 
-#### R79. Invoice_Has_Line
+#### R80. Invoice_Has_Line
 
 *identifying relationship of a weak entity (one owner, many weak entities)*
 
@@ -2201,7 +2224,7 @@ Implemented as foreign key `invoice_lines(invoice_id, order_id)` → `invoices`.
 
 **Consistency:** An invoice only bills lines of its own order (together with Invoiced_As and Bills); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R80. Reserves
+#### R81. Reserves
 
 *relationship with an aggregation*
 
@@ -2218,7 +2241,7 @@ Implemented as table `stock_reservations` (primary key order_id, line_no, seller
 
 ### Fulfilment and delivery
 
-#### R81. Picked_From
+#### R82. Picked_From
 
 *binary, many-to-one*
 
@@ -2231,7 +2254,7 @@ Each fulfilment is picked from exactly one warehouse.
 
 Implemented as foreign key `fulfillments(warehouse_id)` → `warehouses`.
 
-#### R82. Handled_By
+#### R83. Handled_By
 
 *binary, many-to-one*
 
@@ -2244,7 +2267,7 @@ Each fulfilment is handled by exactly one seller.
 
 Implemented as foreign key `fulfillments(seller_id)` → `seller_organizations`.
 
-#### R83. Fulfills
+#### R84. Fulfills
 
 *binary, many-to-one*
 
@@ -2259,7 +2282,7 @@ Implemented as foreign key `fulfillments(order_id)` → `orders`.
 
 **Consistency:** A fulfilment only includes lines of its own order (together with Includes); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R84. Packed_For
+#### R85. Packed_For
 
 *binary, many-to-one*
 
@@ -2272,7 +2295,7 @@ Each package is packed for exactly one fulfilment.
 
 Implemented as foreign key `packages(fulfillment_id)` → `fulfillments`.
 
-#### R85. Offers_Service
+#### R86. Offers_Service
 
 *identifying relationship of a weak entity (one owner, many weak entities)*
 
@@ -2285,7 +2308,7 @@ A carrier service exists only for its carrier; the service code (STD, EXP) is un
 
 Implemented as foreign key `carrier_services(carrier_id)` → `carriers`.
 
-#### R86. Ships_Via
+#### R87. Ships_Via
 
 *binary, many-to-one*
 
@@ -2298,7 +2321,7 @@ Every shipment travels with exactly one carrier service.
 
 Implemented as foreign key `shipments(carrier_id, service_code)` → `carrier_services`.
 
-#### R87. Ships
+#### R88. Ships
 
 *binary, one-to-one*
 
@@ -2311,7 +2334,7 @@ One-to-one: every shipment carries exactly one package and a package is shipped 
 
 Implemented as foreign key `shipments(package_id)` → `packages`.
 
-#### R88. Tracks
+#### R89. Tracks
 
 *binary, many-to-one*
 
@@ -2324,7 +2347,7 @@ Each tracking event is for exactly one shipment.
 
 Implemented as foreign key `tracking_events(shipment_id)` → `shipments`.
 
-#### R89. Makes_Attempt
+#### R90. Makes_Attempt
 
 *binary, many-to-one*
 
@@ -2337,7 +2360,7 @@ Each delivery attempt is made by exactly one courier.
 
 Implemented as foreign key `delivery_attempts(courier_id)` → `couriers`.
 
-#### R90. Attempts
+#### R91. Attempts
 
 *binary, many-to-one*
 
@@ -2350,7 +2373,7 @@ Each delivery attempt is for exactly one shipment.
 
 Implemented as foreign key `delivery_attempts(shipment_id)` → `shipments`.
 
-#### R91. Includes
+#### R92. Includes
 
 *binary, many-to-many*
 
@@ -2369,7 +2392,7 @@ Implemented as table `fulfillment_lines` (primary key fulfillment_id, order_id, 
 
 ### After-sales and support
 
-#### R92. Return_Of
+#### R93. Return_Of
 
 *binary, many-to-one*
 
@@ -2384,7 +2407,7 @@ Implemented as foreign key `return_requests(order_id)` → `orders`.
 
 **Consistency:** A return request only returns lines of its own order (together with Returns); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R93. Inspects_Return
+#### R94. Inspects_Return
 
 *binary, many-to-one*
 
@@ -2397,7 +2420,7 @@ Each return inspection is done by exactly one staff member.
 
 Implemented as foreign key `return_inspections(staff_id)` → `staff`.
 
-#### R94. Inspection_Of
+#### R95. Inspection_Of
 
 *binary, many-to-one*
 
@@ -2410,7 +2433,7 @@ Each inspection checks exactly one return request.
 
 Implemented as foreign key `return_inspections(return_id)` → `return_requests`.
 
-#### R95. About_Order
+#### R96. About_Order
 
 *binary, many-to-one*
 
@@ -2425,7 +2448,7 @@ Implemented as foreign key `support_tickets(order_id, customer_id)` → `orders`
 
 **Consistency:** A support ticket can only be about an order of the customer who opened it (together with Opens and Places); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R96. Opens
+#### R97. Opens
 
 *binary, many-to-one*
 
@@ -2440,7 +2463,7 @@ Implemented as foreign key `support_tickets(customer_id)` → `customers`.
 
 **Consistency:** A support ticket can only be about an order of the customer who opened it (together with About_Order and Places); the schema enforces it with a composite foreign key. The ER diagram cannot show this; see *Consistency across relationships* above.
 
-#### R97. Writes_Message
+#### R98. Writes_Message
 
 *binary, many-to-one*
 
@@ -2453,7 +2476,7 @@ Each message is written by exactly one account (customer or staff).
 
 Implemented as foreign key `ticket_messages(author_account_id)` → `accounts`.
 
-#### R98. Message_In
+#### R99. Message_In
 
 *binary, many-to-one*
 
@@ -2466,7 +2489,7 @@ Each message belongs to exactly one ticket.
 
 Implemented as foreign key `ticket_messages(ticket_id)` → `support_tickets`.
 
-#### R99. Returns
+#### R100. Returns
 
 *binary, many-to-many*
 

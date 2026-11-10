@@ -335,11 +335,17 @@ CREATE TABLE warehouse_inspections (
 CREATE TABLE orders (
   order_id INTEGER PRIMARY KEY, customer_id INTEGER NOT NULL REFERENCES customers(account_id),
   address_id INTEGER NOT NULL,
+  shipping_address_id INTEGER,
   pickup_point_id INTEGER,
   placed_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
   status TEXT NOT NULL CHECK(status IN ('placed','shipped','delivered','cancelled')),
   total_cents INTEGER NOT NULL CHECK(total_cents >= 0),
   UNIQUE(order_id, customer_id),
+  -- An order is either shipped to an address or collected at a pickup point, never both.
+  CHECK((shipping_address_id IS NULL) <> (pickup_point_id IS NULL)),
+  -- The shipping address must be one the ordering customer saved; it may differ from the
+  -- billing address. Declared first so that Ships_To comes right after Billed_To.
+  FOREIGN KEY(shipping_address_id, customer_id) REFERENCES addresses(address_id, account_id),
   -- The billing address must be one the ordering customer saved.
   FOREIGN KEY(address_id, customer_id) REFERENCES addresses(address_id, account_id),
   -- Declared after the address so build_er.py keeps the relationship numbering.

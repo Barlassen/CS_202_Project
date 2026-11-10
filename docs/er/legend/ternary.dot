@@ -1,0 +1,6 @@
+digraph L {
+graph [rankdir=LR, compound=true, nodesep=0.25, ranksep=0.35, pad=0.05, fontname="Helvetica"];
+node [fontname="Helvetica", fontsize=11, color="#222222", fontcolor="#111111"];
+edge [color="#333333", arrowsize=0.8, fontname="Helvetica", fontsize=9];
+a [shape=box, label="Seller_Organizations"]; b [shape=box, label="Variants"]; c [shape=box, label="Warehouses"]; r [shape=diamond, margin="0.02,0.02", label="Stocks"]; x [shape=ellipse, fontsize=9, margin="0.04,0.02", height=0.3, label="available_qty"]; a -> r [dir=none]; r -> b [dir=none]; r -> c [dir=none]; x -> r [dir=none];
+}
